@@ -3,18 +3,18 @@
 // CSE 593
 // -------------------------------
 
-package Server.Server.Common;
+package Server.Common;
 
-import Template.Server.*;
-import Template.Server.Server.Interface.IResourceManager;
+import Server.*;
+import Server.Interface.IResourceManager;
 
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Vector;
 
-public class Middleware implements IResourceManager
+public class Middleware
 {
-
+    /*
 	protected String m_name = "";
 	protected String[] m_RMNames = {};
 	protected IResourceManager[] m_RMs = {};
@@ -387,6 +387,6 @@ public class Middleware implements IResourceManager
 	public String getName() throws RemoteException
 	{
 		return m_name;
-	}
+		}*/
 }
  
