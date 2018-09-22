@@ -3,11 +3,11 @@
 // CSE 593
 // -------------------------------
 
-package Server.Server.RMI;
+package Server.RMI;
 
 
-import Template.Server.Server.Common.Middleware;
-import Template.Server.Server.Interface.*;
+import Server.Common.Middleware;
+import Server.Interface.*;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -15,8 +15,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class RMIMiddleware extends Middleware
-{
+public class RMIMiddleware //extends Middleware
+{/*
 	private static String[] s_RMNames = {"Servers"};
 	private static String s_serverName = "Middleware";
 	private static int s_serverPort = 1099;
@@ -111,5 +111,5 @@ public class RMIMiddleware extends Middleware
 	public RMIMiddleware(String name)
 	{
 		super(name);
-	}
+	}*/
 }

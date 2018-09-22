@@ -4,17 +4,17 @@
 // -------------------------------
 
 package Server.Common;
-/*
-import Template.*;
+
+import Server.*;
 import Server.Interface.IResourceManager;
 
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Vector;
-*/
+
 public class Middleware
 {
-/*
+    /*
 	protected String m_name = "";
 	protected String[] m_RMNames = {};
 	protected IResourceManager[] m_RMs = {};
@@ -387,5 +387,6 @@ public class Middleware
 	public String getName() throws RemoteException
 	{
 		return m_name;
-	}*/
+		}*/
 }
+ 
