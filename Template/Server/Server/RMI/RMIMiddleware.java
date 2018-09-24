@@ -15,12 +15,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class RMIMiddleware //extends Middleware
-{/*
+public class RMIMiddleware extends Middleware
+{
 	private static String[] s_RMNames = {"Servers"};
 	private static String s_serverName = "Middleware";
 	private static int s_serverPort = 1099;
-	//TODO: REPLACE 'ALEX' WITH YOUR GROUP NUMBER TO COMPILE
 	 private static String s_rmiPrefix = "group20";
     
 	public static void main(String args[])
@@ -111,5 +110,5 @@ public class RMIMiddleware //extends Middleware
 	public RMIMiddleware(String name)
 	{
 		super(name);
-	}*/
+	}
 }
