@@ -14,7 +14,7 @@ public class Middleware extends ResourceManager implements IResourceManager
 {
 	protected String m_name = "";
 	protected String[] m_RMNames = {};
-	protected IResourceManager[] m_RMs = {};
+	protected IResourceManager[] m_RMs = new IResourceManager[3];
 	protected RMHashMap m_data = new RMHashMap();
 
 	public Middleware(String p_name)
