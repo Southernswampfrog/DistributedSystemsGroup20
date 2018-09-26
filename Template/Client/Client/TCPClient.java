@@ -1,20 +1,15 @@
 package Client;
 
 import Server.Interface.IResourceManager;
-
-import java.rmi.NotBoundException;
+import java.io.*;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.net.*;
 
 public class TCPClient extends Client {
     private static String s_serverHost = "localhost";
     private static int s_serverPort;
     private static String s_serverName = "Server";
-
-    //TODO: REPLACE 'ALEX' WITH YOUR GROUP NUMBER TO COMPILE
-     private static String s_rmiPrefix = "group20";
+    private static String s_rmiPrefix = "group20";
 
     public static void main(String args[])
     {
@@ -24,13 +19,9 @@ public class TCPClient extends Client {
         }
         if (args.length > 1)
         {
-            s_serverName = args[1];
+            s_serverPort = Integer.parseInt(args[1]);
         }
         if (args.length > 2)
-        {
-            s_serverPort = Integer.parseInt(args[2]);
-        }
-        if (args.length > 3)
         {
             System.err.println((char)27 + "[31;1mClient exception: " + (char)27 + "[0mUsage: java client.RMIClient [server_hostname [server_rmiobject]]");
             System.exit(1);
@@ -67,7 +58,10 @@ public class TCPClient extends Client {
             while (true) {
                 try {
                     Socket client = new Socket(s_serverHost, s_serverPort);
-                    m_resourceManager = (IResourceManager)client;
+                    DataInputStream in = new DataInputStream(client.getInputStream());
+                    ObjectInputStream iis = new ObjectInputStream(in);
+                    m_resourceManager = (IResourceManager)iis.readObject();
+                    System.out.println(m_resourceManager);
                     System.out.println("Connected to '" + name + "' server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
                     break;
                 }

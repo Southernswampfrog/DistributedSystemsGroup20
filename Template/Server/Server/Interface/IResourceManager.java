@@ -1,4 +1,5 @@
 package Server.Interface;
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.*;
@@ -18,7 +19,7 @@ import java.util.*;
  * has succeeded.
  */
 
-public interface IResourceManager extends Remote 
+public interface IResourceManager extends Remote
 {
     /**
      * Add seats to a flight.
