@@ -1,5 +1,4 @@
 package Client;
-
 import Server.Interface.IResourceManager;
 import java.io.*;
 import java.rmi.RemoteException;
@@ -79,5 +78,8 @@ public class TCPClient extends Client {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+    public void execute(){
+
     }
 }
