@@ -5,7 +5,6 @@ import Server.Interface.IResourceManager;
 
 import java.net.*;
 import java.io.*;
-import java.rmi.server.UnicastRemoteObject;
 
 public class TCPResourceManager extends ResourceManager implements Serializable{
     private static String s_serverName = "Server";
@@ -23,14 +22,13 @@ public class TCPResourceManager extends ResourceManager implements Serializable{
             ServerSocket server = new ServerSocket(s_portNumber);
             System.out.println("'" + s_serverName + "' resource manager server ready and bound to '" + s_portNumber + "'");
             TCPResourceManager rm = new TCPResourceManager(s_serverName);
-            IResourceManager resourceManager = (IResourceManager) UnicastRemoteObject.exportObject(rm, 0);
+            IResourceManager irm = rm;
             while(true){
                     try {
                         // Accept incoming connections.
                         Socket clientSocket = server.accept();
                         OutputStream outToServer = clientSocket.getOutputStream();
-                        new ObjectOutputStream(outToServer).writeObject(resourceManager);
-                        System.out.println("sending interface");
+                        new ObjectOutputStream(outToServer).writeObject(irm);
                     } catch (Exception ioe) {
                         System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
                         ioe.printStackTrace();
