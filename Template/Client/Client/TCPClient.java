@@ -13,6 +13,7 @@ public class TCPClient {
     private static int s_serverPort;
     private static String s_serverName = "Server";
     private static String s_rmiPrefix = "group20";
+    private OutputStream outputStream;
 
     public static void main(String args[])
     {
@@ -63,6 +64,8 @@ public class TCPClient {
                     Socket client = new Socket(s_serverHost, s_serverPort);
                     DataInputStream in = new DataInputStream(client.getInputStream());
                     ObjectInputStream iis = new ObjectInputStream(in);
+                    DataOutputStream out = new DataOutputStream(client.getOutputStream());
+                    outputStream = new ObjectOutputStream(out);
                     //System.out.println(iis.readObject());
                     System.out.println("Connected to '" + name + "' server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
                     break;
@@ -162,6 +165,8 @@ public class TCPClient {
                     methodParams.put("flightSeats", flightSeats);
                     methodParams.put("flightPrice", flightPrice);
                     method.put("AddFlight", methodParams);
+                    outputStream.write(method.toString());
+                    outputStream.flush();
                 }
                 catch (Exception e) {
                     System.out.println(e);
