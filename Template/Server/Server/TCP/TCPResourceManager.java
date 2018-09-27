@@ -2,6 +2,7 @@ package Server.TCP;
 
 import Server.Common.ResourceManager;
 import Server.Interface.IResourceManager;
+import org.json.JSONObject;
 
 import java.net.*;
 import java.io.*;
@@ -27,8 +28,12 @@ public class TCPResourceManager extends ResourceManager implements Serializable{
                     try {
                         // Accept incoming connections.
                         Socket clientSocket = server.accept();
-                        OutputStream outToServer = clientSocket.getOutputStream();
-                        new ObjectOutputStream(outToServer).writeObject(irm);
+                        System.out.println("connected to " + clientSocket.getInetAddress());
+                        BufferedReader bis = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                        String jsob = bis.readLine();
+                        System.out.println(jsob);
+                        JSONObject jsrob = new JSONObject(jsob);
+                        System.out.println(jsrob.get("methodParams"));
                     } catch (Exception ioe) {
                         System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
                         ioe.printStackTrace();
