@@ -27,13 +27,15 @@ public class TCPMiddleware extends Middleware {
 
 
             while (true) {
+                Socket clientSocket = null;
                 try {
                     // Accept incoming connections.
-                    Socket clientSocket = server.accept();
+                    clientSocket = server.accept();
                     System.out.println("connected to " + clientSocket.getInetAddress());
                     Thread t = new ClientThread(clientSocket, flights, cars, rooms);
                     t.start();
                 } catch (Exception e) {
+                    clientSocket.close();
                     System.err.println((char) 27 + "[31;1mServer exception: " + (char) 27 + "[0mUncaught exception");
                     e.printStackTrace();
                     System.exit(1);
@@ -76,6 +78,10 @@ public class TCPMiddleware extends Middleware {
                     BufferedReader bis = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     String js = bis.readLine();
                     System.out.println(js);
+                    if (js == null) {
+                        clientSocket.close();
+                        break;
+                    }
                     OutputStream os;
                     JSONObject jsob = new JSONObject(js);
                     String method = (jsob.getString("methodName"));
@@ -193,7 +199,14 @@ public class TCPMiddleware extends Middleware {
                 } catch (Exception ioe) {
                     System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
                     ioe.printStackTrace();
+                    try {
+                        clientSocket.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 }
+
             }
         }
     }

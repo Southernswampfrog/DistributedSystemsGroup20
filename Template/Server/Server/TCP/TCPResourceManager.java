@@ -26,15 +26,23 @@ public class TCPResourceManager extends ResourceManager implements Serializable{
             TCPResourceManager rm = new TCPResourceManager(s_serverName);
             // Accept incoming connections.
             while(true) {
-                Socket clientSocket = server.accept();
-                System.out.println("connected to " + clientSocket.getInetAddress());
-                Thread t = new MiddlewareThread(clientSocket, rm);
+                Socket clientSocket = null;
+                try {
+                    clientSocket = server.accept();
+                    System.out.println("connected to " + clientSocket.getInetAddress());
+                    Thread t = new MiddlewareThread(clientSocket, rm);
+                    t.start();
+                }
+                catch (Exception e) {
+                    clientSocket.close();
+                }
             }
         }
         catch (Exception e) {
             System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
             e.printStackTrace();
             System.exit(1);
+
         }
     }
 
@@ -59,6 +67,10 @@ class MiddlewareThread extends Thread{
                     BufferedReader bis = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     String js = bis.readLine();
                     JSONObject jsob = new JSONObject(js);
+                    if (js == null) {
+                        clientSocket.close();
+                        break;
+                    }
                     OutputStream os  = clientSocket.getOutputStream();
                     PrintWriter pw = new PrintWriter(os);
                     String s, switchCase = jsob.getString("methodName");
