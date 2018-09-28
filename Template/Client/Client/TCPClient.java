@@ -14,6 +14,7 @@ public class TCPClient {
     private static String s_serverName = "Server";
     private static String s_rmiPrefix = "group20";
     private OutputStream outputStream;
+    private Socket client;
 
     public static void main(String args[])
     {
@@ -61,12 +62,7 @@ public class TCPClient {
             boolean first = true;
             while (true) {
                 try {
-                    Socket client = new Socket(s_serverHost, s_serverPort);
-                    DataInputStream in = new DataInputStream(client.getInputStream());
-                    ObjectInputStream iis = new ObjectInputStream(in);
-                    DataOutputStream out = new DataOutputStream(client.getOutputStream());
-                    outputStream = new ObjectOutputStream(out);
-                    //System.out.println(iis.readObject());
+                    client = new Socket(s_serverHost, s_serverPort);
                     System.out.println("Connected to '" + name + "' server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
                     break;
                 }
@@ -130,6 +126,13 @@ public class TCPClient {
 
     public void execute(Command cmd, Vector<String> arguments) throws NumberFormatException
     {
+        try {
+            DataOutputStream out = new DataOutputStream(client.getOutputStream());
+            outputStream = new DataOutputStream(out);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
         switch (cmd)
         {
             case Help:
@@ -158,24 +161,20 @@ public class TCPClient {
                 int flightPrice = toInt(arguments.elementAt(4));
 
                 JSONObject method = new JSONObject();
-                JSONObject methodParams = new JSONObject();
                 try {
-                    methodParams.put("id", id);
-                    methodParams.put("flightNum", flightNum);
-                    methodParams.put("flightSeats", flightSeats);
-                    methodParams.put("flightPrice", flightPrice);
-                    method.put("AddFlight", methodParams);
-                    outputStream.write(method.toString());
+                    method.put("id", id);
+                    method.put("flightNum", flightNum);
+                    method.put("flightSeats", flightSeats);
+                    method.put("flightPrice", flightPrice);
+                    method.put("methodName", "AddFlight");
+                    outputStream.write(method.toString().getBytes());
                     outputStream.flush();
+                    outputStream.close();
                 }
                 catch (Exception e) {
                     System.out.println(e);
                 }
-            /*    if (m_resourceManager.addFlight(id, flightNum, flightSeats, flightPrice)) {
-                    System.out.println("Flight added");
-                } else {
-                    System.out.println("Flight could not be added");
-                }*/
+
                 break;
             }
             case AddCars: {
@@ -191,11 +190,23 @@ public class TCPClient {
                 int numCars = toInt(arguments.elementAt(3));
                 int price = toInt(arguments.elementAt(4));
 
-             /*   if (m_resourceManager.addCars(id, location, numCars, price)) {
-                    System.out.println("Cars added");
-                } else {
-                    System.out.println("Cars could not be added");
-                }*/
+                JSONObject method = new JSONObject();
+                JSONObject methodParams = new JSONObject();
+                try {
+                    methodParams.put("id", id);
+                    methodParams.put("location", location);
+                    methodParams.put("numCars", numCars);
+                    methodParams.put("price", price);
+                    method.put("methodParams", methodParams);
+                    method.put("methodName", "AddCars");
+                    outputStream.write(method.toString().getBytes());
+                    outputStream.flush();
+                    outputStream.close();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+
                 break;
             }
             case AddRooms: {
@@ -211,11 +222,23 @@ public class TCPClient {
                 int numRooms = toInt(arguments.elementAt(3));
                 int price = toInt(arguments.elementAt(4));
 
-              /*  if (m_resourceManager.addRooms(id, location, numRooms, price)) {
-                    System.out.println("Rooms added");
-                } else {
-                    System.out.println("Rooms could not be added");
-                }*/
+                JSONObject method = new JSONObject();
+                JSONObject methodParams = new JSONObject();
+                try {
+                    methodParams.put("id", id);
+                    methodParams.put("location", location);
+                    methodParams.put("numRooms", numRooms);
+                    methodParams.put("price", price);
+                    method.put("methodParams", methodParams);
+                    method.put("methodName", "AddFlight");
+                    outputStream.write(method.toString().getBytes());
+                    outputStream.flush();
+                    outputStream.close();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+
                 break;
             }
             case AddCustomer: {
@@ -461,6 +484,8 @@ public class TCPClient {
         }
     }
 
+
+
     public static Vector<String> parse(String command)
     {
         Vector<String> arguments = new Vector<String>();
@@ -474,7 +499,6 @@ public class TCPClient {
         }
         return arguments;
     }
-
     public static void checkArgumentsCount(Integer expected, Integer actual) throws IllegalArgumentException
     {
         if (expected != actual)

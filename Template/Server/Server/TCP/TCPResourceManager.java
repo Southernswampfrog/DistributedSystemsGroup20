@@ -23,17 +23,65 @@ public class TCPResourceManager extends ResourceManager implements Serializable{
             ServerSocket server = new ServerSocket(s_portNumber);
             System.out.println("'" + s_serverName + "' resource manager server ready and bound to '" + s_portNumber + "'");
             TCPResourceManager rm = new TCPResourceManager(s_serverName);
-            IResourceManager irm = rm;
             while(true){
                     try {
                         // Accept incoming connections.
                         Socket clientSocket = server.accept();
                         System.out.println("connected to " + clientSocket.getInetAddress());
                         BufferedReader bis = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                        String jsob = bis.readLine();
-                        System.out.println(jsob);
-                        JSONObject jsrob = new JSONObject(jsob);
-                        System.out.println(jsrob.get("methodParams"));
+                        String js = bis.readLine();
+                        JSONObject jsob = new JSONObject(js);
+                        OutputStream os  = clientSocket.getOutputStream();
+                        switch (jsob.getString("methodName")) {
+                            case "AddFlight":
+                                rm.addFlight(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Flight Added".getBytes());
+                            case "AddCars":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "AddRooms":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "AddCustomers":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "AddCustomerID":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "DeleteFlight":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "DeleteCars":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "DeleteRooms":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "DeleteCustomer":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "QueryFlight":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "QueryCars":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "QueryRooms":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "QueryFlightPrice":
+                                rm.addCars(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                                os.write("Car Added".getBytes());
+                            case "QueryCarsPrice":
+                            case "QueryRoomsPrice":
+                            case "ReserveFlight":
+                            case "ReserveRoom":
+                            case "ReserveCar":
+                            case "bundle":
+                        }
+                        os.flush();
+                        os.close();
+
                     } catch (Exception ioe) {
                         System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
                         ioe.printStackTrace();

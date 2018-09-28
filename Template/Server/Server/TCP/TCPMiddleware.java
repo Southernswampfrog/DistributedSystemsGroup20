@@ -2,35 +2,79 @@ package Server.TCP;
 
 import Server.Common.Middleware;
 import Server.Interface.IResourceManager;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.*;
 
 public class TCPMiddleware extends Middleware {
-    private static String s_serverName = "Server";
-    //TODO: REPLACE 'ALEX' WITH YOUR GROUP NUMBER TO COMPILE
-    private static String s_rmiPrefix = "group20";
-    private static int s_portNumber;
+
+
     public static void main(String args[])
     {
         // Create the TCP server entry
-        if (args.length < 7) {
-            System.out.println("Usage: java TCPMiddleware middlewareportnum, server1, server1 port, server 2, server2 port, server3 server3 port");
+      /*  if (args.length < 1) {
+            System.out.println("Usage: java TCPMiddleware middleware server1, server 2, server3");
             System.exit(1);
-        }
+        }*/
         try {
-            // Create a new Server object
-            s_portNumber = Integer.parseInt(args[0]);
-            Socket m = new Socket(args[1], Integer.parseInt(args[2]));
-            Socket m1 = new Socket(args[3], Integer.parseInt(args[4]));
-            Socket m2 = new Socket(args[5], Integer.parseInt(args[6]));
-            IResourceManager rm1 = (IResourceManager) m;
-            IResourceManager rm2 = (IResourceManager) m1;
-            IResourceManager rm3 = (IResourceManager) m2;
-
-            Middleware server = new Middleware(s_serverName);
-            // Dynamically generate the stub (client proxy)
-            ServerSocket serverSocket = new ServerSocket(1099);
-
-            System.out.println("'" + s_serverName + "' resource manager server ready and bound to '" + s_rmiPrefix + s_serverName + "'");
+            Socket Flights = new Socket(args[0], 6111);
+            System.out.println("Connected to Flights");
+            Socket Cars = new Socket(args[1], 6111);
+            System.out.println("Connected to Cars");
+            Socket Rooms = new Socket(args[2], 6111);
+            System.out.println("Connected to Rooms");
+            ServerSocket server = new ServerSocket(6111);
+            while (true) {
+                try {
+                    // Accept incoming connections.
+                    Socket clientSocket = server.accept();
+                    System.out.println("connected to " + clientSocket.getInetAddress());
+                    BufferedReader bis = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    String js = bis.readLine();
+                    OutputStream os;
+                    JSONObject jsob = new JSONObject(js);
+                    switch (jsob.getString("methodName")) {
+                        case "AddFlight":
+                            os = Flights.getOutputStream();
+                            os.write(js.getBytes());
+                            os.flush();
+                            bis = new BufferedReader(new InputStreamReader(Flights.getInputStream()));
+                            js = bis.readLine();
+                            os = clientSocket.getOutputStream();
+                            os.write(js.getBytes());
+                            os.flush();
+                            os.close();
+                        case "AddCars":
+                            os = Cars.getOutputStream();
+                            os.write(js.getBytes());
+                            os.flush();
+                            os.close();
+                        case "AddRooms":
+                        case "AddCustomers":
+                        case "AddCustomerID":
+                        case "DeleteFlight":
+                        case "DeleteCars":
+                        case "DeleteRooms":
+                        case "DeleteCustomer":
+                        case "QueryFlight":
+                        case "QueryCars":
+                        case "QueryRooms":
+                        case "QueryFlightPrice":
+                        case "QueryCarsPrice":
+                        case "QueryRoomsPrice":
+                        case "ReserveFlight":
+                        case "ReserveRoom":
+                        case "ReserveCar":
+                        case "bundle":
+                    }
+                } catch (Exception ioe) {
+                    System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
+                    ioe.printStackTrace();
+                }
+            }
         }
         catch (Exception e) {
             System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
