@@ -470,7 +470,7 @@ public class TCPClient {
                 {
                     flightNumbers.addElement(arguments.elementAt(3+i));
                 }
-                String location = arguments.elementAt(arguments.size()-2);
+                String location = arguments.elementAt(arguments.size()-3);
                 boolean car = toBoolean(arguments.elementAt(arguments.size()-2));
                 boolean room = toBoolean(arguments.elementAt(arguments.size()-1));
 

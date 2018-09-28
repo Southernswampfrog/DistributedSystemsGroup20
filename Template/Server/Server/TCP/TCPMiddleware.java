@@ -20,12 +20,12 @@ public class TCPMiddleware extends Middleware {
             System.exit(1);
         }*/
         try {
-            Socket Flights = new Socket(args[0], 6111);
-            System.out.println("Connected to Flights");
-            Socket Cars = new Socket(args[1], 6111);
-            System.out.println("Connected to Cars");
-            Socket Rooms = new Socket(args[2], 6111);
-            System.out.println("Connected to Rooms");
+            Socket flights = new Socket(args[0], 6111);
+            System.out.println("Connected to flights");
+            Socket cars = new Socket(args[1], 6111);
+            System.out.println("Connected to cars");
+            Socket rooms = new Socket(args[2], 6111);
+            System.out.println("Connected to rooms");
             ServerSocket server = new ServerSocket(6111);
             while (true) {
                 try {
@@ -38,17 +38,18 @@ public class TCPMiddleware extends Middleware {
                     JSONObject jsob = new JSONObject(js);
                     switch (jsob.getString("methodName")) {
                         case "AddFlight":
-                            os = Flights.getOutputStream();
+                            os = flights.getOutputStream();
                             os.write(js.getBytes());
                             os.flush();
-                            bis = new BufferedReader(new InputStreamReader(Flights.getInputStream()));
+                            os.close();
+                            bis = new BufferedReader(new InputStreamReader(flights.getInputStream()));
                             js = bis.readLine();
                             os = clientSocket.getOutputStream();
                             os.write(js.getBytes());
                             os.flush();
                             os.close();
                         case "AddCars":
-                            os = Cars.getOutputStream();
+                            os = cars.getOutputStream();
                             os.write(js.getBytes());
                             os.flush();
                             os.close();
