@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.*;
 
 public class TCPMiddleware extends Middleware {
@@ -39,15 +40,16 @@ public class TCPMiddleware extends Middleware {
                     switch (jsob.getString("methodName")) {
                         case "AddFlight":
                             os = flights.getOutputStream();
-                            os.write(js.getBytes());
-                            os.flush();
-                            os.close();
+                            PrintWriter pw = new PrintWriter(os);
+                            pw.println(js);
+                            pw.flush();
                             bis = new BufferedReader(new InputStreamReader(flights.getInputStream()));
                             js = bis.readLine();
                             os = clientSocket.getOutputStream();
-                            os.write(js.getBytes());
-                            os.flush();
-                            os.close();
+                            pw = new PrintWriter(os);
+                            pw.write(js);
+                            pw.flush();
+                            break;
                         case "AddCars":
                             os = cars.getOutputStream();
                             os.write(js.getBytes());

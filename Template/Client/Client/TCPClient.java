@@ -15,6 +15,7 @@ public class TCPClient {
     private static String s_rmiPrefix = "group20";
     private OutputStream outputStream;
     private Socket client;
+    private PrintWriter pw;
 
     public static void main(String args[])
     {
@@ -129,10 +130,12 @@ public class TCPClient {
         try {
             DataOutputStream out = new DataOutputStream(client.getOutputStream());
             outputStream = new DataOutputStream(out);
+            pw = new PrintWriter((outputStream));
         }
         catch(Exception e) {
             e.printStackTrace();
         }
+        JSONObject method = new JSONObject();
         switch (cmd)
         {
             case Help:
@@ -160,16 +163,14 @@ public class TCPClient {
                 int flightSeats = toInt(arguments.elementAt(3));
                 int flightPrice = toInt(arguments.elementAt(4));
 
-                JSONObject method = new JSONObject();
                 try {
                     method.put("id", id);
                     method.put("flightNum", flightNum);
                     method.put("flightSeats", flightSeats);
                     method.put("flightPrice", flightPrice);
                     method.put("methodName", "AddFlight");
-                    outputStream.write(method.toString().getBytes());
-                    outputStream.flush();
-                    outputStream.close();
+                    pw.println(method);
+                    pw.flush();
                 }
                 catch (Exception e) {
                     System.out.println(e);
@@ -190,18 +191,14 @@ public class TCPClient {
                 int numCars = toInt(arguments.elementAt(3));
                 int price = toInt(arguments.elementAt(4));
 
-                JSONObject method = new JSONObject();
-                JSONObject methodParams = new JSONObject();
                 try {
-                    methodParams.put("id", id);
-                    methodParams.put("location", location);
-                    methodParams.put("numCars", numCars);
-                    methodParams.put("price", price);
-                    method.put("methodParams", methodParams);
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("numCars", numCars);
+                    method.put("price", price);
                     method.put("methodName", "AddCars");
-                    outputStream.write(method.toString().getBytes());
-                    outputStream.flush();
-                    outputStream.close();
+                    pw.println(method);
+                    pw.flush();
                 }
                 catch (Exception e) {
                     System.out.println(e);
@@ -222,18 +219,14 @@ public class TCPClient {
                 int numRooms = toInt(arguments.elementAt(3));
                 int price = toInt(arguments.elementAt(4));
 
-                JSONObject method = new JSONObject();
-                JSONObject methodParams = new JSONObject();
                 try {
-                    methodParams.put("id", id);
-                    methodParams.put("location", location);
-                    methodParams.put("numRooms", numRooms);
-                    methodParams.put("price", price);
-                    method.put("methodParams", methodParams);
-                    method.put("methodName", "AddFlight");
-                    outputStream.write(method.toString().getBytes());
-                    outputStream.flush();
-                    outputStream.close();
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("numRooms", numRooms);
+                    method.put("price", price);
+                    method.put("methodName", "AddRooms");
+                    pw.println(method);
+                    pw.flush();
                 }
                 catch (Exception e) {
                     System.out.println(e);
@@ -241,17 +234,27 @@ public class TCPClient {
 
                 break;
             }
+
+
             case AddCustomer: {
                 checkArgumentsCount(2, arguments.size());
 
                 System.out.println("Adding a new customer [xid=" + arguments.elementAt(1) + "]");
 
                 int id = toInt(arguments.elementAt(1));
-             //   int customer = m_resourceManager.newCustomer(id);
-
-           //     System.out.println("Add customer ID: " + customer);
+                try {
+                    method.put("id", id);
+                    method.put("methodName", "AddCustomer");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
                 break;
             }
+
+
             case AddCustomerID: {
                 checkArgumentsCount(3, arguments.size());
 
@@ -261,13 +264,22 @@ public class TCPClient {
                 int id = toInt(arguments.elementAt(1));
                 int customerID = toInt(arguments.elementAt(2));
 
-             /*   if (m_resourceManager.newCustomer(id, customerID)) {
-                    System.out.println("Add customer ID: " + customerID);
-                } else {
-                    System.out.println("Customer could not be added");
-                }*/
+                try {
+                    method.put("id", id);
+                    method.put("customerID", customerID);
+
+                    method.put("methodName", "AddCustomerID");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+
                 break;
             }
+
+
             case DeleteFlight: {
                 checkArgumentsCount(3, arguments.size());
 
@@ -277,13 +289,20 @@ public class TCPClient {
                 int id = toInt(arguments.elementAt(1));
                 int flightNum = toInt(arguments.elementAt(2));
 
-             /*   if (m_resourceManager.deleteFlight(id, flightNum)) {
-                    System.out.println("Flight Deleted");
-                } else {
-                    System.out.println("Flight could not be deleted");
-                }*/
+                try {
+                    method.put("id", id);
+                    method.put("flightNum", flightNum);
+                    method.put("methodName", "DeleteFlight");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+
                 break;
             }
+
             case DeleteCars: {
                 checkArgumentsCount(3, arguments.size());
 
@@ -293,13 +312,19 @@ public class TCPClient {
                 int id = toInt(arguments.elementAt(1));
                 String location = arguments.elementAt(2);
 
-               /* if (m_resourceManager.deleteCars(id, location)) {
-                    System.out.println("Cars Deleted");
-                } else {
-                    System.out.println("Cars could not be deleted");
-                }*/
+                try {
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("methodName", "DeleteCars");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
                 break;
             }
+
             case DeleteRooms: {
                 checkArgumentsCount(3, arguments.size());
 
@@ -308,6 +333,16 @@ public class TCPClient {
 
                 int id = toInt(arguments.elementAt(1));
                 String location = arguments.elementAt(2);
+                try {
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("methodName", "DeleteRooms");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
                 break;
             }
@@ -319,6 +354,16 @@ public class TCPClient {
 
                 int id = toInt(arguments.elementAt(1));
                 int customerID = toInt(arguments.elementAt(2));
+                try {
+                    method.put("id", id);
+                    method.put("customerID", customerID);
+                    method.put("methodName", "DeleteCustomer");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
                 break;
             }
@@ -330,8 +375,17 @@ public class TCPClient {
 
                 int id = toInt(arguments.elementAt(1));
                 int flightNum = toInt(arguments.elementAt(2));
+                try {
+                    method.put("id", id);
+                    method.put("flightNum", flightNum);
+                    method.put("methodName", "QueryFlight");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
-          //      System.out.println("Number of seats available: " + seats);
                 break;
             }
             case QueryCars: {
@@ -342,8 +396,17 @@ public class TCPClient {
 
                 int id = toInt(arguments.elementAt(1));
                 String location = arguments.elementAt(2);
+                try {
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("methodName", "QueryCars");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
-           //     System.out.println("Number of cars at this location: " + numCars);
                 break;
             }
             case QueryRooms: {
@@ -354,6 +417,16 @@ public class TCPClient {
 
                 int id = toInt(arguments.elementAt(1));
                 String location = arguments.elementAt(2);
+                try {
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("methodName", "QueryRooms");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
             //    System.out.println("Number of rooms at this location: " + numRoom);
                 break;
@@ -366,8 +439,17 @@ public class TCPClient {
 
                 int id = toInt(arguments.elementAt(1));
                 int customerID = toInt(arguments.elementAt(2));
+                try {
+                    method.put("id", id);
+                    method.put("QueryCustomer", customerID);
+                    method.put("methodName", "QueryCustomer");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
-    //                System.out.print(bill);
                 break;
             }
             case QueryFlightPrice: {
@@ -378,8 +460,17 @@ public class TCPClient {
 
                 int id = toInt(arguments.elementAt(1));
                 int flightNum = toInt(arguments.elementAt(2));
+                try {
+                    method.put("id", id);
+                    method.put("flightNum", flightNum);
+                    method.put("methodName", "flightNum");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
-         //       System.out.println("Price of a seat: " + price);
                 break;
             }
             case QueryCarsPrice: {
@@ -390,8 +481,17 @@ public class TCPClient {
 
                 int id = toInt(arguments.elementAt(1));
                 String location = arguments.elementAt(2);
+                try {
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("methodName", "QueryCarsPrice");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
-           //     System.out.println("Price of cars at this location: " + price);
                 break;
             }
             case QueryRoomsPrice: {
@@ -403,7 +503,17 @@ public class TCPClient {
                 int id = toInt(arguments.elementAt(1));
                 String location = arguments.elementAt(2);
 
-          //      System.out.println("Price of rooms at this location: " + price);
+                try {
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("methodName", "QueryRoomsPrice");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+
                 break;
             }
             case ReserveFlight: {
@@ -417,6 +527,17 @@ public class TCPClient {
                 int customerID = toInt(arguments.elementAt(2));
                 int flightNum = toInt(arguments.elementAt(3));
 
+                try {
+                    method.put("id", id);
+                    method.put("customerID", customerID);
+                    method.put("flightNum", flightNum);
+                    method.put("methodName", "ReserveFlight");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
                 break;
             }
@@ -431,6 +552,17 @@ public class TCPClient {
                 int customerID = toInt(arguments.elementAt(2));
                 String location = arguments.elementAt(3);
 
+                try {
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("customerID", customerID);
+                    method.put("methodName", "ReserveCar");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
                 break;
             }
@@ -445,6 +577,17 @@ public class TCPClient {
                 int customerID = toInt(arguments.elementAt(2));
                 String location = arguments.elementAt(3);
 
+                try {
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("customerID", customerID);
+                    method.put("methodName", "ReserveRoom");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
                 break;
             }
@@ -473,14 +616,33 @@ public class TCPClient {
                 String location = arguments.elementAt(arguments.size()-3);
                 boolean car = toBoolean(arguments.elementAt(arguments.size()-2));
                 boolean room = toBoolean(arguments.elementAt(arguments.size()-1));
-
+                try {
+                    method.put("id", id);
+                    method.put("location", location);
+                    method.put("customerID", customerID);
+                    method.put("car", car);
+                    method.put("room", room);
+                    method.put("flightNumbers", flightNumbers);
+                    method.put("methodName", "bundle");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
                 break;
             }
             case Quit:
                 checkArgumentsCount(1, arguments.size());
-
                 System.out.println("Quitting client");
                 System.exit(0);
+    }
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            System.out.println(in.readLine());
+        }
+        catch (Exception e ){
+            e.printStackTrace();
         }
     }
 
