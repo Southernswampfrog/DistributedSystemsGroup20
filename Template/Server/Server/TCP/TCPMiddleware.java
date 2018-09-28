@@ -6,22 +6,16 @@ import Server.Interface.IResourceManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.net.*;
 
 public class TCPMiddleware extends Middleware {
 
 
     public static void main(String args[]) {
-        // Create the TCP server entry
-      /*  if (args.length < 1) {
-            System.out.println("Usage: java TCPMiddleware middleware server1, server 2, server3");
-            System.exit(1);
-        }*/
-      Middleware middleware = new Middleware("middleware");
+
+        Middleware middleware = new Middleware("middleware");
         try {
             Socket flights = new Socket(args[0], 6111);
             System.out.println("Connected to flights");
@@ -30,13 +24,58 @@ public class TCPMiddleware extends Middleware {
             Socket rooms = new Socket(args[2], 6111);
             System.out.println("Connected to rooms");
             ServerSocket server = new ServerSocket(6111);
+
+
             while (true) {
                 try {
                     // Accept incoming connections.
                     Socket clientSocket = server.accept();
                     System.out.println("connected to " + clientSocket.getInetAddress());
+                    Thread t = new ClientThread(clientSocket, flights, cars, rooms);
+                    t.start();
+                } catch (Exception e) {
+                    System.err.println((char) 27 + "[31;1mServer exception: " + (char) 27 + "[0mUncaught exception");
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public TCPMiddleware(String name, IResourceManager rm1, IResourceManager rm2, IResourceManager rm3)
+        {
+            super(name);
+        }
+    }
+
+    class ClientThread extends Thread {
+
+
+        final Socket clientSocket;
+        final Socket flights;
+        final Socket cars;
+        final Socket rooms;
+        final Middleware middleware;
+
+        // Constructor
+        public ClientThread(Socket s, Socket flights, Socket cars, Socket rooms) {
+            this.clientSocket = s;
+            this.flights = flights;
+            this.cars = cars;
+            this.rooms = rooms;
+            this.middleware = new Middleware("tcp_middleware");
+        }
+
+        public void run() {
+            while(true) {
+                try {
                     BufferedReader bis = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     String js = bis.readLine();
+                    System.out.println(js);
                     OutputStream os;
                     JSONObject jsob = new JSONObject(js);
                     String method = (jsob.getString("methodName"));
@@ -73,11 +112,10 @@ public class TCPMiddleware extends Middleware {
                         pw = new PrintWriter(os);
                         pw.println(js);
                         pw.flush();
-                    } else if (method.equals("bundle")){
+                    } else if (method.equals("bundle")) {
                         JSONArray flightnumbers = jsob.getJSONArray("flightnumbers");
-                        for (int i = 0; i < flightnumbers.length(); i++){
-                            Socket bundledFlights = new Socket(args[0], 6111);
-                            OutputStream outputStream = bundledFlights.getOutputStream();
+                        for (int i = 0; i < flightnumbers.length(); i++) {
+                            OutputStream outputStream = flights.getOutputStream();
                             JSONObject flightJson = new JSONObject();
                             flightJson.put("xid", jsob.getInt("xid"));
                             flightJson.put("customerId", jsob.getInt("customerId"));
@@ -86,7 +124,7 @@ public class TCPMiddleware extends Middleware {
                             outputStream.flush();
                             outputStream.close();
                         }
-                        if(jsob.getBoolean("car")){
+                        if (jsob.getBoolean("car")) {
                             os = cars.getOutputStream();
                             JSONObject roomObject = new JSONObject();
                             roomObject.put("xid", jsob.getInt("xid"));
@@ -102,7 +140,7 @@ public class TCPMiddleware extends Middleware {
                             os.flush();
                             os.close();
                         }
-                        if(jsob.getBoolean("room")){
+                        if (jsob.getBoolean("room")) {
                             os = rooms.getOutputStream();
                             JSONObject roomObject = new JSONObject();
                             roomObject.put("xid", jsob.getInt("xid"));
@@ -119,8 +157,7 @@ public class TCPMiddleware extends Middleware {
                             os.close();
                         }
 
-                    }
-                    else if (method.contains("Customer")) {
+                    } else if (method.contains("Customer")) {
                         switch (method) {
                             case "AddCustomers":
                                 int newId = middleware.newCustomer(jsob.getInt("xid"));
@@ -158,25 +195,7 @@ public class TCPMiddleware extends Middleware {
                     ioe.printStackTrace();
                 }
             }
-        } catch (
-                Exception e)
-
-        {
-            System.err.println((char) 27 + "[31;1mServer exception: " + (char) 27 + "[0mUncaught exception");
-            e.printStackTrace();
-            System.exit(1);
         }
-
-        // Create and install a security manager
-        if (System.getSecurityManager() == null)
-
-        {
-            System.setSecurityManager(new SecurityManager());
-        }
-
     }
 
-    public TCPMiddleware(String name, IResourceManager rm1, IResourceManager rm2, IResourceManager rm3) {
-        super(name);
-    }
-}
+
