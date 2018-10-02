@@ -85,7 +85,20 @@ public class TCPMiddleware extends Middleware {
                     OutputStream os;
                     JSONObject jsob = new JSONObject(js);
                     String method = (jsob.getString("methodName"));
-                    if (method.contains("Flight")) {
+                    if (method.contains("Reserve")) {
+                        os = flights.getOutputStream();
+                        PrintWriter pw = new PrintWriter(os);
+                        pw.println(js);
+                        pw.flush();
+                        bis = new BufferedReader(new InputStreamReader(flights.getInputStream()));
+                        js = bis.readLine();
+                        os = clientSocket.getOutputStream();
+                        pw = new PrintWriter(os);
+                        pw.println(js);
+                        pw.flush();
+                    }
+
+                    else if (method.contains("Flight")) {
                         os = flights.getOutputStream();
                         PrintWriter pw = new PrintWriter(os);
                         pw.println(js);
@@ -121,78 +134,85 @@ public class TCPMiddleware extends Middleware {
                     } else if (method.equals("bundle")) {
                         JSONArray flightnumbers = jsob.getJSONArray("flightnumbers");
                         for (int i = 0; i < flightnumbers.length(); i++) {
-                            OutputStream outputStream = flights.getOutputStream();
+                            os = flights.getOutputStream();
                             JSONObject flightJson = new JSONObject();
-                            flightJson.put("xid", jsob.getInt("xid"));
+                            flightJson.put("id", jsob.getInt("id"));
                             flightJson.put("customerId", jsob.getInt("customerId"));
                             flightJson.put("flightNumber", jsob.getInt(Integer.toString(i)));
-                            outputStream.write(method.getBytes());
-                            outputStream.flush();
-                            outputStream.close();
+                            PrintWriter pw = new PrintWriter(os);
+                            pw.println(js);
+                            pw.flush();
                         }
                         if (jsob.getBoolean("car")) {
                             os = cars.getOutputStream();
                             JSONObject roomObject = new JSONObject();
-                            roomObject.put("xid", jsob.getInt("xid"));
+                            PrintWriter pw = new PrintWriter(os);
+                            roomObject.put("id", jsob.getInt("id"));
                             roomObject.put("customerId", jsob.getInt("customerId"));
                             roomObject.put("location", jsob.getString("location"));
-                            os.write(roomObject.toString().getBytes());
-                            os.flush();
-                            os.close();
+                            pw.print(roomObject);
+                            pw.flush();
                             bis = new BufferedReader(new InputStreamReader(cars.getInputStream()));
                             js = bis.readLine();
                             os = clientSocket.getOutputStream();
-                            os.write(js.getBytes());
-                            os.flush();
-                            os.close();
+                            pw = new PrintWriter(os);
+                            pw.println(js);
+                            pw.flush();
                         }
                         if (jsob.getBoolean("room")) {
                             os = rooms.getOutputStream();
                             JSONObject roomObject = new JSONObject();
-                            roomObject.put("xid", jsob.getInt("xid"));
+                            PrintWriter pw = new PrintWriter(os);
+                            roomObject.put("id", jsob.getInt("id"));
                             roomObject.put("customerId", jsob.getInt("customerId"));
                             roomObject.put("location", jsob.getString("location"));
-                            os.write(roomObject.toString().getBytes());
-                            os.flush();
-                            os.close();
+                            pw.println(roomObject);
+                            pw.flush();
                             bis = new BufferedReader(new InputStreamReader(rooms.getInputStream()));
                             js = bis.readLine();
                             os = clientSocket.getOutputStream();
-                            os.write(js.getBytes());
-                            os.flush();
-                            os.close();
+                            pw = new PrintWriter(os);
+                            pw.println(js);
+                            pw.flush();
                         }
 
                     } else if (method.contains("Customer")) {
                         switch (method) {
-                            case "AddCustomers":
-                                int newId = middleware.newCustomer(jsob.getInt("xid"));
+                            case "AddCustomer":
+                                int newId = middleware.newCustomer(jsob.getInt("id"));
                                 os = clientSocket.getOutputStream();
-                                os.write(("Added customer with ID " + newId + ".").getBytes());
-                                os.flush();
-                                os.close();
+                                PrintWriter pw = new PrintWriter(os);
+                                pw.println("Added customer with ID " + newId + ".");
+                                pw.flush();
                                 break;
+                            case "QueryCustomer":
+                            String customerInfo = middleware.queryCustomerInfo(jsob.getInt("id"), jsob.getInt("customerID"));
+                            os = clientSocket.getOutputStream();
+                            pw = new PrintWriter(os);
+                            pw.println(customerInfo);
+                            pw.flush();
+                            break;
                             case "AddCustomerID":
-                                boolean succesfullyCreated = middleware.newCustomer(jsob.getInt("xid"), jsob.getInt("customerID"));
+                                boolean successfullyCreated = middleware.newCustomer(jsob.getInt("id"), jsob.getInt("customerID"));
                                 os = clientSocket.getOutputStream();
-                                if (succesfullyCreated) {
-                                    os.write(("Added customer with ID " + jsob.getInt("customerID") + ".").getBytes());
+                                pw = new PrintWriter(os);
+                                if (successfullyCreated) {
+                                    pw.println("Added customer with ID " + jsob.getInt("customerID") + ".");
                                 } else {
-                                    os.write(("Customer with ID " + jsob.getInt("customerID") + " already exists.").getBytes());
+                                    pw.println("Customer with ID " + jsob.getInt("customerID") + " already exists.");
                                 }
-                                os.flush();
-                                os.close();
+                                pw.flush();
                                 break;
                             case "DeleteCustomer":
-                                boolean succesfullyDeleted = middleware.newCustomer(jsob.getInt("xid"), jsob.getInt("customerID"));
+                                boolean successfullyDeleted = middleware.newCustomer(jsob.getInt("id"), jsob.getInt("customerID"));
                                 os = clientSocket.getOutputStream();
-                                if (succesfullyDeleted) {
-                                    os.write(("Deleted customer with ID " + jsob.getInt("customerID") + ".").getBytes());
+                                pw = new PrintWriter(os);
+                                if (successfullyDeleted) {
+                                    pw.println("Deleted customer with ID " + jsob.getInt("customerID") + ".");
                                 } else {
-                                    os.write(("Customer with ID " + jsob.getInt("customerID") + " does not exist.").getBytes());
+                                    pw.println("Customer with ID " + jsob.getInt("customerID") + " does not exist.");
                                 }
-                                os.flush();
-                                os.close();
+                                pw.flush();
                                 break;
                         }
                     }

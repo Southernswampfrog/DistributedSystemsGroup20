@@ -153,7 +153,7 @@ public class TCPClient {
             case AddFlight: {
                 checkArgumentsCount(5, arguments.size());
 
-                System.out.println("Adding a new flight [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Adding a new flight [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Flight Number: " + arguments.elementAt(2));
                 System.out.println("-Flight Seats: " + arguments.elementAt(3));
                 System.out.println("-Flight Price: " + arguments.elementAt(4));
@@ -181,7 +181,7 @@ public class TCPClient {
             case AddCars: {
                 checkArgumentsCount(5, arguments.size());
 
-                System.out.println("Adding new cars [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Adding new cars [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Car Location: " + arguments.elementAt(2));
                 System.out.println("-Number of Cars: " + arguments.elementAt(3));
                 System.out.println("-Car Price: " + arguments.elementAt(4));
@@ -209,7 +209,7 @@ public class TCPClient {
             case AddRooms: {
                 checkArgumentsCount(5, arguments.size());
 
-                System.out.println("Adding new rooms [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Adding new rooms [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Room Location: " + arguments.elementAt(2));
                 System.out.println("-Number of Rooms: " + arguments.elementAt(3));
                 System.out.println("-Room Price: " + arguments.elementAt(4));
@@ -239,7 +239,7 @@ public class TCPClient {
             case AddCustomer: {
                 checkArgumentsCount(2, arguments.size());
 
-                System.out.println("Adding a new customer [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Adding a new customer [id=" + arguments.elementAt(1) + "]");
 
                 int id = toInt(arguments.elementAt(1));
                 try {
@@ -258,7 +258,7 @@ public class TCPClient {
             case AddCustomerID: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Adding a new customer [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Adding a new customer [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -283,7 +283,7 @@ public class TCPClient {
             case DeleteFlight: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Deleting a flight [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Deleting a flight [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Flight Number: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -306,7 +306,7 @@ public class TCPClient {
             case DeleteCars: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Deleting all cars at a particular location [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Deleting all cars at a particular location [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Car Location: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -328,7 +328,7 @@ public class TCPClient {
             case DeleteRooms: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Deleting all rooms at a particular location [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Deleting all rooms at a particular location [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Car Location: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -349,7 +349,7 @@ public class TCPClient {
             case DeleteCustomer: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Deleting a customer from the database [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Deleting a customer from the database [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -370,7 +370,7 @@ public class TCPClient {
             case QueryFlight: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Querying a flight [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Querying a flight [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Flight Number: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -391,7 +391,7 @@ public class TCPClient {
             case QueryCars: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Querying cars location [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Querying cars location [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Car Location: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -412,7 +412,7 @@ public class TCPClient {
             case QueryRooms: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Querying rooms location [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Querying rooms location [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Room Location: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -434,14 +434,14 @@ public class TCPClient {
             case QueryCustomer: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Querying customer information [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Querying customer information [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
                 int customerID = toInt(arguments.elementAt(2));
                 try {
                     method.put("id", id);
-                    method.put("QueryCustomer", customerID);
+                    method.put("customerID", customerID);
                     method.put("methodName", "QueryCustomer");
                     pw.println(method);
                     pw.flush();
@@ -455,7 +455,7 @@ public class TCPClient {
             case QueryFlightPrice: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Querying a flight price [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Querying a flight price [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Flight Number: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -463,7 +463,7 @@ public class TCPClient {
                 try {
                     method.put("id", id);
                     method.put("flightNum", flightNum);
-                    method.put("methodName", "flightNum");
+                    method.put("methodName", "QueryFlightPrice");
                     pw.println(method);
                     pw.flush();
                 }
@@ -476,7 +476,7 @@ public class TCPClient {
             case QueryCarsPrice: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Querying cars price [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Querying cars price [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Car Location: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -497,7 +497,7 @@ public class TCPClient {
             case QueryRoomsPrice: {
                 checkArgumentsCount(3, arguments.size());
 
-                System.out.println("Querying rooms price [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Querying rooms price [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Room Location: " + arguments.elementAt(2));
 
                 int id = toInt(arguments.elementAt(1));
@@ -519,7 +519,7 @@ public class TCPClient {
             case ReserveFlight: {
                 checkArgumentsCount(4, arguments.size());
 
-                System.out.println("Reserving seat in a flight [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Reserving seat in a flight [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
                 System.out.println("-Flight Number: " + arguments.elementAt(3));
 
@@ -544,7 +544,7 @@ public class TCPClient {
             case ReserveCar: {
                 checkArgumentsCount(4, arguments.size());
 
-                System.out.println("Reserving a car at a location [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Reserving a car at a location [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
                 System.out.println("-Car Location: " + arguments.elementAt(3));
 
@@ -569,7 +569,7 @@ public class TCPClient {
             case ReserveRoom: {
                 checkArgumentsCount(4, arguments.size());
 
-                System.out.println("Reserving a room at a location [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Reserving a room at a location [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
                 System.out.println("-Room Location: " + arguments.elementAt(3));
 
@@ -597,7 +597,7 @@ public class TCPClient {
                     break;
                 }
 
-                System.out.println("Reserving an bundle [xid=" + arguments.elementAt(1) + "]");
+                System.out.println("Reserving an bundle [id=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
                 for (int i = 0; i < arguments.size() - 6; ++i)
                 {

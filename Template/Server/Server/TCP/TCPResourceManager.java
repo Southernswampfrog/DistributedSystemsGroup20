@@ -8,7 +8,7 @@ import java.net.*;
 import java.io.*;
 import java.util.Vector;
 
-public class TCPResourceManager extends ResourceManager implements Serializable{
+public class TCPResourceManager extends ResourceManager{
     private static String s_serverName = "Server";
     private static int s_portNumber;
 
@@ -35,6 +35,7 @@ public class TCPResourceManager extends ResourceManager implements Serializable{
                 }
                 catch (Exception e) {
                     clientSocket.close();
+                    System.out.println("Connection Error");
                 }
             }
         }
@@ -67,103 +68,187 @@ class MiddlewareThread extends Thread{
                     BufferedReader bis = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     String js = bis.readLine();
                     JSONObject jsob = new JSONObject(js);
-                    if (js == null) {
-                        clientSocket.close();
-                        break;
-                    }
                     OutputStream os  = clientSocket.getOutputStream();
                     PrintWriter pw = new PrintWriter(os);
                     String s, switchCase = jsob.getString("methodName");
                     switch (switchCase) {
                         case "AddFlight":
-                            rm.addFlight(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
-                            pw.println("Flight Added");
+                            boolean success = rm.addFlight(jsob.getInt("id"),jsob.getInt("flightNum"),jsob.getInt("flightSeats"), jsob.getInt("flightPrice"));
+                            if (success) {
+                                pw.println("Flight Added");
+                            }
+                            else {
+                                pw.println("Flight already exists");
+                            }
+                            pw.flush();
+
                             break;
                         case "AddCars":
-                            rm.addCars(jsob.getInt("id"),jsob.getString("location"),jsob.getInt("numberOfCars"), jsob.getInt("price"));
-                            pw.println("Car Added");
+                            success = rm.addCars(jsob.getInt("id"),jsob.getString("location"),jsob.getInt("numCars"), jsob.getInt("price"));
+                            if (success) {
+                                pw.println("Car Added");
+                            }
+                            else {
+                                pw.println("Car already exists");
+                            }
+                            pw.flush();
                             break;
                         case "AddRooms":
-                            rm.addRooms(jsob.getInt("id"),jsob.getString("location"),jsob.getInt("numRooms"), jsob.getInt("price"));
+                            success = rm.addRooms(jsob.getInt("id"),jsob.getString("location"),jsob.getInt("numRooms"), jsob.getInt("price"));
                             pw.println("Room Added");
+                            if (success) {
+                                pw.println("Room Added");
+                            }
+                            else {
+                                pw.println("Room already exists");
+                            }
+                            pw.flush();
+
                             break;
-                        case "AddCustomers":
-                            rm.newCustomer(jsob.getInt("id"));
-                            pw.println("Customer Added");
+                        case "AddCustomer":
+                            int custID = rm.newCustomer(jsob.getInt("id"));
+                            pw.println("Customer Added with id " + custID);
+                            pw.flush();
+
                             break;
                         case "AddCustomerID":
-                            rm.newCustomer(jsob.getInt("id"),jsob.getInt("customerID"));
-                            pw.println("Customer ID Added");
+                            success = rm.newCustomer(jsob.getInt("id"),jsob.getInt("customerID"));
+                            if (success) {
+                                pw.println("Customer Added");
+                            }
+                            else {
+                                pw.println("Customer already exists");
+                            }
+                            pw.flush();
+
                             break;
                         case "DeleteFlight":
-                            rm.deleteFlight(jsob.getInt("id"),jsob.getInt("flightNum"));
-                            pw.println("Flight Deleted");
+                            success = rm.deleteFlight(jsob.getInt("id"),jsob.getInt("flightNum"));
+                            if (success) {
+                                pw.println("Flight Deleted");
+                            }
+                            else {
+                                pw.println("No Flight exists");
+                            }
+                            pw.flush();
+
                             break;
                         case "DeleteCars":
-                            rm.deleteCars(jsob.getInt("id"),jsob.getString("location"));
-                            pw.println("Car Deleted");
+                            success = rm.deleteCars(jsob.getInt("id"),jsob.getString("location"));
+                            if (success) {
+                                pw.println("Car Deleted");
+                            }
+                            else {
+                                pw.println("Car does not exist");
+                            }
+                            pw.flush();
+
                             break;
                         case "DeleteRooms":
-                            rm.deleteRooms(jsob.getInt("id"),jsob.getString("location"));
-                            pw.println("Room Deleted");
+                            success = rm.deleteRooms(jsob.getInt("id"),jsob.getString("location"));
+                            if (success) {
+                                pw.println("Room Deleted");
+                            }
+                            else {
+                                pw.println("Room does not exist");
+                            }
+                            pw.flush();
+
                             break;
                         case "DeleteCustomer":
-                            rm.deleteCustomer(jsob.getInt("id"),jsob.getInt("customerID"));
-                            pw.println("Customer Deleted");
+                            success = rm.deleteCustomer(jsob.getInt("id"),jsob.getInt("customerID"));
+
+                            if (success) {
+                                pw.println("Customer Deleted");
+                            }
+                            else {
+                                pw.println("Customer does not exist");
+                            }
+                            pw.flush();
                             break;
                         case "QueryFlight":
                             int availSeats = rm.queryFlight(jsob.getInt("id"),jsob.getInt("flightNum"));
-                            s = "There are " + availSeats + "empty seats available on this Flight";
+                            s = "There are " + availSeats + "empty seats available on this flight";
                             pw.println(s);
+                            pw.flush();
                             break;
                         case "QueryCars":
                             int availCars = rm.queryCars(jsob.getInt("id"),jsob.getString("location"));
-                            s = "There are " + availCars + "empty seats available on this Flight";
+                            s = "There are " + availCars + "available cars.";
                             pw.println(s);
+                            pw.flush();
                             break;
                         case "QueryRooms":
                             int availRooms = rm.queryRooms(jsob.getInt("id"),jsob.getString("location"));
-                            s = "There are " + availRooms + "empty seats available on this Flight";
+                            s = "There are " + availRooms + "available rooms.";
                             pw.println(s);
+                            pw.flush();
                             break;
                         case "QueryCustomer":
                             s = rm.queryCustomerInfo(jsob.getInt("id"),jsob.getInt("customerID"));
                             pw.println(s);
+                            pw.flush();
                             break;
                         case "QueryFlightPrice":
-                            int flightPrice = rm.queryFlightPrice(jsob.getInt("id"),jsob.getInt("flightNumber"));
+                            int flightPrice = rm.queryFlightPrice(jsob.getInt("id"),jsob.getInt("flightNum"));
                             s = "Price of flight is" + flightPrice;
                             pw.println(s);
+                            pw.flush();
                             break;
                         case "QueryCarsPrice":
                             int carPrice = rm.queryCarsPrice(jsob.getInt("id"),jsob.getString("location"));
                             s = "Price of car is" + carPrice;
                             pw.println(s);
+                            pw.flush();
+
                             break;
                         case "QueryRoomsPrice":
                             int roomPrice = rm.queryRoomsPrice(jsob.getInt("id"),jsob.getString("location"));
                             s = "Price of room is" + roomPrice;
                             pw.println(s);
+                            pw.flush();
+
                             break;
                         case "ReserveFlight":
-                            rm.reserveFlight(jsob.getInt("id"),jsob.getInt("customerID"),jsob.getInt("flightNumber"));
-                            pw.println("Flight Reserved");
+                            success = rm.reserveFlight(jsob.getInt("id"),jsob.getInt("customerID"),jsob.getInt("flightNum"));
+                            if (success) {
+                                pw.println("Flight Reserved");
+                            }
+                            else {
+                                pw.println("Flight cannot be reserved");
+                            }
+                            pw.flush();
+
                             break;
                         case "ReserveRoom":
-                            rm.reserveRoom(jsob.getInt("id"),jsob.getInt("customerID"),jsob.getString("location"));
-                            pw.println("Room Reserved");
+                            success = rm.reserveRoom(jsob.getInt("id"),jsob.getInt("customerID"),jsob.getString("location"));
+                            if (success) {
+                                pw.println("Room Reserved");
+                            }
+                            else {
+                                pw.println("Room cannot be reserved");
+                            }
+                            pw.flush();
+
                             break;
                         case "ReserveCar":
-                            rm.reserveCar(jsob.getInt("id"),jsob.getInt("customerID"),jsob.getString("location"));
-                            pw.println("Car Reservered");
+                            success = rm.reserveCar(jsob.getInt("id"),jsob.getInt("customerID"),jsob.getString("location"));
+                            if (success) {
+                                pw.println("Car Reserved");
+                            }
+                            else {
+                                pw.println("Car cannot be reserved");
+                            }
+                            pw.flush();
+
                             break;
                         case "bundle":
                             rm.bundle(jsob.getInt("id"),jsob.getInt("customerID"),(Vector<String>)jsob.get("flightNumbers"),jsob.getString("location"),jsob.getBoolean("car"),jsob.getBoolean("room"));
                             pw.println("Bundle Reserved");
+                            pw.flush();
+
                             break;
                     }
-                    pw.flush();
-
 
                 } catch (Exception ioe) {
                     System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
