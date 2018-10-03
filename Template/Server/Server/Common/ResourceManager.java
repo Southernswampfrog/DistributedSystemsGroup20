@@ -49,6 +49,10 @@ public class ResourceManager implements IResourceManager
 		}
 	}
 
+	public RMHashMap getData() {
+		return (RMHashMap) m_data.clone();
+	}
+
 	// Deletes the encar item
 	protected boolean deleteItem(int xid, String key)
 	{
