@@ -632,6 +632,61 @@ public class TCPClient {
                 }
                 break;
             }
+            case Analytics: {
+                try {
+                    method.put("methodName", "Analytics");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+                break;
+            }
+            case AnalyticsFlight: {
+                try {
+                    method.put("methodName", "AnalyticsFlight");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+                break;
+            }
+            case AnalyticsCar: {
+                try {
+                    method.put("methodName", "AnalyticsCar");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+                break;
+            }
+            case AnalyticsRoom: {
+                try {
+                    method.put("methodName", "AnalyticsRoom");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+                break;
+            }
+            case AnalyticsCustomer: {
+                try {
+                    method.put("methodName", "AnalyticsCustomer");
+                    pw.println(method);
+                    pw.flush();
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+                break;
+            }
             case Quit:
                 checkArgumentsCount(1, arguments.size());
                 System.out.println("Quitting client");

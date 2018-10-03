@@ -242,6 +242,14 @@ class MiddlewareThread extends Thread{
                             pw.flush();
 
                             break;
+                        case "AnalyticsFlight":
+                            break;
+                        case "AnalyticsCar":
+                            break;
+                        case "AnalyticsRoom":
+                            break;
+                        case "AnalyticsCustomer":
+                            break;
                         case "bundle":
                             rm.bundle(jsob.getInt("id"),jsob.getInt("customerID"),(Vector<String>)jsob.get("flightNumbers"),jsob.getString("location"),jsob.getBoolean("car"),jsob.getBoolean("room"));
                             pw.println("Bundle Reserved");
