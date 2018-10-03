@@ -17,13 +17,14 @@ public class TCPMiddleware extends Middleware {
 
         Middleware middleware = new Middleware("middleware");
         try {
-            Socket flights = new Socket(args[0], 6111);
+            Socket flights = new Socket(args[0], Integer.parseInt(args[1]));
             System.out.println("Connected to flights");
-            Socket cars = new Socket(args[1], 6111);
+            Socket cars = new Socket(args[2], Integer.parseInt(args[3]));
             System.out.println("Connected to cars");
-            Socket rooms = new Socket(args[2], 6111);
+            Socket rooms = new Socket(args[4], Integer.parseInt(args[5]));
             System.out.println("Connected to rooms");
-            ServerSocket server = new ServerSocket(6111);
+            ServerSocket server = new ServerSocket(7777);
+            System.out.println("Server started at port 7777");
 
 
             while (true) {
@@ -85,20 +86,97 @@ public class TCPMiddleware extends Middleware {
                     OutputStream os;
                     JSONObject jsob = new JSONObject(js);
                     String method = (jsob.getString("methodName"));
-                    if (method.contains("Reserve")) {
-                        os = flights.getOutputStream();
-                        PrintWriter pw = new PrintWriter(os);
-                        pw.println(js);
-                        pw.flush();
-                        bis = new BufferedReader(new InputStreamReader(flights.getInputStream()));
-                        js = bis.readLine();
-                        os = clientSocket.getOutputStream();
-                        pw = new PrintWriter(os);
-                        pw.println(js);
-                        pw.flush();
-                    }
+                    if (method.contains("Customer")) {
+                        if (method.equals("AddCustomer")){
+                            int id = (jsob.getInt("id"));
+                            OutputStream os1 = flights.getOutputStream();
+                            OutputStream os2 = cars.getOutputStream();
+                            OutputStream os3 = rooms.getOutputStream();
+                            PrintWriter pw1 = new PrintWriter(os1);
+                            PrintWriter pw2 = new PrintWriter(os2);
+                            PrintWriter pw3 = new PrintWriter(os3);
+                            pw1.println(jsob);
+                            pw1.flush();
+                            bis = new BufferedReader(new InputStreamReader(flights.getInputStream()));
+                            js = bis.readLine();
+                            JSONObject custid = new JSONObject();
+                            try {
+                                custid.put("id", id);
+                                custid.put("customerID", Integer.parseInt(js));
+                                custid.put("methodName", "AddCustomerID");
+                                pw2.println(custid);
+                                pw2.flush();
+                                bis = new BufferedReader(new InputStreamReader(cars.getInputStream()));
+                                System.out.println(bis.readLine());
+                                pw3.println(custid);
+                                pw3.flush();
+                                bis = new BufferedReader(new InputStreamReader(rooms.getInputStream()));
+                                System.out.println(bis.readLine());
+                            }
+                            catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            os = clientSocket.getOutputStream();
+                            PrintWriter pw = new PrintWriter(os);
+                            pw.println("New Customer added with id " + js);
+                            pw.flush();
+                        }
+                        else if (method.equals("QueryCustomer")) {
+                            String output = "";
+                            int line;
+                            OutputStream os1 = flights.getOutputStream();
+                            OutputStream os2 = cars.getOutputStream();
+                            OutputStream os3 = rooms.getOutputStream();
+                            PrintWriter pw1 = new PrintWriter(os1);
+                            PrintWriter pw2 = new PrintWriter(os2);
+                            PrintWriter pw3 = new PrintWriter(os3);
+                            pw1.println(jsob);
+                            pw2.println(jsob);
+                            pw3.println(jsob);
+                            pw1.flush();
+                            pw2.flush();
+                            pw3.flush();
+                            os = clientSocket.getOutputStream();
+                            pw1 = new PrintWriter(os);
+                            bis = new BufferedReader(new InputStreamReader(cars.getInputStream()));
+                            output = output + bis.readLine();
+                            output = output + ", ";
+                            bis = new BufferedReader(new InputStreamReader(rooms.getInputStream()));
+                            output = output + bis.readLine();
+                            output = output + ", ";
+                            bis = new BufferedReader(new InputStreamReader(flights.getInputStream()));
+                            output = output + bis.readLine();
+                            output = output.replace("Bill for customer " + jsob.getInt("id"), "");
+                            pw1.println(output);
+                            pw1.flush();
+                        } else {
+                        OutputStream os1 = flights.getOutputStream();
+                        OutputStream os2 = cars.getOutputStream();
+                        OutputStream os3 = rooms.getOutputStream();
+                        PrintWriter pw1 = new PrintWriter(os1);
+                        PrintWriter pw2 = new PrintWriter(os2);
+                        PrintWriter pw3 = new PrintWriter(os3);
+                        pw1.println(jsob);
+                        pw2.println(jsob);
+                        pw3.println(jsob);
+                        pw1.flush();
+                        pw2.flush();
+                        pw3.flush();
+                        bis = new BufferedReader(new InputStreamReader(cars.getInputStream()));
+                        BufferedReader bis1 = new BufferedReader(new InputStreamReader(rooms.getInputStream()));
+                        BufferedReader bis2 = new BufferedReader(new InputStreamReader(flights.getInputStream()));
+                        js = bis1.readLine();
+                        js = bis2.readLine();
 
-                    else if (method.contains("Flight")) {
+                            //Do we need to check if customer was able to be added to all different RMs?
+                        js = bis.readLine();
+
+                        os = clientSocket.getOutputStream();
+                        pw1 = new PrintWriter(os);
+                        pw1.println(js);
+                        pw1.flush();
+                        }
+                    } else if (method.contains("Flight")) {
                         os = flights.getOutputStream();
                         PrintWriter pw = new PrintWriter(os);
                         pw.println(js);
@@ -175,46 +253,6 @@ public class TCPMiddleware extends Middleware {
                             pw.println(js);
                             pw.flush();
                         }
-
-                    } else if (method.contains("Customer")) {
-                        switch (method) {
-                            case "AddCustomer":
-                                int newId = middleware.newCustomer(jsob.getInt("id"));
-                                os = clientSocket.getOutputStream();
-                                PrintWriter pw = new PrintWriter(os);
-                                pw.println("Added customer with ID " + newId + ".");
-                                pw.flush();
-                                break;
-                            case "QueryCustomer":
-                            String customerInfo = middleware.queryCustomerInfo(jsob.getInt("id"), jsob.getInt("customerID"));
-                            os = clientSocket.getOutputStream();
-                            pw = new PrintWriter(os);
-                            pw.println(customerInfo);
-                            pw.flush();
-                            break;
-                            case "AddCustomerID":
-                                boolean successfullyCreated = middleware.newCustomer(jsob.getInt("id"), jsob.getInt("customerID"));
-                                os = clientSocket.getOutputStream();
-                                pw = new PrintWriter(os);
-                                if (successfullyCreated) {
-                                    pw.println("Added customer with ID " + jsob.getInt("customerID") + ".");
-                                } else {
-                                    pw.println("Customer with ID " + jsob.getInt("customerID") + " already exists.");
-                                }
-                                pw.flush();
-                                break;
-                            case "DeleteCustomer":
-                                boolean successfullyDeleted = middleware.newCustomer(jsob.getInt("id"), jsob.getInt("customerID"));
-                                os = clientSocket.getOutputStream();
-                                pw = new PrintWriter(os);
-                                if (successfullyDeleted) {
-                                    pw.println("Deleted customer with ID " + jsob.getInt("customerID") + ".");
-                                } else {
-                                    pw.println("Customer with ID " + jsob.getInt("customerID") + " does not exist.");
-                                }
-                                pw.flush();
-                                break;
-                        }
                     }
                 } catch (Exception ioe) {
                     System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
@@ -226,7 +264,6 @@ public class TCPMiddleware extends Middleware {
                     }
                     break;
                 }
-
             }
         }
     }

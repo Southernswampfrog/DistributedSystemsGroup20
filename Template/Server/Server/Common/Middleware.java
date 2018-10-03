@@ -8,6 +8,7 @@ package Server.Common;
 import Server.Interface.IResourceManager;
 
 import java.rmi.RemoteException;
+import java.util.Calendar;
 import java.util.Vector;
 
 public class Middleware extends ResourceManager implements IResourceManager
@@ -116,6 +117,44 @@ public class Middleware extends ResourceManager implements IResourceManager
 		return m_RMs[2].reserveRoom(xid, customerID, location);
 	}
 
+	public String queryCustomerInfo(int xid, int customerID) throws RemoteException
+	{
+		String x;
+		for(int i = 0; i < 3; i++) {
+			x = x + m_RMs[i].queryCustomerInfo(xid,customerID);
+		}
+		x = x.replace("Bill For Customer " + customerID, " ");
+		return x;
+	}
+
+	public int newCustomer(int xid) throws RemoteException
+	{
+		int x;
+		x = m_RMs[0].newCustomer(xid);
+		m_RMs[1].newCustomer(xid,x);
+		m_RMs[2].newCustomer(xid,x);
+		return x;
+	}
+
+	public boolean newCustomer(int xid, int customerID) throws RemoteException
+	{
+		boolean x;
+		for(int i = 0; i < 3; i++) {
+			x = m_RMs[i].newCustomer(xid,customerID);
+		}
+		return x;
+	}
+
+	public boolean deleteCustomer(int xid, int customerID) throws RemoteException
+	{
+		boolean x;
+		for(int i = 0; i < 3; i++) {
+			x = m_RMs[i].deleteCustomer(xid,customerID);
+		}
+		return x;
+	}
+
+	// Adds flight reservation to this customer
 	// Reserve bundle 
 	public boolean bundle(int xid, int customerId, Vector<String> flightNumbers, String location, boolean car, boolean room) throws RemoteException
 	{

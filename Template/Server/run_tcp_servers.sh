@@ -8,11 +8,11 @@ tmux new-session \; \
 	split-window -v \; \
 	split-window -v \; \
 	select-layout main-vertical \; \
-	select-pane -t 2 \; \
-	send-keys "ssh -t 'gclyne@'${MACHINES[0]} \"cd Template/Server > /dev/null; echo -n 'Connected to '; hostname; ./run_tcp_server.sh localhost 6111\"" C-m \; \
-	select-pane -t 3 \; \
-	send-keys "ssh -t 'gclyne@'${MACHINES[1]} \"cd Template/Server > /dev/null; echo -n 'Connected to '; hostname; ./run_tcp_server.sh localhost 6111\"" C-m \; \
 	select-pane -t 1 \; \
-	send-keys "ssh -t 'gclyne@'${MACHINES[2]} \"cd Template/Server > /dev/null; echo -n 'Connected to '; hostname; ./run_tcp_server.sh localhost 6111\"" C-m \; \
+	send-keys "ssh -t 'gclyne@'${MACHINES[0]} \"cd Template/Server > /dev/null; echo -n 'Connected to '; hostname; ./run_tcp_server.sh Flights 6111\"" C-m \; \
+	select-pane -t 2 \; \
+	send-keys "ssh -t 'gclyne@'${MACHINES[1]} \"cd Template/Server > /dev/null; echo -n 'Connected to '; hostname; ./run_tcp_server.sh Cars 6111\"" C-m \; \
+	select-pane -t 3 \; \
+	send-keys "ssh -t 'gclyne@'${MACHINES[2]} \"cd Template/Server > /dev/null; echo -n 'Connected to '; hostname; ./run_tcp_server.sh Rooms 6111\"" C-m \; \
 	select-pane -t 0 \; \
-	send-keys "ssh -t 'gclyne@'${MACHINES[3]} \"cd Template/Server > /dev/null; echo -n 'Connected to '; hostname; sleep 1s; ./run_tcp_middleware.sh ${MACHINES[0]} ${MACHINES[1]} ${MACHINES[2]}\"" C-m \;
+	send-keys "ssh -t 'gclyne@'${MACHINES[3]} \"cd Template/Server > /dev/null; echo -n 'Connected to '; hostname; sleep 1s; ./run_tcp_middleware.sh ${MACHINES[0]} 6111 ${MACHINES[1]} 6111 ${MACHINES[2]} 6111 \"" C-m \;

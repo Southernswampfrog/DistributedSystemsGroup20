@@ -12,6 +12,7 @@ public class TCPResourceManager extends ResourceManager{
     private static String s_serverName = "Server";
     private static int s_portNumber;
 
+
     public static void main(String args[])
     {
         if (args.length > 0)
@@ -19,9 +20,10 @@ public class TCPResourceManager extends ResourceManager{
             s_serverName = args[0];
             s_portNumber = Integer.parseInt(args[1]);
         }
+        ServerSocket server = null;
         try {
             // Create a new Server object
-            ServerSocket server = new ServerSocket(s_portNumber);
+            server = new ServerSocket(s_portNumber);
             System.out.println("'" + s_serverName + "' resource manager server ready and bound to '" + s_portNumber + "'");
             TCPResourceManager rm = new TCPResourceManager(s_serverName);
             // Accept incoming connections.
@@ -36,12 +38,19 @@ public class TCPResourceManager extends ResourceManager{
                 catch (Exception e) {
                     clientSocket.close();
                     System.out.println("Connection Error");
+                    System.exit(-1);
                 }
             }
         }
         catch (Exception e) {
             System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
             e.printStackTrace();
+            try {
+                server.close();
+            }
+            catch (Exception f) {
+                f.printStackTrace();
+            }
             System.exit(1);
 
         }
@@ -66,7 +75,13 @@ class MiddlewareThread extends Thread{
             while(true){
                 try {
                     BufferedReader bis = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
                     String js = bis.readLine();
+               /*     if(js == null) {
+                        clientSocket.close();
+                        System.out.println("Connection closed");
+                        break;
+                    }*/
                     JSONObject jsob = new JSONObject(js);
                     OutputStream os  = clientSocket.getOutputStream();
                     PrintWriter pw = new PrintWriter(os);
@@ -107,9 +122,8 @@ class MiddlewareThread extends Thread{
                             break;
                         case "AddCustomer":
                             int custID = rm.newCustomer(jsob.getInt("id"));
-                            pw.println("Customer Added with id " + custID);
+                            pw.println(custID);
                             pw.flush();
-
                             break;
                         case "AddCustomerID":
                             success = rm.newCustomer(jsob.getInt("id"),jsob.getInt("customerID"));
@@ -117,7 +131,7 @@ class MiddlewareThread extends Thread{
                                 pw.println("Customer Added");
                             }
                             else {
-                                pw.println("Customer already exists");
+                                pw.println(-1);
                             }
                             pw.flush();
 
@@ -186,7 +200,8 @@ class MiddlewareThread extends Thread{
                             break;
                         case "QueryCustomer":
                             s = rm.queryCustomerInfo(jsob.getInt("id"),jsob.getInt("customerID"));
-                            pw.println(s);
+                            pw.print(s);
+                            pw.append((char)-1);
                             pw.flush();
                             break;
                         case "QueryFlightPrice":
@@ -256,4 +271,4 @@ class MiddlewareThread extends Thread{
                 }
             }
         }
-    }
+}
