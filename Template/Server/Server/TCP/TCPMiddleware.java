@@ -178,19 +178,10 @@ public class TCPMiddleware extends Middleware {
                         }
                     } else if (method.contains("Flight")) {
                         os = flights.getOutputStream();
+                        JSONObject flightObject = new JSONObject();
                         PrintWriter pw = new PrintWriter(os);
-                        pw.println(js);
-                        pw.flush();
-                        bis = new BufferedReader(new InputStreamReader(flights.getInputStream()));
-                        js = bis.readLine();
-                        os = clientSocket.getOutputStream();
-                        pw = new PrintWriter(os);
-                        pw.println(js);
-                        pw.flush();
-                    } else if (method.contains("Car")) {
-                        os = cars.getOutputStream();
-                        PrintWriter pw = new PrintWriter(os);
-                        pw.println(js);
+                        flightObject.put("methodName", jsob.getString("AnalyticsFlight"));
+                        pw.print(flightObject);
                         pw.flush();
                         bis = new BufferedReader(new InputStreamReader(cars.getInputStream()));
                         js = bis.readLine();
@@ -198,12 +189,25 @@ public class TCPMiddleware extends Middleware {
                         pw = new PrintWriter(os);
                         pw.println(js);
                         pw.flush();
-                    } else if (method.contains("Room")) {
-                        os = rooms.getOutputStream();
-                        PrintWriter pw = new PrintWriter(os);
+                        os = cars.getOutputStream();
+                        JSONObject carObject = new JSONObject();
+                        pw = new PrintWriter(os);
+                        carObject.put("methodName", jsob.getString("AnalyticsCar"));
+                        pw.print(carObject);
+                        pw.flush();
+                        bis = new BufferedReader(new InputStreamReader(cars.getInputStream()));
+                        js = bis.readLine();
+                        os = clientSocket.getOutputStream();
+                        pw = new PrintWriter(os);
                         pw.println(js);
                         pw.flush();
-                        bis = new BufferedReader(new InputStreamReader(rooms.getInputStream()));
+                        os = rooms.getOutputStream();
+                        JSONObject roomObject = new JSONObject();
+                        pw = new PrintWriter(os);
+                        roomObject.put("methodName", jsob.getString("AnalyticsRoom"));
+                        pw.print(roomObject);
+                        pw.flush();
+                        bis = new BufferedReader(new InputStreamReader(cars.getInputStream()));
                         js = bis.readLine();
                         os = clientSocket.getOutputStream();
                         pw = new PrintWriter(os);
@@ -265,6 +269,21 @@ public class TCPMiddleware extends Middleware {
                     break;
                 }
             }
+        }
+
+        private void redirectTo(String js, Socket socket) throws IOException {
+            OutputStream os;
+            BufferedReader bis;
+            os = socket.getOutputStream();
+            PrintWriter pw = new PrintWriter(os);
+            pw.println(js);
+            pw.flush();
+            bis = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            js = bis.readLine();
+            os = clientSocket.getOutputStream();
+            pw = new PrintWriter(os);
+            pw.println(js);
+            pw.flush();
         }
     }
 
