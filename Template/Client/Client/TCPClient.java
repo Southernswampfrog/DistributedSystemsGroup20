@@ -9,13 +9,13 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 public class TCPClient {
-    private static String s_serverHost = "localhost";
-    private static int s_serverPort;
+    public static String s_serverHost = "localhost";
+    public static int s_serverPort;
     private static String s_serverName = "Server";
     private static String s_rmiPrefix = "group20";
-    private OutputStream outputStream;
-    private Socket client;
-    private PrintWriter pw;
+    public OutputStream outputStream;
+    public static Socket client;
+    public PrintWriter pw;
 
     public static void main(String args[])
     {
@@ -34,11 +34,10 @@ public class TCPClient {
         }
 
 
-        // Get a reference to the RMIRegister
         try {
-            TCPClient client = new TCPClient();
-            client.connectServer();
-            client.start();
+            TCPClient tcpClient = new TCPClient();
+            tcpClient.connectServer();
+            tcpClient.start();
         }
         catch (Exception e) {
             System.err.println((char)27 + "[31;1mClient exception: " + (char)27 + "[0mUncaught exception");
@@ -54,17 +53,17 @@ public class TCPClient {
 
     public void connectServer()
     {
-        connectServer(s_serverHost, s_serverPort, s_serverName);
+        connectServer(s_serverHost, s_serverPort);
     }
 
-    public void connectServer(String server, int port, String name)
+    public void connectServer(String server, int port)
     {
         try {
             boolean first = true;
             while (true) {
                 try {
                     client = new Socket(s_serverHost, s_serverPort);
-                    System.out.println("Connected to '" + name + "' server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
+                    System.out.println("Connected to server [" + server + ":" + port + "/" + s_rmiPrefix + "]");
                     break;
                 }
                 catch (Exception e) {
@@ -175,7 +174,6 @@ public class TCPClient {
                 catch (Exception e) {
                     System.out.println(e);
                 }
-
                 break;
             }
             case AddCars: {

@@ -119,7 +119,7 @@ public class Middleware extends ResourceManager implements IResourceManager
 
 	public String queryCustomerInfo(int xid, int customerID) throws RemoteException
 	{
-		String x;
+		String x = "";
 		for(int i = 0; i < 3; i++) {
 			x = x + m_RMs[i].queryCustomerInfo(xid,customerID);
 		}
@@ -138,7 +138,7 @@ public class Middleware extends ResourceManager implements IResourceManager
 
 	public boolean newCustomer(int xid, int customerID) throws RemoteException
 	{
-		boolean x;
+		boolean x = false;
 		for(int i = 0; i < 3; i++) {
 			x = m_RMs[i].newCustomer(xid,customerID);
 		}
@@ -147,7 +147,7 @@ public class Middleware extends ResourceManager implements IResourceManager
 
 	public boolean deleteCustomer(int xid, int customerID) throws RemoteException
 	{
-		boolean x;
+		boolean x = false;
 		for(int i = 0; i < 3; i++) {
 			x = m_RMs[i].deleteCustomer(xid,customerID);
 		}
