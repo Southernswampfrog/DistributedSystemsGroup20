@@ -244,6 +244,7 @@ class MiddlewareThread extends Thread {
 
                         break;
                     case "AnalyticsFlight":
+                        System.out.println("here");
                         RMHashMap data = rm.getData();
                         Set<String> keys = data.keySet();
                         for (String k : keys) {
@@ -252,21 +253,22 @@ class MiddlewareThread extends Thread {
                                 int count = flightItem.getCount();
                                 int reserved = flightItem.getReserved();
                                 int price = flightItem.getPrice();
-                                pw.println("Reserved seats on flight number " + k + ": " + reserved);
-                                pw.println("Total seats on flight number " + k + ": " + count);
+                                pw.print("Reserved seats on flight number " + k + ": " + reserved);
+                                pw.print("Total seats on flight number " + k + ": " + count);
                                 if (count - reserved < 5) {
-                                    pw.println("ONLY " + (count - reserved) + " SEATS REMAINING ON FLIGHT " + k);
+                                    pw.print("ONLY " + (count - reserved) + " SEATS REMAINING ON FLIGHT " + k);
                                 } else if (count - reserved > count - 5) {
-                                    pw.println("ONLY " + (reserved) + " SEATS HAVE BEEN BOOKED ON FLIGHT " + k);
+                                    pw.print("ONLY " + (reserved) + " SEATS HAVE BEEN BOOKED ON FLIGHT " + k);
                                 }
-                                pw.println("Price for a seat on flight number " + k + ": " + price);
+                                pw.print("Price for a seat on flight number " + k + ": " + price);
                                 if (price < 50) {
-                                    pw.println("SEATS ON FLIGHT " + k + " ARE VERY CHEAP");
+                                    pw.print("SEATS ON FLIGHT " + k + " ARE VERY CHEAP");
                                 } else if (price > 250) {
-                                    pw.println("SEATS ON FLIGHT " + k + " ARE VERY EXPENSIVE");
+                                    pw.print("SEATS ON FLIGHT " + k + " ARE VERY EXPENSIVE");
                                 }
                             }
                         }
+                        pw.println("");
                         pw.flush();
                         break;
                     case "AnalyticsCar":

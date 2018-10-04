@@ -181,7 +181,6 @@ public class TCPMiddleware extends Middleware {
                         } else if (method.contains("Room")) {
                             redirectTo(js, rooms);
                         } else if (method.contains("Analytics")) {
-                            System.out.println("here");
                             os = flights.getOutputStream();
                             JSONObject flightObject = new JSONObject();
                             PrintWriter pw = new PrintWriter(os);

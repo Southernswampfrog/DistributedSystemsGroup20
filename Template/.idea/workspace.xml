@@ -3,13 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="94c3b4da-68fc-4401-9524-e0f0df3e36fe" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Common/ResourceManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/ResourceManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/ClientThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/ClientThread.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/MiddlewareThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/MiddlewareThread.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -52,13 +49,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Makefile" value="326" />
-          <entry key="java" value="15473" />
+          <entry key="java" value="15505" />
           <entry key="sh" value="527" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="15473" />
+          <entry key="JAVA" value="15505" />
           <entry key="PLAIN_TEXT" value="853" />
         </counts>
       </usages-collector>
@@ -69,32 +66,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Client/TCPClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="647" column="31" selection-start-line="647" selection-start-column="31" selection-end-line="647" selection-end-column="31" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Client/Client/TCPTestClient.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" column="46" selection-start-line="7" selection-start-column="46" selection-end-line="7" selection-end-column="46" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="252" column="51" selection-start-line="252" selection-start-column="51" selection-end-line="252" selection-end-column="51" />
+            <state relative-caret-position="400">
+              <caret line="694" column="22" lean-forward="true" selection-start-line="694" selection-start-column="22" selection-end-line="694" selection-end-column="22" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -103,10 +76,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="465">
+              <caret line="272" column="26" selection-start-line="272" selection-start-column="26" selection-end-line="272" selection-end-column="26" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="191">
-              <caret line="177" column="52" lean-forward="true" selection-start-line="177" selection-end-line="178" />
+            <state relative-caret-position="281">
+              <caret line="189" column="102" selection-start-line="189" selection-start-column="102" selection-end-line="189" selection-end-column="102" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -144,6 +129,7 @@
       <find>reserve</find>
       <find>accep</find>
       <find>customer</find>
+      <find>anal</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -170,11 +156,11 @@
         <option value="$PROJECT_DIR$/Server/run_tcp_middleware.sh" />
         <option value="$PROJECT_DIR$/Client/run_tcp_test_client.sh" />
         <option value="$PROJECT_DIR$/Client/Client/TCPClient.java" />
-        <option value="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" />
         <option value="$PROJECT_DIR$/Client/Client/TCPTestClient.java" />
         <option value="$PROJECT_DIR$/Server/Server/Common/Customer.java" />
         <option value="$PROJECT_DIR$/Server/Server/Common/Middleware.java" />
         <option value="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" />
+        <option value="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" />
       </list>
     </option>
   </component>
@@ -265,7 +251,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1538614486443" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1538616846090" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Client/java-json.jar!/" />
     <property name="project.structure.last.edited" value="Libraries" />
@@ -563,18 +549,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/Client/TCPClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="647" column="31" selection-start-line="647" selection-start-column="31" selection-end-line="647" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="252" column="51" selection-start-line="252" selection-start-column="51" selection-end-line="252" selection-end-column="51" />
+        <state relative-caret-position="400">
+          <caret line="694" column="22" lean-forward="true" selection-start-line="694" selection-start-column="22" selection-end-line="694" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -583,8 +559,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="177" column="52" lean-forward="true" selection-start-line="177" selection-end-line="178" />
+        <state relative-caret-position="281">
+          <caret line="189" column="102" selection-start-line="189" selection-start-column="102" selection-end-line="189" selection-end-column="102" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="272" column="26" selection-start-line="272" selection-start-column="26" selection-end-line="272" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
