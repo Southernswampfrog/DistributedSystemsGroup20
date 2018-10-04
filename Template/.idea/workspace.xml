@@ -6,6 +6,7 @@
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/ClientThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/ClientThread.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/MiddlewareThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/MiddlewareThread.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -49,13 +50,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Makefile" value="326" />
-          <entry key="java" value="15505" />
+          <entry key="java" value="16443" />
           <entry key="sh" value="527" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="15505" />
+          <entry key="JAVA" value="16443" />
           <entry key="PLAIN_TEXT" value="853" />
         </counts>
       </usages-collector>
@@ -66,20 +67,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Client/TCPClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="694" column="22" lean-forward="true" selection-start-line="694" selection-start-column="22" selection-end-line="694" selection-end-column="22" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="272" column="26" selection-start-line="272" selection-start-column="26" selection-end-line="272" selection-end-column="26" />
+            <state relative-caret-position="415">
+              <caret line="529" column="48" selection-start-line="529" selection-start-column="48" selection-end-line="529" selection-end-column="48" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -88,10 +77,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="217" column="78" selection-start-line="217" selection-start-column="78" selection-end-line="217" selection-end-column="78" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="189" column="102" selection-start-line="189" selection-start-column="102" selection-end-line="189" selection-end-column="102" />
+            <state relative-caret-position="90">
+              <caret line="248" column="81" selection-start-line="248" selection-start-column="81" selection-end-line="248" selection-end-column="81" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -155,12 +156,12 @@
         <option value="$PROJECT_DIR$/Server/run_tcp_servers_locally.sh" />
         <option value="$PROJECT_DIR$/Server/run_tcp_middleware.sh" />
         <option value="$PROJECT_DIR$/Client/run_tcp_test_client.sh" />
-        <option value="$PROJECT_DIR$/Client/Client/TCPClient.java" />
         <option value="$PROJECT_DIR$/Client/Client/TCPTestClient.java" />
         <option value="$PROJECT_DIR$/Server/Server/Common/Customer.java" />
         <option value="$PROJECT_DIR$/Server/Server/Common/Middleware.java" />
-        <option value="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" />
+        <option value="$PROJECT_DIR$/Client/Client/TCPClient.java" />
         <option value="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" />
+        <option value="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" />
       </list>
     </option>
   </component>
@@ -251,7 +252,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1538616846090" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1538620309509" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Client/java-json.jar!/" />
     <property name="project.structure.last.edited" value="Libraries" />
@@ -549,18 +550,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/Client/TCPClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="694" column="22" lean-forward="true" selection-start-line="694" selection-start-column="22" selection-end-line="694" selection-end-column="22" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="189" column="102" selection-start-line="189" selection-start-column="102" selection-end-line="189" selection-end-column="102" />
+        <state relative-caret-position="415">
+          <caret line="529" column="48" selection-start-line="529" selection-start-column="48" selection-end-line="529" selection-end-column="48" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -569,8 +560,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="272" column="26" selection-start-line="272" selection-start-column="26" selection-end-line="272" selection-end-column="26" />
+        <state relative-caret-position="180">
+          <caret line="217" column="78" selection-start-line="217" selection-start-column="78" selection-end-line="217" selection-end-column="78" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="248" column="81" selection-start-line="248" selection-start-column="81" selection-end-line="248" selection-end-column="81" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

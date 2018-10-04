@@ -171,8 +171,8 @@ public class TCPMiddleware extends Middleware {
                             pw1.println(js);
                             pw1.flush();
                         }
-                    } else if (method.contains("Flight")) {
-                        if (method.contains("Reserve")) {
+                    }
+                      else  if (method.contains("Reserve")) {
                             redirectTo(js, flights);
                         } else if (method.contains("Flight")) {
                             redirectTo(js, flights);
@@ -181,62 +181,27 @@ public class TCPMiddleware extends Middleware {
                         } else if (method.contains("Room")) {
                             redirectTo(js, rooms);
                         } else if (method.contains("Analytics")) {
-                            os = flights.getOutputStream();
-                            JSONObject flightObject = new JSONObject();
-                            PrintWriter pw = new PrintWriter(os);
-                            flightObject.put("methodName", jsob.getString("AnalyticsFlight"));
-                            pw.print(flightObject);
-                            pw.flush();
-                            bis = new BufferedReader(new InputStreamReader(flights.getInputStream()));
-                            js = bis.readLine();
-                            os = clientSocket.getOutputStream();
-                            pw = new PrintWriter(os);
-                            pw.println(js);
-                            pw.flush();
-                            os = cars.getOutputStream();
-                            JSONObject carObject = new JSONObject();
-                            pw = new PrintWriter(os);
-                            carObject.put("methodName", jsob.getString("AnalyticsCar"));
-                            pw.print(carObject);
-                            pw.flush();
-                            bis = new BufferedReader(new InputStreamReader(cars.getInputStream()));
-                            js = bis.readLine();
-                            os = clientSocket.getOutputStream();
-                            pw = new PrintWriter(os);
-                            pw.println(js);
-                            pw.flush();
-                            os = rooms.getOutputStream();
-                            JSONObject roomObject = new JSONObject();
-                            pw = new PrintWriter(os);
-                            roomObject.put("methodName", jsob.getString("AnalyticsRoom"));
-                            pw.print(roomObject);
-                            pw.flush();
-                            bis = new BufferedReader(new InputStreamReader(rooms.getInputStream()));
-                            js = bis.readLine();
-                            os = clientSocket.getOutputStream();
-                            pw = new PrintWriter(os);
-                            pw.println(js);
-                            pw.flush();
-                        } else if (method.equals("bundle")) {
-                            JSONArray flightnumbers = jsob.getJSONArray("flightnumbers");
-                            for (int i = 0; i < flightnumbers.length(); i++) {
+                          PrintWriter pw;
+                            if(method.contains("Flight")) {
                                 os = flights.getOutputStream();
-                                JSONObject flightJson = new JSONObject();
-                                flightJson.put("id", jsob.getInt("id"));
-                                flightJson.put("customerId", jsob.getInt("customerId"));
-                                flightJson.put("flightNumber", jsob.getInt(Integer.toString(i)));
-                                PrintWriter pw = new PrintWriter(os);
+                                JSONObject flightObject = new JSONObject();
+                                pw = new PrintWriter(os);
+                                flightObject.put("methodName", jsob.getString("AnalyticsFlight"));
+                                pw.print(flightObject);
+                                pw.flush();
+                                bis = new BufferedReader(new InputStreamReader(flights.getInputStream()));
+                                js = bis.readLine();
+                                os = clientSocket.getOutputStream();
+                                pw = new PrintWriter(os);
                                 pw.println(js);
                                 pw.flush();
                             }
-                            if (jsob.getBoolean("car")) {
+                            else if (method.contains("Car")) {
                                 os = cars.getOutputStream();
-                                JSONObject roomObject = new JSONObject();
-                                PrintWriter pw = new PrintWriter(os);
-                                roomObject.put("id", jsob.getInt("id"));
-                                roomObject.put("customerId", jsob.getInt("customerId"));
-                                roomObject.put("location", jsob.getString("location"));
-                                pw.print(roomObject);
+                                JSONObject carObject = new JSONObject();
+                                pw = new PrintWriter(os);
+                                carObject.put("methodName", jsob.getString("AnalyticsCar"));
+                                pw.print(carObject);
                                 pw.flush();
                                 bis = new BufferedReader(new InputStreamReader(cars.getInputStream()));
                                 js = bis.readLine();
@@ -245,14 +210,12 @@ public class TCPMiddleware extends Middleware {
                                 pw.println(js);
                                 pw.flush();
                             }
-                            if (jsob.getBoolean("room")) {
+                            else if (method.contains("Room")) {
                                 os = rooms.getOutputStream();
                                 JSONObject roomObject = new JSONObject();
-                                PrintWriter pw = new PrintWriter(os);
-                                roomObject.put("id", jsob.getInt("id"));
-                                roomObject.put("customerId", jsob.getInt("customerId"));
-                                roomObject.put("location", jsob.getString("location"));
-                                pw.println(roomObject);
+                                pw = new PrintWriter(os);
+                                roomObject.put("methodName", jsob.getString("AnalyticsRoom"));
+                                pw.print(roomObject);
                                 pw.flush();
                                 bis = new BufferedReader(new InputStreamReader(rooms.getInputStream()));
                                 js = bis.readLine();
@@ -261,8 +224,75 @@ public class TCPMiddleware extends Middleware {
                                 pw.println(js);
                                 pw.flush();
                             }
+                            else if (method.contains("Customer")) {
+                                os = rooms.getOutputStream();
+                                JSONObject roomObject = new JSONObject();
+                                pw = new PrintWriter(os);
+                                roomObject.put("methodName", jsob.getString("AnalyticsCustomer"));
+                                pw.print(roomObject);
+                                pw.flush();
+                                bis = new BufferedReader(new InputStreamReader(rooms.getInputStream()));
+                                js = bis.readLine();
+                                os = clientSocket.getOutputStream();
+                                pw = new PrintWriter(os);
+                                pw.println(js);
+                                pw.flush();
+                            }
+                        } else if (method.equals("bundle")) {
+                          PrintWriter pw = null;
+                            JSONArray flightnumbers = jsob.getJSONArray("flightNumbers");
+                            for (int i = 0; i < flightnumbers.length(); i++) {
+                                os = flights.getOutputStream();
+                                JSONObject flightJson = new JSONObject();
+                                flightJson.put("id", jsob.getInt("id"));
+                                flightJson.put("customerID", jsob.getInt("customerID"));
+                                flightJson.put("flightNum",flightnumbers.getInt(i));
+                                flightJson.put("methodName","ReserveFlight");
+                                pw = new PrintWriter(os);
+                                pw.println(flightJson);
+                                pw.flush();
+                                bis = new BufferedReader(new InputStreamReader(flights.getInputStream()));
+                                js = bis.readLine();
+                                os = clientSocket.getOutputStream();
+                                pw = new PrintWriter(os);
+                                pw.print(js);
+                            }
+                            if (jsob.getBoolean("car")) {
+                                os = cars.getOutputStream();
+                                JSONObject roomObject = new JSONObject();
+                                pw = new PrintWriter(os);
+                                roomObject.put("id", jsob.getInt("id"));
+                                roomObject.put("customerID", jsob.getInt("customerID"));
+                                roomObject.put("location", jsob.getString("location"));
+                                roomObject.put("methodName", "ReserveCar");
+                                pw.println(roomObject);
+                                pw.flush();
+                                bis = new BufferedReader(new InputStreamReader(cars.getInputStream()));
+                                js = bis.readLine();
+                                os = clientSocket.getOutputStream();
+                                pw = new PrintWriter(os);
+                                pw.print(js);
+                            }
+                            if (jsob.getBoolean("room")) {
+                                os = rooms.getOutputStream();
+                                JSONObject roomObject = new JSONObject();
+                                pw = new PrintWriter(os);
+                                roomObject.put("id", jsob.getInt("id"));
+                                roomObject.put("customerID", jsob.getInt("customerID"));
+                                roomObject.put("location", jsob.getString("location"));
+                                roomObject.put("methodName","ReserveRoom");
+                                pw.println(roomObject);
+                                pw.flush();
+                                bis = new BufferedReader(new InputStreamReader(rooms.getInputStream()));
+                                js = bis.readLine();
+                                os = clientSocket.getOutputStream();
+                                pw = new PrintWriter(os);
+                                pw.print(js);
+                            }
+                            pw.println("");
+                            pw.flush();
                         }
-                    }
+
                 }catch(Exception ioe){
                         System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
                         ioe.printStackTrace();

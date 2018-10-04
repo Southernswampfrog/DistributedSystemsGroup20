@@ -2,6 +2,7 @@ package Server.TCP;
 
 import Server.Common.*;
 import Server.Interface.IResourceManager;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.*;
@@ -280,21 +281,23 @@ class MiddlewareThread extends Thread {
                                 int count = carItem.getCount();
                                 int reserved = carItem.getReserved();
                                 int price = carItem.getPrice();
-                                pw.println("Reserved cars at location " + k + ": " + reserved);
-                                pw.println("Total number of cars at location " + k + ": " + count);
+                                pw.print("Reserved cars at location " + k + ": " + reserved);
+                                pw.print("Total number of cars at location " + k + ": " + count);
                                 if (count - reserved < 5) {
-                                    pw.println("ONLY " + (count - reserved) + " CARS REMAINING AT LOCATION" + k);
+                                    pw.print("ONLY " + (count - reserved) + " CARS REMAINING AT LOCATION" + k);
                                 } else if (count - reserved > count - 5) {
-                                    pw.println("ONLY " + (reserved) + " CARS HAVE BEEN BOOKED AT LOCATION" + k);
+                                    pw.print("ONLY " + (reserved) + " CARS HAVE BEEN BOOKED AT LOCATION" + k);
                                 }
-                                pw.println("Price for a car at location " + k + ": " + price);
+                                pw.print("Price for a car at location " + k + ": " + price);
                                 if (price < 50) {
-                                    pw.println("CARS AT LOCATION" + k + " ARE VERY CHEAP");
+                                    pw.print("CARS AT LOCATION" + k + " ARE VERY CHEAP");
                                 } else if (price > 250) {
-                                    pw.println("CARS AT LOCATION" + k + " ARE VERY EXPENSIVE");
+                                    pw.print("CARS AT LOCATION" + k + " ARE VERY EXPENSIVE");
                                 }
                             }
                         }
+
+                        pw.println("");
                         pw.flush();
                         break;
                     case "AnalyticsRoom":
@@ -306,21 +309,22 @@ class MiddlewareThread extends Thread {
                                 int count = roomItem.getCount();
                                 int reserved = roomItem.getReserved();
                                 int price = roomItem.getPrice();
-                                pw.println("Reserved rooms at location " + k + ": " + reserved);
-                                pw.println("Total number of rooms at location " + k + ": " + count);
+                                pw.print("Reserved rooms at location " + k + ": " + reserved);
+                                pw.print("Total number of rooms at location " + k + ": " + count);
                                 if (count - reserved < 5) {
-                                    pw.println("ONLY " + (count - reserved) + " ROOMS REMAINING AT LOCATION" + k);
+                                    pw.print("ONLY " + (count - reserved) + " ROOMS REMAINING AT LOCATION" + k);
                                 } else if (count - reserved > count - 5) {
-                                    pw.println("ONLY " + (reserved) + " ROOMS HAVE BEEN BOOKED AT LOCATION" + k);
+                                    pw.print("ONLY " + (reserved) + " ROOMS HAVE BEEN BOOKED AT LOCATION" + k);
                                 }
-                                pw.println("Price for a car at location " + k + ": " + price);
+                                pw.print("Price for a car at location " + k + ": " + price);
                                 if (price < 50) {
-                                    pw.println("ROOMS AT LOCATION" + k + " ARE VERY CHEAP");
+                                    pw.print("ROOMS AT LOCATION" + k + " ARE VERY CHEAP");
                                 } else if (price > 250) {
-                                    pw.println("ROOMS AT LOCATION" + k + " ARE VERY EXPENSIVE");
+                                    pw.print("ROOMS AT LOCATION" + k + " ARE VERY EXPENSIVE");
                                 }
                             }
                         }
+                        pw.println("");
                         pw.flush();
                         break;
                     case "AnalyticsCustomer":
@@ -336,19 +340,30 @@ class MiddlewareThread extends Thread {
                                     int reserved = reservedItem.getCount();
                                     int price = reservedItem.getPrice();
                                     if (rk.contains("flight-")) {
-                                        pw.println("Customer " + dk + " reserved " + reserved + " seats on flight number" + rk);
+                                        pw.print("Customer " + dk + " reserved " + reserved + " seats on flight number" + rk);
                                     } else if (rk.contains("car-")) {
-                                        pw.println("Customer " + dk + " reserved " + reserved + " cars at location" + rk);
+                                        pw.print("Customer " + dk + " reserved " + reserved + " cars at location" + rk);
                                     } else if (rk.contains("room-")) {
-                                        pw.println("Customer " + dk + " reserved " + reserved + " rooms at location" + rk);
+                                        pw.print("Customer " + dk + " reserved " + reserved + " rooms at location" + rk);
                                     }
                                 }
                             }
                         }
+                        pw.println("");
                         pw.flush();
                         break;
                     case "bundle":
-                        rm.bundle(jsob.getInt("id"), jsob.getInt("customerID"), (Vector<String>) jsob.get("flightNumbers"), jsob.getString("location"), jsob.getBoolean("car"), jsob.getBoolean("room"));
+                        Vector<String> flights = null;
+                        JSONArray jsa = jsob.getJSONArray("flightNumbers");
+                        for(int i = 0; i < jsa.length()-1; i++) {
+                            try {
+                                flights.add(JSONObject.valueToString(jsa.get(i)));
+                            }
+                            catch(Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        rm.bundle(jsob.getInt("id"), jsob.getInt("customerID"),flights, jsob.getString("location"), jsob.getBoolean("car"), jsob.getBoolean("room"));
                         pw.println("Bundle Reserved");
                         pw.flush();
 
