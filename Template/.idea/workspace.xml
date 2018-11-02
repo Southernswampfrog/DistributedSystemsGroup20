@@ -3,11 +3,25 @@
   <component name="ChangeListManager">
     <list default="true" id="94c3b4da-68fc-4401-9524-e0f0df3e36fe" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client/Client$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client/Client.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client/TCPClient$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/RMIInterface.jar" beforeDir="false" afterPath="$PROJECT_DIR$/Server/RMIInterface.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/RMI/RMIResourceManager$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/RMI/RMIResourceManager.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/ClientThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/ClientThread.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/MiddlewareThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/MiddlewareThread.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/run_servers.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Server/run_servers.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/run_tcp_servers_locally.sh" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,82 +34,80 @@
     <session id="-992382713">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="9" />
-          <entry key="project.open.time.10" value="5" />
-          <entry key="project.open.time.11" value="1" />
-          <entry key="project.open.time.13" value="3" />
+          <entry key="project.closed" value="15" />
+          <entry key="project.open.time.10" value="7" />
+          <entry key="project.open.time.11" value="2" />
+          <entry key="project.open.time.13" value="4" />
+          <entry key="project.open.time.14" value="1" />
           <entry key="project.open.time.3" value="1" />
-          <entry key="project.opened" value="11" />
+          <entry key="project.open.time.8" value="1" />
+          <entry key="project.opened" value="17" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="MF" value="1" />
           <entry key="Makefile" value="7" />
-          <entry key="class" value="3" />
+          <entry key="class" value="4" />
           <entry key="iml" value="1" />
-          <entry key="java" value="67" />
-          <entry key="sh" value="30" />
+          <entry key="java" value="83" />
+          <entry key="sh" value="45" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="CLASS" value="3" />
+          <entry key="CLASS" value="4" />
           <entry key="IDEA_MODULE" value="1" />
-          <entry key="JAVA" value="67" />
+          <entry key="JAVA" value="83" />
           <entry key="Manifest" value="1" />
-          <entry key="PLAIN_TEXT" value="37" />
+          <entry key="PLAIN_TEXT" value="52" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Makefile" value="326" />
-          <entry key="java" value="16443" />
-          <entry key="sh" value="527" />
+          <entry key="java" value="16812" />
+          <entry key="sh" value="582" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="16443" />
-          <entry key="PLAIN_TEXT" value="853" />
+          <entry key="JAVA" value="16812" />
+          <entry key="PLAIN_TEXT" value="908" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Client/Client/TCPClient.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="415">
-              <caret line="529" column="48" selection-start-line="529" selection-start-column="48" selection-end-line="529" selection-end-column="48" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="217" column="78" selection-start-line="217" selection-start-column="78" selection-end-line="217" selection-end-column="78" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java">
+        <entry file="file://$PROJECT_DIR$/Server/run_rmi_servers_locally.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="248" column="81" selection-start-line="248" selection-start-column="81" selection-end-line="248" selection-end-column="81" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="225">
+              <caret line="15" selection-start-line="15" selection-end-line="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="498">
+              <caret line="49" column="8" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Server/run_middleware.sh">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Server/run_servers.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" selection-start-line="2" selection-end-line="2" />
             </state>
           </provider>
         </entry>
@@ -131,6 +143,7 @@
       <find>accep</find>
       <find>customer</find>
       <find>anal</find>
+      <find>querycu</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -149,7 +162,6 @@
         <option value="$PROJECT_DIR$/Client/Makefile" />
         <option value="$PROJECT_DIR$/Client/JSONObject.java" />
         <option value="$PROJECT_DIR$/Server/run_tcp_server.sh" />
-        <option value="$PROJECT_DIR$/Client/Client/Client.java" />
         <option value="$PROJECT_DIR$/Client/run_tcp_client.sh" />
         <option value="$PROJECT_DIR$/Client/prep_tcp.sh" />
         <option value="$PROJECT_DIR$/Server/run_tcp_servers.sh" />
@@ -158,10 +170,15 @@
         <option value="$PROJECT_DIR$/Client/run_tcp_test_client.sh" />
         <option value="$PROJECT_DIR$/Client/Client/TCPTestClient.java" />
         <option value="$PROJECT_DIR$/Server/Server/Common/Customer.java" />
-        <option value="$PROJECT_DIR$/Server/Server/Common/Middleware.java" />
         <option value="$PROJECT_DIR$/Client/Client/TCPClient.java" />
         <option value="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" />
         <option value="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" />
+        <option value="$PROJECT_DIR$/Client/run_rmi_test_client.sh" />
+        <option value="$PROJECT_DIR$/Client/Client/Client.java" />
+        <option value="$PROJECT_DIR$/Client/Client/RMITestClient.java" />
+        <option value="$PROJECT_DIR$/Server/Server/Common/Middleware.java" />
+        <option value="$PROJECT_DIR$/Server/run_servers.sh" />
+        <option value="$PROJECT_DIR$/Server/run_rmi_servers_locally.sh" />
       </list>
     </option>
   </component>
@@ -179,7 +196,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -229,30 +245,16 @@
               <item name="Server" type="462c0819:PsiDirectoryNode" />
               <item name="RMI" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Template" type="462c0819:PsiDirectoryNode" />
-              <item name="Server" type="462c0819:PsiDirectoryNode" />
-              <item name="Server" type="462c0819:PsiDirectoryNode" />
-              <item name="TCP" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Template" type="462c0819:PsiDirectoryNode" />
-              <item name="Server" type="462c0819:PsiDirectoryNode" />
-              <item name="Server" type="462c0819:PsiDirectoryNode" />
-              <item name="TCP" type="462c0819:PsiDirectoryNode" />
-              <item name="TCPMiddleware.java" type="529ef68f:ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1538620309509" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1541176428701" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Client/java-json.jar!/" />
     <property name="project.structure.last.edited" value="Libraries" />
@@ -299,7 +301,7 @@
     <frame x="67" y="25" width="1299" height="743" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.33519554" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22905028" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -315,7 +317,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50039905" side_tool="true" weight="0.32952693" />
-      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49960095" visible="true" weight="0.03752039" />
+      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49960095" weight="0.03752039" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -326,7 +328,7 @@
       <window_info anchor="right" id="Maven Projects" order="7" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16919394" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22905028" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -341,8 +343,8 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="9" weight="0.32952693" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50039905" side_tool="true" weight="0.32952693" />
+      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49960095" weight="0.03752039" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -396,28 +398,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Server/run_servers.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Server/run_servers_locally.sh" />
-    <entry file="file://$PROJECT_DIR$/Client/Client/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="399" column="62" lean-forward="true" selection-start-line="399" selection-start-column="62" selection-end-line="399" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Client/RMIClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1024">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Server/Server/Interface/IResourceManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-912">
@@ -440,20 +421,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Server/run_tcp_server.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/run_tcp_servers.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="168" selection-start-line="17" selection-start-column="168" selection-end-line="17" selection-end-column="168" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Client/prep_tcp.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -462,10 +429,146 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/run_tcp_test_client/sh.java" />
-    <entry file="file://$PROJECT_DIR$/Client/run_client.sh">
+    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware$1.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/Customer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="40" column="9" selection-start-line="40" selection-start-column="9" selection-end-line="40" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/run_server.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="50" column="25" selection-start-line="50" selection-start-column="25" selection-end-line="50" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3975">
+          <caret line="275" column="27" selection-start-line="275" selection-start-column="27" selection-end-line="275" selection-end-column="27" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/run_rmi.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/run_test_client/sh.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="15" selection-start-line="2" selection-start-column="15" selection-end-line="2" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/TCPClient$1.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/run_tcp_client.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="50" selection-start-line="1" selection-start-column="50" selection-end-line="1" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/run_tcp_test_client.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="59" selection-start-line="1" selection-start-column="59" selection-end-line="1" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/TCPTestClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="475">
+          <caret line="59" lean-forward="true" selection-start-line="59" selection-end-line="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/TCPClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="504" column="24" lean-forward="true" selection-start-line="504" selection-start-column="24" selection-end-line="504" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/run_rmi_test_client.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
           <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/run_client.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" lean-forward="true" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/RMIClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="68" column="21" selection-start-line="68" selection-start-column="21" selection-end-line="68" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="384" column="26" lean-forward="true" selection-start-line="384" selection-start-column="26" selection-end-line="384" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/Middleware.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="129" lean-forward="true" selection-start-line="129" selection-end-line="129" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIResourceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="735">
+          <caret line="63" column="48" selection-start-line="63" selection-start-column="48" selection-end-line="63" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/ResourceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="381" column="35" selection-start-line="381" selection-start-column="35" selection-end-line="381" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/RMITestClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="99" column="51" lean-forward="true" selection-start-line="99" selection-start-column="51" selection-end-line="99" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1695#1696#0" expanded="true" />
+            <element signature="e#1726#1727#0" expanded="true" />
+            <element signature="e#1773#1774#0" expanded="true" />
+            <element signature="e#1852#1853#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -483,98 +586,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.class">
-      <provider selected="true" editor-type-id="text-editor" />
+    <entry file="file://$PROJECT_DIR$/Server/run_tcp_servers.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="168" selection-start-line="17" selection-start-column="168" selection-end-line="17" selection-end-column="168" />
+        </state>
+      </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Client/run_tcp_client.sh">
+    <entry file="file://$PROJECT_DIR$/Server/run_tcp_server.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
-          <caret line="1" column="50" selection-start-line="1" selection-start-column="50" selection-end-line="1" selection-end-column="50" />
+          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Client/run_tcp_test_client.sh">
+    <entry file="file://$PROJECT_DIR$/Server/run_servers.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="59" selection-start-line="1" selection-start-column="59" selection-end-line="1" selection-end-column="59" />
+        <state relative-caret-position="30">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIResourceManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="55" column="8" lean-forward="true" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware$1.class">
+    <entry file="file://$PROJECT_DIR$/Server/run_middleware.sh">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/Common/Middleware.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="126" column="17" lean-forward="true" selection-start-line="126" selection-start-column="17" selection-end-line="126" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/Common/Customer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="40" column="9" selection-start-line="40" selection-start-column="9" selection-end-line="40" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/Common/ResourceManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3960">
-          <caret line="278" column="5" selection-start-line="278" selection-start-column="5" selection-end-line="278" selection-end-column="5" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="24" column="4" lean-forward="true" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="4" />
+        <state relative-caret-position="498">
+          <caret line="49" column="8" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Client/TCPTestClient.java">
+    <entry file="file://$PROJECT_DIR$/Server/run_rmi_servers_locally.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="46" selection-start-line="7" selection-start-column="46" selection-end-line="7" selection-end-column="46" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Client/TCPClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="415">
-          <caret line="529" column="48" selection-start-line="529" selection-start-column="48" selection-end-line="529" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="217" column="78" selection-start-line="217" selection-start-column="78" selection-end-line="217" selection-end-column="78" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="248" column="81" selection-start-line="248" selection-start-column="81" selection-end-line="248" selection-end-column="81" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="225">
+          <caret line="15" selection-start-line="15" selection-end-line="15" />
         </state>
       </provider>
     </entry>

@@ -380,7 +380,7 @@ public abstract class Client
 				break;
 			}
 			case Bundle: {
-				if (arguments.size() < 7) {
+				if (arguments.size() < 6) {
 					System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mBundle command expects at least 7 arguments. Location \"help\" or \"help,<CommandName>\"");
 					break;
 				}

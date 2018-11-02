@@ -48,7 +48,7 @@ public class TCPResourceManager extends ResourceManager {
             } catch (Exception f) {
                 f.printStackTrace();
             }
-            System.exit(1);
+            System.exit(-1);
 
         }
     }
@@ -75,11 +75,7 @@ class MiddlewareThread extends Thread {
                 BufferedReader bis = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
                 String js = bis.readLine();
-               /*     if(js == null) {
-                        clientSocket.close();
-                        System.out.println("Connection closed");
-                        break;
-                    }*/
+                System.out.println(js);
                 JSONObject jsob = new JSONObject(js);
                 OutputStream os = clientSocket.getOutputStream();
                 PrintWriter pw = new PrintWriter(os);

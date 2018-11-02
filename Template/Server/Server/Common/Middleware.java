@@ -119,11 +119,12 @@ public class Middleware extends ResourceManager implements IResourceManager
 
 	public String queryCustomerInfo(int xid, int customerID) throws RemoteException
 	{
-		String x = "";
+		String x = "Bill for Customer " + customerID + ":";
 		for(int i = 0; i < 3; i++) {
 			x = x + m_RMs[i].queryCustomerInfo(xid,customerID);
 		}
-		x = x.replace("Bill For Customer " + customerID, " ");
+		x = x.replace("Bill for customer " + customerID, "");
+		x = x.replace("\n", " ");
 		return x;
 	}
 
@@ -158,14 +159,24 @@ public class Middleware extends ResourceManager implements IResourceManager
 	// Reserve bundle 
 	public boolean bundle(int xid, int customerId, Vector<String> flightNumbers, String location, boolean car, boolean room) throws RemoteException
 	{
+		boolean x;
 	    for (String flightNumber:flightNumbers){
-	        m_RMs[0].reserveFlight(xid, customerId, Integer.parseInt(flightNumber));
+	        x = m_RMs[0].reserveFlight(xid, customerId, Integer.parseInt(flightNumber));
+	        if (!x) {
+				return false;
+			}
         }
         if (car) {
-	        m_RMs[1].reserveCar(xid, customerId, location);
+	        x = m_RMs[1].reserveCar(xid, customerId, location);
+			if (!x){
+				return false;
+			}
         }
         if (room) {
-	        m_RMs[2].reserveRoom(xid, customerId, location);
+	        x = m_RMs[2].reserveRoom(xid, customerId, location);
+			if (!x){
+				return false;
+			}
         }
 		return true;
 	}
