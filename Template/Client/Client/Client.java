@@ -1,13 +1,13 @@
 package Client;
 
 import Server.Interface.*;
-
 import java.util.*;
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.ConnectException;
 import java.rmi.ServerException;
 import java.rmi.UnmarshalException;
+
 
 public abstract class Client
 {
@@ -414,7 +414,7 @@ public abstract class Client
 			}
 			case Quit:
 				checkArgumentsCount(1, arguments.size());
-
+				m_resourceManager.shutdown();
 				System.out.println("Quitting client");
 				System.exit(0);
 		}

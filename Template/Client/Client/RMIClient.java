@@ -1,7 +1,6 @@
 package Client;
 
 import Server.Interface.*;
-
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.RemoteException;

@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 public class RMITestClient extends Client {
 
@@ -88,16 +89,19 @@ public class RMITestClient extends Client {
 
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         String[] testCases = {
-                "AddCustomerID,2,2\r",
+                //   "AddCustomerID,2,2\r",
+                "QueryFlight,2,2\r",
+                "QueryCars,2,2\r",
                 "AddFlight,2,2,2,2\r",
-                "ReserveFlight,2,2,2\r",
-                "AddRooms,2,Italy,2,2\r",
-                // "ReserveRoom,2,2,\"Italy\"\r",
-                "AddCars,2,Italy,2,2\r",
-                "ReserveCar,2,2,Italy\r",
-                "QueryCustomer,2,2",
-                "QueryCars,2,Italy\r",
-                "Bundle,2,2,2,3,Italy,true,true\r",
+
+                //   "ReserveFlight,2,2,2\r",
+                //   "AddRooms,2,Italy,2,2\r",
+                //"ReserveRoom,2,2,\"Italy\"\r",
+                //"AddCars,2,Italy,2,2\r",
+                //"ReserveCar,2,2,Italy\r",
+                //"QueryCustomer,2,2",
+                //"QueryCars,2,Italy\r",
+                //"Bundle,2,2,2,3,Italy,true,true\r",
                 "quit\r"};
         for (String i : testCases) {
             // Read the next command
@@ -117,6 +121,11 @@ public class RMITestClient extends Client {
             } catch (Exception e) {
                 System.err.println((char) 27 + "[31;1mCommand exception: " + (char) 27 + "[0mUncaught exception");
                 e.printStackTrace();
+            }
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (Exception e) {
+                System.out.println(e);
             }
         }
     }
