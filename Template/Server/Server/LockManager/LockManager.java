@@ -61,10 +61,15 @@ public class LockManager
 							WaitLockObject waitLockObject = new WaitLockObject(xid, data, lockType);
 							this.waitTable.remove(waitLockObject);
 						}
-
 						if (bConvert.get(0) == true) {
-							//TODO: Lock conversion 
-							// Trace.info("LM::lock(" + xid + ", " + data + ", " + lockType + ") converted");
+							//TODO: Lock conversion
+							this.lockTable.removeAll(dataLockObject);
+							this.lockTable.removeAll(xLockObject);
+							System.out.println(lockTable.allElements());
+							this.lockTable.add(xLockObject);
+							this.lockTable.add(dataLockObject);
+							System.out.println(lockTable.allElements());
+							Trace.info("LM::lock(" + xid + ", " + data + ", " + lockType + ") converted");
 						} else {
 							// Lock request that is not lock conversion
 							this.lockTable.add(xLockObject);
@@ -228,7 +233,14 @@ public class LockManager
 					// Seeing the comments at the top of this function might be helpful
 
 					//TODO: Lock conversion
+					if(l_dataLockObject.m_lockType == TransactionLockObject.LockType.LOCK_READ) {
+						bitset.set(0);
+					}
+					else if (l_dataLockObject.m_lockType == TransactionLockObject.LockType.LOCK_WRITE){
+						// Already have a WRITE lock, and want to request a WRITE lock
+					}
 				}
+				return false;
 			} 
 			else if (dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_READ)
 			{

@@ -6,16 +6,15 @@
 package Server.Common;
 
 import Server.Interface.*;
+import Server.LockManager.*;
 
 import java.util.*;
 import java.rmi.RemoteException;
-import java.io.*;
 
 public class ResourceManager implements IResourceManager
 {
 	protected String m_name = "";
 	protected RMHashMap m_data = new RMHashMap();
-
 	public ResourceManager(String p_name)
 	{
 		m_name = p_name;
@@ -149,7 +148,7 @@ public class ResourceManager implements IResourceManager
 
 	// Create a new flight, or add seats to existing flight
 	// NOTE: if flightPrice <= 0 and the flight already exists, it maintains its current price
-	public boolean addFlight(int xid, int flightNum, int flightSeats, int flightPrice) throws RemoteException
+	public boolean addFlight(int xid, int flightNum, int flightSeats, int flightPrice) throws RemoteException, InvalidTransactionException
 	{
 		Trace.info("RM::addFlight(" + xid + ", " + flightNum + ", " + flightSeats + ", $" + flightPrice + ") called");
 		Flight curObj = (Flight)readData(xid, Flight.getKey(flightNum));
@@ -254,8 +253,8 @@ public class ResourceManager implements IResourceManager
 	public int queryCars(int xid, String location) throws RemoteException
 	{
 		return queryNum(xid, Car.getKey(location));
-	}
 
+	}
 	// Returns the amount of rooms available at a location
 	public int queryRooms(int xid, String location) throws RemoteException
 	{
@@ -383,10 +382,22 @@ public class ResourceManager implements IResourceManager
 	{
 		return false;
 	}
-
 	public String getName() throws RemoteException
 	{
 		return m_name;
+	}
+	public int start() throws RemoteException{
+		return 1;
+	}
+	public boolean commit(int transactionId) throws RemoteException,
+			TransactionAbortedException, InvalidTransactionException {
+		return false;
+	}
+	public void abort(int transactionId) throws RemoteException,
+			InvalidTransactionException{
+	}
+	public boolean shutdown() throws RemoteException{
+		return false;
 	}
 }
  

@@ -1,6 +1,9 @@
 package Client;
 
 import Server.Interface.*;
+import Server.LockManager.InvalidTransactionException;
+import Server.LockManager.TransactionAbortedException;
+
 import java.util.*;
 import java.io.*;
 import java.rmi.RemoteException;
@@ -67,19 +70,18 @@ public abstract class Client
 		}
 	}
 
-	public void execute(Command cmd, Vector<String> arguments) throws RemoteException, NumberFormatException
+	public void execute(Command cmd, Vector<String> arguments) throws RemoteException, NumberFormatException,
+			InvalidTransactionException, TransactionAbortedException
 	{
-		switch (cmd)
-		{
-			case Help:
-			{
+		switch (cmd) {
+			case Help: {
 				if (arguments.size() == 1) {
 					System.out.println(Command.description());
 				} else if (arguments.size() == 2) {
-					Command l_cmd = Command.fromString((String)arguments.elementAt(1));
+					Command l_cmd = Command.fromString((String) arguments.elementAt(1));
 					System.out.println(l_cmd.toString());
 				} else {
-					System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mImproper use of help command. Location \"help\" or \"help,<CommandName>\"");
+					System.err.println((char) 27 + "[31;1mCommand exception: " + (char) 27 + "[0mImproper use of help command. Location \"help\" or \"help,<CommandName>\"");
 				}
 				break;
 			}
@@ -223,7 +225,7 @@ public abstract class Client
 
 				System.out.println("Deleting a customer from the database [xid=" + arguments.elementAt(1) + "]");
 				System.out.println("-Customer ID: " + arguments.elementAt(2));
-				
+
 				int id = toInt(arguments.elementAt(1));
 				int customerID = toInt(arguments.elementAt(2));
 
@@ -239,7 +241,7 @@ public abstract class Client
 
 				System.out.println("Querying a flight [xid=" + arguments.elementAt(1) + "]");
 				System.out.println("-Flight Number: " + arguments.elementAt(2));
-				
+
 				int id = toInt(arguments.elementAt(1));
 				int flightNum = toInt(arguments.elementAt(2));
 
@@ -252,7 +254,7 @@ public abstract class Client
 
 				System.out.println("Querying cars location [xid=" + arguments.elementAt(1) + "]");
 				System.out.println("-Car Location: " + arguments.elementAt(2));
-				
+
 				int id = toInt(arguments.elementAt(1));
 				String location = arguments.elementAt(2);
 
@@ -265,7 +267,7 @@ public abstract class Client
 
 				System.out.println("Querying rooms location [xid=" + arguments.elementAt(1) + "]");
 				System.out.println("-Room Location: " + arguments.elementAt(2));
-				
+
 				int id = toInt(arguments.elementAt(1));
 				String location = arguments.elementAt(2);
 
@@ -284,11 +286,11 @@ public abstract class Client
 
 				String bill = m_resourceManager.queryCustomerInfo(id, customerID);
 				System.out.print(bill);
-				break;               
+				break;
 			}
 			case QueryFlightPrice: {
 				checkArgumentsCount(3, arguments.size());
-				
+
 				System.out.println("Querying a flight price [xid=" + arguments.elementAt(1) + "]");
 				System.out.println("-Flight Number: " + arguments.elementAt(2));
 
@@ -367,7 +369,7 @@ public abstract class Client
 				System.out.println("Reserving a room at a location [xid=" + arguments.elementAt(1) + "]");
 				System.out.println("-Customer ID: " + arguments.elementAt(2));
 				System.out.println("-Room Location: " + arguments.elementAt(3));
-				
+
 				int id = toInt(arguments.elementAt(1));
 				int customerID = toInt(arguments.elementAt(2));
 				String location = arguments.elementAt(3);
@@ -381,29 +383,27 @@ public abstract class Client
 			}
 			case Bundle: {
 				if (arguments.size() < 6) {
-					System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mBundle command expects at least 7 arguments. Location \"help\" or \"help,<CommandName>\"");
+					System.err.println((char) 27 + "[31;1mCommand exception: " + (char) 27 + "[0mBundle command expects at least 7 arguments. Location \"help\" or \"help,<CommandName>\"");
 					break;
 				}
 
 				System.out.println("Reserving an bundle [xid=" + arguments.elementAt(1) + "]");
 				System.out.println("-Customer ID: " + arguments.elementAt(2));
-				for (int i = 0; i < arguments.size() - 6; ++i)
-				{
-					System.out.println("-Flight Number: " + arguments.elementAt(3+i));
+				for (int i = 0; i < arguments.size() - 6; ++i) {
+					System.out.println("-Flight Number: " + arguments.elementAt(3 + i));
 				}
-				System.out.println("-Car Location: " + arguments.elementAt(arguments.size()-2));
-				System.out.println("-Room Location: " + arguments.elementAt(arguments.size()-1));
+				System.out.println("-Car Location: " + arguments.elementAt(arguments.size() - 2));
+				System.out.println("-Room Location: " + arguments.elementAt(arguments.size() - 1));
 
 				int id = toInt(arguments.elementAt(1));
 				int customerID = toInt(arguments.elementAt(2));
 				Vector<String> flightNumbers = new Vector<String>();
-				for (int i = 0; i < arguments.size() - 6; ++i)
-				{
-					flightNumbers.addElement(arguments.elementAt(3+i));
+				for (int i = 0; i < arguments.size() - 6; ++i) {
+					flightNumbers.addElement(arguments.elementAt(3 + i));
 				}
-				String location = arguments.elementAt(arguments.size()-3);
-				boolean car = toBoolean(arguments.elementAt(arguments.size()-2));
-				boolean room = toBoolean(arguments.elementAt(arguments.size()-1));
+				String location = arguments.elementAt(arguments.size() - 3);
+				boolean car = toBoolean(arguments.elementAt(arguments.size() - 2));
+				boolean room = toBoolean(arguments.elementAt(arguments.size() - 1));
 
 				if (m_resourceManager.bundle(id, customerID, flightNumbers, location, car, room)) {
 					System.out.println("Bundle Reserved");
@@ -412,13 +412,39 @@ public abstract class Client
 				}
 				break;
 			}
+			case Start: {
+				//checkArgumentsCount(0, arguments.size());
+				int xid = m_resourceManager.start();
+				System.out.println("Transaction number is " + xid);
+				break;
+			}
+			case Commit: {
+				checkArgumentsCount(2, arguments.size());
+				int xid = toInt(arguments.elementAt(1));
+				if (m_resourceManager.commit(xid)) {
+					System.out.println("Transaction " + xid + " Committed");
+				}
+				else {
+					System.out.println("Unable to commit transaction");
+				}
+				break;
+			}
+			case Abort: {
+				checkArgumentsCount(1, arguments.size());
+				int xid = toInt(arguments.elementAt(1));
+				m_resourceManager.abort(xid);
+				System.out.println("Transaction " + xid + " Aborted");
+				System.exit(0);
+			}
 			case Quit:
 				checkArgumentsCount(1, arguments.size());
 				m_resourceManager.shutdown();
 				System.out.println("Quitting client");
 				System.exit(0);
 		}
+
 	}
+
 
 	public static Vector<String> parse(String command)
 	{

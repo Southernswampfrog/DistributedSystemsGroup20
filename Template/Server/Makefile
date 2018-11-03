@@ -10,13 +10,13 @@ FORCE: ;
 
 RMIInterface.jar: Server/Interface/IResourceManager.java
 	@echo "Compiling RMI server interface"
-	javac Server/Interface/IResourceManager.java
-	jar cvf RMIInterface.jar Server/Interface/IResourceManager.class
+	javac Server/Interface/IResourceManager.java Server/LockManager/*.java
+	jar cvf RMIInterface.jar Server/Interface/IResourceManager.class Server/LockManager/*.class
 
-compile-server-rmi: Server/RMI/*.java Server/Interface/IResourceManager.java Server/Common/*.java Server/TCP/*.java
-	javac -cp java-json.jar Server/RMI/*.java Server/Interface/IResourceManager.java Server/Common/*.java Server/TCP/*.java
+compile-server-rmi: Server/RMI/*.java Server/Interface/IResourceManager.java Server/Common/*.java Server/LockManager/*.java
+	javac -cp java-json.jar Server/RMI/*.java Server/Interface/IResourceManager.java Server/Common/*.java Server/LockManager/*.java
 
 clean:
-	rm -f Server/Interface/*.class Server/Common/*.class Server/RMI/*.class Server/TCP/*.class
+	rm -f Server/Interface/*.class Server/Common/*.class Server/RMI/*.class Server/LockManager/*.class
 	rm -f RMIInterface.jar
 	rm -f java.policy 

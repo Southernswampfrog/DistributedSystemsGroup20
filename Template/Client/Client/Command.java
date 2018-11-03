@@ -34,6 +34,9 @@ public enum Command {
 	AnalyticsCar("Show all analytic information about cars", ""),
 	AnalyticsRoom("Show all analytic information about rooms.", ""),
 	AnalyticsCustomer("Show all analytic information about customers.", ""),
+	Commit("Commit current transaction","<xid>"),
+	Start("Indicate start of transaction","<xid>"),
+	Abort("Abort current transaction",""),
 
 	Quit("Exit the client application", "");
 

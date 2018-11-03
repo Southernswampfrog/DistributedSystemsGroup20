@@ -2,6 +2,7 @@ package Server.Interface;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.*;
+import Server.LockManager.*;
 /** 
  * Simplified version from CSE 593 Univ. of Washington
  *
@@ -31,7 +32,7 @@ public interface IResourceManager extends Remote
      * @return Success
      */
     public boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice) 
-	throws RemoteException; 
+	throws RemoteException, InvalidTransactionException;
     
     /**
      * Add car at a location.
@@ -205,4 +206,12 @@ public interface IResourceManager extends Remote
      */
     public String getName()
         throws RemoteException;
+
+    public int start() throws RemoteException;
+    public boolean commit(int transactionId) throws RemoteException,
+            TransactionAbortedException, InvalidTransactionException;
+    public void abort(int transactionId) throws RemoteException,
+            InvalidTransactionException;
+    public boolean shutdown() throws RemoteException;
+
 }

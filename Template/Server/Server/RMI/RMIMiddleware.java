@@ -14,8 +14,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.SQLOutput;
-
 public class RMIMiddleware extends Middleware
 {
 	private static String[] s_RMNames = {"Servers"};
@@ -53,7 +51,7 @@ public class RMIMiddleware extends Middleware
 						registry.unbind(s_rmiPrefix + s_serverName);
 						System.out.println("'" + s_serverName + "' middlerware unbound");
 					}
-					catch(Exception e) {
+					catch(Exception e){
 						System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
 						e.printStackTrace();
 					}

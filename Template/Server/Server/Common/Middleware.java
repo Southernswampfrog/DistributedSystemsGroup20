@@ -6,9 +6,10 @@
 package Server.Common;
 
 import Server.Interface.IResourceManager;
+import Server.LockManager.*;
 
 import java.rmi.RemoteException;
-import java.util.Calendar;
+import java.util.List;
 import java.util.Vector;
 
 public class Middleware extends ResourceManager implements IResourceManager
@@ -17,6 +18,8 @@ public class Middleware extends ResourceManager implements IResourceManager
 	protected String[] m_RMNames = {};
 	protected IResourceManager[] m_RMs = new IResourceManager[3];
 	protected RMHashMap m_data = new RMHashMap();
+	protected LockManager lm = new LockManager();
+	protected TransactionManager tm = new TransactionManager();
 
 	public Middleware(String p_name)
 	{
@@ -26,8 +29,17 @@ public class Middleware extends ResourceManager implements IResourceManager
 
 	// Create a new flight, or add seats to existing flight
 	// NOTE: if flightPrice <= 0 and the flight already exists, it maintains its current price
-	public boolean addFlight(int xid, int flightNum, int flightSeats, int flightPrice) throws RemoteException
+	public boolean addFlight(int xid, int flightNum, int flightSeats, int flightPrice) throws RemoteException, InvalidTransactionException
 	{
+		try {
+			lm.Lock(xid, "Flights", TransactionLockObject.LockType.LOCK_WRITE);
+		}
+		catch (DeadlockException e) {
+			tm.abort(xid);
+		}
+		List<String> list = tm.activeTransactions.get(xid);
+		list.add("Flights");
+		tm.activeTransactions.put(xid, list);
 		return m_RMs[0].addFlight(xid, flightNum, flightSeats, flightPrice);
 	}
 
@@ -51,12 +63,12 @@ public class Middleware extends ResourceManager implements IResourceManager
         return m_RMs[0].deleteFlight(xid, flightNum);
 	}
 
-	// Delete cars at a location
 	public boolean deleteCars(int xid, String location) throws RemoteException
 	{
 		return m_RMs[1].deleteCars(xid, location);
 	}
 
+	// Delete cars at a location
 	// Delete rooms at a location
 	public boolean deleteRooms(int xid, String location) throws RemoteException
 	{
@@ -66,12 +78,30 @@ public class Middleware extends ResourceManager implements IResourceManager
 	// Returns the number of empty seats in this flight
 	public int queryFlight(int xid, int flightNum) throws RemoteException
 	{
+		try {
+			lm.Lock(xid, "Flights", TransactionLockObject.LockType.LOCK_READ);
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
+		List<String> list = tm.activeTransactions.get(xid);
+		list.add("Flights");
+		tm.activeTransactions.put(xid, list);
 		return m_RMs[0].queryFlight(xid, flightNum);
 	}
 
 	// Returns the number of cars available at a location
 	public int queryCars(int xid, String location) throws RemoteException
 	{
+		try {
+			lm.Lock(xid, "Cars", TransactionLockObject.LockType.LOCK_READ);
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
+		List<String> list = tm.activeTransactions.get(xid);
+		list.add("Cars");
+		tm.activeTransactions.put(xid, list);
 		return m_RMs[1].queryCars(xid, location);
 	}
 
@@ -180,10 +210,24 @@ public class Middleware extends ResourceManager implements IResourceManager
         }
 		return true;
 	}
-
-	public String getName() throws RemoteException
-	{
-		return m_name;
-		}
+    public int start() throws RemoteException{
+		int xid = tm.start();
+        return xid;
+    }
+    public boolean commit(int xid) throws RemoteException,
+            TransactionAbortedException, InvalidTransactionException {
+		boolean x = tm.commit(xid);
+		lm.UnlockAll(xid);
+		return x;
+    }
+    public void abort(int xid) throws RemoteException,
+            InvalidTransactionException {
+		tm.abort(xid);
+		lm.UnlockAll(xid);
+    }
+    public boolean shutdown(int xid) throws RemoteException{
+        lm.UnlockAll(xid);
+        return true;
+    }
 }
  

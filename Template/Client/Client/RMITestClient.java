@@ -90,12 +90,16 @@ public class RMITestClient extends Client {
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         String[] testCases = {
                 //   "AddCustomerID,2,2\r",
+                "start\r",
+                "QueryFlight,1,2\r",
+                "start\r",
+                //"QueryCars,0,Italy\r",
+                "AddFlight,1,2,2,2\r",
                 "QueryFlight,2,2\r",
-                "QueryCars,2,2\r",
-                "AddFlight,2,2,2,2\r",
-
-                //   "ReserveFlight,2,2,2\r",
-                //   "AddRooms,2,Italy,2,2\r",
+                "commit,1\r",
+                "commit,2\r",
+                //"ReserveFlight,2,2,2\r",
+                //"AddRooms,2,Italy,2,2\r",
                 //"ReserveRoom,2,2,\"Italy\"\r",
                 //"AddCars,2,Italy,2,2\r",
                 //"ReserveCar,2,2,Italy\r",
@@ -121,11 +125,6 @@ public class RMITestClient extends Client {
             } catch (Exception e) {
                 System.err.println((char) 27 + "[31;1mCommand exception: " + (char) 27 + "[0mUncaught exception");
                 e.printStackTrace();
-            }
-            try {
-                TimeUnit.SECONDS.sleep(3);
-            } catch (Exception e) {
-                System.out.println(e);
             }
         }
     }
