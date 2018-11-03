@@ -4,10 +4,12 @@ import Server.Interface.IResourceManager;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
@@ -83,48 +85,72 @@ public class RMITestClient extends Client {
     }
 
     public void start() {
-        // Prepare for reading commands
-        System.out.println();
-        System.out.println("Location \"help\" for list of supported commands");
+        if (s_serverHost.equals("localhost")) {
+            // Prepare for reading commands
+            System.out.println();
+            System.out.println("Location \"help\" for list of supported commands");
 
-        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-        String[] testCases = {
-                //   "AddCustomerID,2,2\r",
-                "start\r",
-                "QueryFlight,1,2\r",
-                "start\r",
-                //"QueryCars,0,Italy\r",
-                "AddFlight,1,2,2,2\r",
-                "QueryFlight,2,2\r",
-                "commit,1\r",
-                "commit,2\r",
-                //"ReserveFlight,2,2,2\r",
-                //"AddRooms,2,Italy,2,2\r",
-                //"ReserveRoom,2,2,\"Italy\"\r",
-                //"AddCars,2,Italy,2,2\r",
-                //"ReserveCar,2,2,Italy\r",
-                //"QueryCustomer,2,2",
-                //"QueryCars,2,Italy\r",
-                //"Bundle,2,2,2,3,Italy,true,true\r",
-                "quit\r"};
-        for (String i : testCases) {
-            // Read the next command
-            String command = "";
-            Vector<String> arguments = new Vector<String>();
-            System.out.print((char) 27 + "[32;1m\n>] " + (char) 27 + "[0m");
-            command = i;
-            try {
-                arguments = parse(command);
-                Command cmd = Command.fromString((String) arguments.elementAt(0));
-                try {
-                    execute(cmd, arguments);
-                } catch (Exception e) {
-                    connectServer();
-                    execute(cmd, arguments);
+            BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+            String[] testCases = {
+                    //   "AddCustomerID,2,2\r",
+                    "QueryFlight,2,2\r",
+                    "QueryCars,2,2\r",
+                    "AddFlight,2,2,2,2\r",
+
+                    "ReserveFlight,2,2,2\r",
+                    //   "AddRooms,2,Italy,2,2\r",
+                    //"ReserveRoom,2,2,\"Italy\"\r",
+                    //"AddCars,2,Italy,2,2\r",
+                    //"ReserveCar,2,2,Italy\r",
+                    //"QueryCustomer,2,2",
+                    //"QueryCars,2,Italy\r",
+                    //"Bundle,2,2,2,3,Italy,true,true\r",
+                    "quit\r"};
+            long[] averageRespTimes = new long[testCases.length];
+            ArrayList<Long>[] respTimes = new ArrayList[testCases.length];
+            for (int i = 0; i < respTimes.length; i++) {
+                respTimes[i] = new ArrayList<Long>();
+            }
+            for (int i = 0; i < testCases.length; i++) {
+                // Read the next command
+                String command = "";
+                Vector<String> arguments = new Vector<String>();
+                System.out.print((char) 27 + "[32;1m\n>] " + (char) 27 + "[0m");
+                command = testCases[i];
+                int numberOfRuns = 50000;
+                for (int j = 0; j < numberOfRuns; j++) {
+                    long startTime = System.nanoTime();
+                    try {
+                        arguments = parse(command);
+                        Command cmd = Command.fromString((String) arguments.elementAt(0));
+                        try {
+                            execute(cmd, arguments);
+                        } catch (Exception e) {
+                            connectServer();
+                            execute(cmd, arguments);
+                        }
+                    } catch (Exception e) {
+                        System.err.println((char) 27 + "[31;1mCommand exception: " + (char) 27 + "[0mUncaught exception");
+                        e.printStackTrace();
+                    }
+                    long endTime = System.nanoTime();
+                    respTimes[i].add(endTime - startTime);
                 }
-            } catch (Exception e) {
-                System.err.println((char) 27 + "[31;1mCommand exception: " + (char) 27 + "[0mUncaught exception");
-                e.printStackTrace();
+                long average = 0;
+                for (long time : respTimes[i]) {
+                    average += time;
+                }
+                averageRespTimes[i] = average / numberOfRuns;
+                System.out.println(respTimes[i]);
+                for (int k = 0; k < averageRespTimes.length; k++) {
+                    System.out.println(averageRespTimes[k] + "---" + testCases[k]);
+                }
+
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
             }
         }
     }
