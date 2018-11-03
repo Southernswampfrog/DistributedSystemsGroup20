@@ -43,7 +43,7 @@ public interface IResourceManager extends Remote
      * @return Success
      */
     public boolean addCars(int id, String location, int numCars, int price) 
-	throws RemoteException; 
+	throws RemoteException, InvalidTransactionException;
    
     /**
      * Add room at a location.
@@ -117,7 +117,7 @@ public interface IResourceManager extends Remote
      * @return Number of empty seats
      */
     public int queryFlight(int id, int flightNumber) 
-	throws RemoteException; 
+	throws RemoteException, InvalidTransactionException;
 
     /**
      * Query the status of a car location.
@@ -125,7 +125,7 @@ public interface IResourceManager extends Remote
      * @return Number of available cars at this location
      */
     public int queryCars(int id, String location) 
-	throws RemoteException; 
+	throws RemoteException, InvalidTransactionException;
 
     /**
      * Query the status of a room location.

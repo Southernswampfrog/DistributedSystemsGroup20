@@ -93,11 +93,15 @@ public class RMITestClient extends Client {
             BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
             String[] testCases = {
                     //   "AddCustomerID,2,2\r",
-                    "QueryFlight,2,2\r",
+                    "start\r",
+                    "AddFlight,1,2,2,2\r",
+                    "start\r",
+                    //"QueryCars,2,2\r",
+                    "AddCars,2,italy,2,2\r",
                     "QueryCars,2,2\r",
-                    "AddFlight,2,2,2,2\r",
-
-                    "ReserveFlight,2,2,2\r",
+                    "AddCars,1,rome,2,2\r",
+                    "commit,1\r",
+                    "commit,2\r",
                     //   "AddRooms,2,Italy,2,2\r",
                     //"ReserveRoom,2,2,\"Italy\"\r",
                     //"AddCars,2,Italy,2,2\r",
@@ -117,7 +121,7 @@ public class RMITestClient extends Client {
                 Vector<String> arguments = new Vector<String>();
                 System.out.print((char) 27 + "[32;1m\n>] " + (char) 27 + "[0m");
                 command = testCases[i];
-                int numberOfRuns = 50000;
+                int numberOfRuns = 1;
                 for (int j = 0; j < numberOfRuns; j++) {
                     long startTime = System.nanoTime();
                     try {
