@@ -3,6 +3,7 @@ package Client;
 import Server.Interface.*;
 import Server.LockManager.InvalidTransactionException;
 import Server.LockManager.TransactionAbortedException;
+import Server.Common.*;
 
 import javax.print.DocFlavor;
 import java.util.*;
@@ -447,6 +448,9 @@ public abstract class Client
 		}
 		catch(InvalidTransactionException ite) {
 			System.out.println(ite);
+		}
+		catch(TransactionAbortedException tae) {
+			System.out.println(tae);
 		}
 	}
 

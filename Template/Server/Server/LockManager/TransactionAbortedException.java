@@ -1,17 +1,10 @@
 package Server.LockManager;
 
 public class TransactionAbortedException extends Exception {
-    private int m_xid = 0;
-
-    public TransactionAbortedException(int xid, String msg)
+    public TransactionAbortedException(int xid)
     {
-        super("The transaction " + xid + " is deadlocked:" + msg);
-        m_xid = xid;
-    }
+        super("The transaction " + xid + " has been aborted.");
 
-    int getXId()
-    {
-        return m_xid;
     }
 }
 
