@@ -1,12 +1,13 @@
 package Server.Interface;
-import java.nio.channels.ClosedChannelException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.*;
 
+import Server.Common.InvalidTransactionException;
 import Server.Common.RMHashMap;
-import Server.LockManager.*;
-/** 
+import Server.Common.TransactionAbortedException;
+
+/**
  * Simplified version from CSE 593 Univ. of Washington
  *
  * Distributed  System in Java.
@@ -35,7 +36,7 @@ public interface IResourceManager extends Remote
      * @return Success
      */
     public boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice) 
-	throws RemoteException,  InvalidTransactionException, TransactionAbortedException;
+	throws RemoteException, InvalidTransactionException, TransactionAbortedException;
     
     /**
      * Add car at a location.

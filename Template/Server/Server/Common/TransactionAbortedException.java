@@ -1,4 +1,4 @@
-package Server.LockManager;
+package Server.Common;
 
 public class TransactionAbortedException extends Exception {
     public TransactionAbortedException(int xid)

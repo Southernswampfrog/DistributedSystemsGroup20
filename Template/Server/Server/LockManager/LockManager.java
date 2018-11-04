@@ -238,6 +238,7 @@ public class LockManager
 					}
 					else if (l_dataLockObject.m_lockType == TransactionLockObject.LockType.LOCK_WRITE){
 						// Already have a WRITE lock, and want to request a WRITE lock
+						throw new RedundantLockRequestException(dataLockObject.getXId(), "redundant WRITE lock request");
 					}
 				}
 				return false;

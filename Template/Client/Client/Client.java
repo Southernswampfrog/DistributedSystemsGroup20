@@ -1,11 +1,9 @@
 package Client;
 
 import Server.Interface.*;
-import Server.LockManager.InvalidTransactionException;
-import Server.LockManager.TransactionAbortedException;
-import Server.Common.*;
+import Server.Common.InvalidTransactionException;
+import Server.Common.TransactionAbortedException;
 
-import javax.print.DocFlavor;
 import java.util.*;
 import java.io.*;
 import java.rmi.RemoteException;

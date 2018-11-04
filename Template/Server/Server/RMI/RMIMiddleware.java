@@ -20,7 +20,8 @@ public class RMIMiddleware extends Middleware
 	private static String s_serverName = "Middleware";
 	private static int s_serverPort = 1099;
 	 private static String s_rmiPrefix = "group20";
-    
+
+
 	public static void main(String args[])
 	{
 		if (args.length > 0)
