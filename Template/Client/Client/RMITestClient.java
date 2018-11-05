@@ -96,7 +96,7 @@ public class RMITestClient extends Client {
     public void start() {
         if (multiClient) {
             for (int i = 0; i < numberOfClients; i++) {
-                new Thread(new RMITestClientThread(numberOfClients, numberOfTransPerS, numberOfRuns)).start();
+                new Thread(new RMITestClientThread(numberOfClients, numberOfTransPerS, numberOfRuns, i)).start();
             }
         } else {
             System.out.println();
@@ -261,11 +261,13 @@ class RMITestClientThread extends RMITestClient implements Runnable {
     private int numberOfClients;
     private int numberOfTransPerS;
     private int numberOfRuns;
+    private int threadnumber;
 
-    public RMITestClientThread(int numberOfClients, int numberOfTransPerS, int numberOfRuns) {
+    public RMITestClientThread(int numberOfClients, int numberOfTransPerS, int numberOfRuns, int threadnumber) {
         this.numberOfClients = numberOfClients;
         this.numberOfTransPerS = numberOfTransPerS;
         this.numberOfRuns = numberOfRuns;
+        this.threadnumber = threadnumber;
     }
 
     public void run() {
@@ -284,30 +286,30 @@ class RMITestClientThread extends RMITestClient implements Runnable {
         for (int j = 0; j < numberOfRuns; j++) {
             String[] testCases = {
                     "start\r",
-                    "AddCustomerID," + (j + 1) + ",100\r",
-                    "AddCustomer," + (j + 1) + "\r",
-                    "AddFlight," + (j + 1) + ",2,2,2\r",
-                    "AddRooms," + (j + 1) + ",2,2,2\r",
-                    "AddCars," + (j + 1) + ",2,2,2\r",
-                    "QueryFlight," + (j + 1) + ",2\r",
-                    "QueryCars," + (j + 1) + ",2\r",
-                    "QueryRooms," + (j + 1) + ",2\r",
-                    "QueryCustomer," + (j + 1) + ",100\r",
-                    "QueryFlightPrice," + (j + 1) + ",2\r",
-                    "QueryRoomsPrice," + (j + 1) + ",2\r",
-                    "QueryCarsPrice," + (j + 1) + ",2\r",
-                    "ReserveFlight," + (j + 1) + ",100,2\r",
-                    "ReserveCar," + (j + 1) + ",100,2\r",
-                    "ReserveRoom," + (j + 1) + ",100,2\r",
-                    "QueryFlight," + (j + 1) + ",2\r",
-                    "QueryCars," + (j + 1) + ",2\r",
-                    "QueryRooms," + (j + 1) + ",2\r",
-                    "Bundle," + (j + 1) + ",100,2,2,true,true\r",
-                    "Bundle," + (j + 1) + ",100,2,2,true,true\r",
-                    "QueryFlight," + (j + 1) + ",2\r",
-                    "QueryCars," + (j + 1) + ",2\r",
-                    "QueryRooms," + (j + 1) + ",2\r",
-                    "QueryCustomer," + (j + 1) + ",100\r",
+                    "AddCustomerID," + (j + 1) + "," + (100+threadnumber) +"\r",
+                    "AddCustomer," + (j + 1) + "," + (100+threadnumber) + "\r",
+                    "AddFlight," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
+                    "AddRooms," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
+                    "AddCars," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
+                    "QueryFlight," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "QueryCars," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "QueryRooms," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "QueryCustomer," + (j + 1) + "," + (100+threadnumber) +"\r",
+                    "QueryFlightPrice," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "QueryRoomsPrice," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "QueryCarsPrice," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "ReserveFlight," + (j + 1) + ",100," + (2+threadnumber) +"\r",
+                    "ReserveCar," + (j + 1) + ",100," + (2+threadnumber) +"\r",
+                    "ReserveRoom," + (j + 1) + ",100," + (2+threadnumber) +"\r",
+                    "QueryFlight," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "QueryCars," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "QueryRooms," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "Bundle," + (j + 1) + ",100,2," + (2+threadnumber) +",true,true\r",
+                    "Bundle," + (j + 1) + ",100,2," + (2+threadnumber) +",true,true\r",
+                    "QueryFlight," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "QueryCars," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "QueryRooms," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    "QueryCustomer," + (j + 1) + "," + (1000+threadnumber) +"\r",
                     "commit," + (j + 1) + "\r",
             };
             for (int i = 0; i < testCases.length; i++) {
