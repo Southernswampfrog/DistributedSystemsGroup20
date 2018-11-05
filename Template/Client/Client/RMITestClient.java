@@ -287,7 +287,7 @@ class RMITestClientThread extends RMITestClient implements Runnable {
             String[] testCases = {
                     "start\r",
                     "AddCustomerID," + (j + 1) + "," + (100+threadnumber) +"\r",
-                    "AddCustomer," + (j + 1) + "," + (100+threadnumber) + "\r",
+                    "AddCustomer," + (j + 1) + "\r",
                     "AddFlight," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
                     "AddRooms," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
                     "AddCars," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
