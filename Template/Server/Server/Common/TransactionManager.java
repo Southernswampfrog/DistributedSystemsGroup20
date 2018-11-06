@@ -10,22 +10,25 @@ public class TransactionManager {
     protected HashMap<Integer, Set<String>> activeTransactions;
     protected int next_xid;
     protected Map<Integer, Timer> TTLMap = new HashMap<>();
-    protected RMHashMap[] m_RMs = new RMHashMap[3];
-    protected static int TTL_TIMEOUT = 50000;
+    protected Map<Integer, RMHashMap[]> undoData = new HashMap<>();
+    protected static int TTL_TIMEOUT = 100000;
     protected LockManager lm;
-    protected Runnable undo;
+    protected Map<Integer, ArrayList<Runnable>> undo;
 
 
     public TransactionManager(LockManager lockmanager) {
         activeTransactions = new HashMap<>();
         next_xid = 0;
         lm = lockmanager;
+        undo = new HashMap<>();
+        undoData = new HashMap<>();
     }
 
-    public int start() throws RemoteException {
+    public int start() {
         next_xid++;
-        Set<String> list = new HashSet<>();
-        activeTransactions.put(next_xid, list);
+        activeTransactions.put(next_xid, new HashSet<>());
+        undo.put(next_xid,new ArrayList<>());
+        undoData.put(next_xid, new RMHashMap[3]);
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             public void run() {
@@ -44,9 +47,13 @@ public class TransactionManager {
     public void abort(int xid) throws RemoteException, InvalidTransactionException {
         activeTransactions.remove(xid);
         lm.UnlockAll(xid);
-        undo.run();
+        for (Runnable i : undo.get(xid)) {
+            i.run();
+        }
         TTLMap.get(xid).cancel();
         TTLMap.remove(xid);
+        undoData.remove(xid);
+        undo.remove(xid);
     }
 
     public boolean commit(int xid) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
@@ -54,6 +61,8 @@ public class TransactionManager {
         lm.UnlockAll(xid);
         TTLMap.get(xid).cancel();
         TTLMap.remove(xid);
+        undoData.remove(xid);
+        undo.remove(xid);
         return true;
     }
 }

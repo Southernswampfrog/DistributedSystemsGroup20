@@ -65,10 +65,8 @@ public class LockManager
 							//TODO: Lock conversion
 							this.lockTable.removeAll(dataLockObject);
 							this.lockTable.removeAll(xLockObject);
-							System.out.println(lockTable.allElements());
 							this.lockTable.add(xLockObject);
 							this.lockTable.add(dataLockObject);
-							System.out.println(lockTable.allElements());
 							Trace.info("LM::lock(" + xid + ", " + data + ", " + lockType + ") converted");
 						} else {
 							// Lock request that is not lock conversion
