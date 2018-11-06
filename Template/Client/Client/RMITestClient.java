@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
@@ -288,7 +289,7 @@ class RMITestClientThread extends RMITestClient implements Runnable {
                     "start\r",
                     "AddCustomerID," + (j + 1) + "," + (100+threadnumber) +"\r",
                     "AddCustomer," + (j + 1) + "\r",
-               /*     "AddFlight," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
+                    "AddFlight," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
                     "AddRooms," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
                     "AddCars," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
                     "QueryFlight," + (j + 1) + "," + (2+threadnumber) +"\r",
@@ -309,7 +310,7 @@ class RMITestClientThread extends RMITestClient implements Runnable {
                     "QueryFlight," + (j + 1) + "," + (2+threadnumber) +"\r",
                     "QueryCars," + (j + 1) + "," + (2+threadnumber) +"\r",
                     "QueryRooms," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryCustomer," + (j + 1) + "," + (1000+threadnumber) +"\r",*/
+                    "QueryCustomer," + (j + 1) + "," + (1000+threadnumber) +"\r",
                     "commit," + (j + 1) + "\r",
             };
             for (int i = 0; i < testCases.length; i++) {

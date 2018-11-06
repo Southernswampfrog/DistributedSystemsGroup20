@@ -8,6 +8,7 @@ package Server.Common;
 import Server.Interface.IResourceManager;
 import Server.LockManager.*;
 
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -432,32 +433,36 @@ public class Middleware extends ResourceManager implements IResourceManager {
         return true;
     }
 
-    public void updateTM(List<String> RMNames, int xid, boolean needsImage) throws RemoteException {
+    public synchronized void updateTM(List<String> RMNames, int xid, boolean needsImage) throws RemoteException, ConcurrentModificationException {
         int position = 0;
-        for (String i : RMNames) {
-            tm.activeTransactions.get(xid).add(i);
-            if (i.equals("Flights")) {
-                position = 0;
-            } else if (i.equals("Cars")) {
-                position = 1;
-            } else if (i.equals("Rooms")) {
-                position = 2;
+            int length = RMNames.size();
+            for (int i = 0; i < length; i++) {
+                String j = RMNames.get(i);
+                tm.activeTransactions.get(xid).add(j);
+                if (j.equals("Flights")) {
+                    position = 0;
+                } else if (j.equals("Cars")) {
+                    position = 1;
+                } else if (j.equals("Rooms")) {
+                    position = 2;
+                }
+                RMHashMap[] l = tm.undoData.get(xid);
+                if (needsImage && l[position] == null) {
+                    RMHashMap[] list = tm.undoData.get(xid);
+                    list[position] = m_RMs[position].getData();
+                    tm.undoData.put(xid, list);
+                    final int y = position;
+                    //store method at Transaction Manager to recall this state
+                    Runnable x = (() -> {
+                        RMHashMap[] undoData = tm.undoData.get(xid);
+                        m_RMs[y] = (new ResourceManager(undoData[y], j));
+                        tm.undoData.remove(xid);
+                    });
+                    if (tm.undo.containsKey(xid)) {
+                        tm.undo.get(xid).add(x);
+                    }
+                }
             }
-            RMHashMap[] l = tm.undoData.get(xid);
-            if (needsImage && l[position] == null) {
-                RMHashMap[] list = tm.undoData.get(xid);
-                list[position] = m_RMs[position].getData();
-                tm.undoData.put(xid, list);
-                final int y = position;
-                //store method at Transaction Manager to recall this state
-                Runnable x = (() -> {
-                    RMHashMap[] undoData = tm.undoData.get(xid);
-                    m_RMs[y] = (new ResourceManager(undoData[y], i));
-                    tm.undoData.remove(xid);
-                });
-                tm.undo.get(xid).add(x);
-            }
-        }
         System.out.println("Active Transactions" + tm.activeTransactions);
         //update timer
         Timer t = new Timer();
@@ -480,18 +485,20 @@ public class Middleware extends ResourceManager implements IResourceManager {
     }
 
 
-    public void ValidityAndLockCheck(List<String> RMNames, int xid, TransactionLockObject.LockType locktype)
+    public synchronized void ValidityAndLockCheck(List<String> RMNames, int xid, TransactionLockObject.LockType locktype)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         if (!tm.activeTransactions.containsKey(xid)) {
             throw new InvalidTransactionException(xid);
         }
-        for (String i : RMNames)
+        int j = RMNames.size();
+        for (int i = 0; i < j; i++) {
             try {
-                lm.Lock(xid, i, locktype);
+                lm.Lock(xid, RMNames.get(i), locktype);
             } catch (DeadlockException e) {
                 abort(xid);
                 throw new TransactionAbortedException(xid);
             }
+        }
     }
 
     public class SubTransaction implements Callable {
