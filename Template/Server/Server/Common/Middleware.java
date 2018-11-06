@@ -443,7 +443,8 @@ public class Middleware extends ResourceManager implements IResourceManager {
             } else if (i.equals("Rooms")) {
                 position = 2;
             }
-            if (needsImage && tm.undoData.get(xid)[position] == null) {
+            RMHashMap[] l = tm.undoData.get(xid);
+            if (needsImage && l[position] == null) {
                 RMHashMap[] list = tm.undoData.get(xid);
                 list[position] = m_RMs[position].getData();
                 tm.undoData.put(xid, list);
