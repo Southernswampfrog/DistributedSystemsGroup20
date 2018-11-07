@@ -12,13 +12,14 @@ import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class Middleware extends ResourceManager implements IResourceManager {
+public class Middleware extends ResourceManager implements IResourceManager  {
     protected String m_name = "";
     protected IResourceManager[] m_RMs = new IResourceManager[3];
     protected LockManager lm = new LockManager();
     protected TransactionManager tm = new TransactionManager(lm);
-    protected static int TTL_TIMEOUT = 100000;
+    protected static int TTL_TIMEOUT = 50000;
     protected List<String> RMs;
 
     public Middleware(String p_name) {
@@ -32,13 +33,9 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public boolean addFlight(int xid, int flightNum, int flightSeats, int flightPrice)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Flights");
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[0].addFlight(xid, flightNum, flightSeats, flightPrice);
     }
@@ -48,14 +45,9 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public boolean addCars(int xid, String location, int count, int price)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Cars");
-
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[1].addCars(xid, location, count, price);
 
@@ -68,12 +60,8 @@ public class Middleware extends ResourceManager implements IResourceManager {
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         RMs.add("Rooms");
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[2].addRooms(xid, location, count, price);
     }
@@ -83,12 +71,8 @@ public class Middleware extends ResourceManager implements IResourceManager {
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         RMs.add("Flights");
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[0].deleteFlight(xid, flightNum);
     }
@@ -99,12 +83,8 @@ public class Middleware extends ResourceManager implements IResourceManager {
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         RMs.add("Cars");
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[1].deleteCars(xid, location);
     }
@@ -114,12 +94,8 @@ public class Middleware extends ResourceManager implements IResourceManager {
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         RMs.add("Rooms");
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[2].deleteRooms(xid, location);
     }
@@ -128,13 +104,9 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public int queryFlight(int xid, int flightNum)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Flights");
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[0].queryFlight(xid, flightNum);
     }
@@ -144,12 +116,8 @@ public class Middleware extends ResourceManager implements IResourceManager {
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         RMs.add("Cars");
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[1].queryCars(xid, location);
     }
@@ -158,13 +126,9 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public int queryRooms(int xid, String location)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Rooms");
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[2].queryRooms(xid, location);
     }
@@ -174,13 +138,9 @@ public class Middleware extends ResourceManager implements IResourceManager {
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
 
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Flights");
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[0].queryFlightPrice(xid, flightNum);
     }
@@ -190,12 +150,8 @@ public class Middleware extends ResourceManager implements IResourceManager {
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         RMs.add("Cars");
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[1].queryCarsPrice(xid, location);
     }
@@ -205,12 +161,8 @@ public class Middleware extends ResourceManager implements IResourceManager {
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         RMs.add("Rooms");
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[2].queryRoomsPrice(xid, location);
     }
@@ -220,12 +172,8 @@ public class Middleware extends ResourceManager implements IResourceManager {
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         RMs.add("Flights");
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[0].reserveFlight(xid, customerID, flightNum);
     }
@@ -234,13 +182,9 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public boolean reserveCar(int xid, int customerID, String location)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Cars");
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[1].reserveCar(xid, customerID, location);
     }
@@ -249,13 +193,9 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public boolean reserveRoom(int xid, int customerID, String location)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Rooms");
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         return m_RMs[2].reserveRoom(xid, customerID, location);
     }
@@ -263,15 +203,11 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public String queryCustomerInfo(int xid, int customerID)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Flights");
         RMs.add("Cars");
         RMs.add("Rooms");
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         String x = "Bill for Customer " + customerID + ":";
         for (int i = 0; i < 3; i++) {
             x = x + m_RMs[i].queryCustomerInfo(xid, customerID);
@@ -285,15 +221,11 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public int newCustomer(int xid)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Flights");
         RMs.add("Cars");
         RMs.add("Rooms");
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         int x;
         x = m_RMs[0].newCustomer(xid);
         m_RMs[1].newCustomer(xid, x);
@@ -305,15 +237,12 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public boolean newCustomer(int xid, int customerID)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
+
         RMs.add("Flights");
         RMs.add("Cars");
         RMs.add("Rooms");
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         boolean x = false;
         for (int i = 0; i < 3; i++) {
             x = m_RMs[i].newCustomer(xid, customerID);
@@ -325,15 +254,11 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public boolean deleteCustomer(int xid, int customerID)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Flights");
         RMs.add("Cars");
         RMs.add("Rooms");
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         boolean x = false;
         for (int i = 0; i < 3; i++) {
             x = m_RMs[i].deleteCustomer(xid, customerID);
@@ -347,10 +272,6 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public boolean bundle(int xid, int customerId, Vector<String> flightNumbers, String location, boolean car,
                           boolean room) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        boolean needsImage = false;
-        if (lockType == TransactionLockObject.LockType.LOCK_WRITE) {
-            needsImage = true;
-        }
         RMs.add("Flights");
         if (car) {
             RMs.add("Cars");
@@ -359,49 +280,44 @@ public class Middleware extends ResourceManager implements IResourceManager {
             RMs.add("Rooms");
         }
         ValidityAndLockCheck(RMs, xid, lockType);
-        updateTM(RMs, xid, needsImage);
+        updateTM(RMs, xid, lockType);
         RMs.clear();
         //check before actually doing any writes
+        int y;
         for (String flightNumber : flightNumbers) {
-            int y = (int) new SubTransaction(() -> m_RMs[0].queryFlight(xid, Integer.parseInt(flightNumber))).call();
-            System.out.println("number of seats" + y);
+            y = (int) new SubTransaction(() -> m_RMs[0].queryFlight(xid, Integer.parseInt(flightNumber))).call();
+            System.out.println("here");
             if (y < 1) {
                 return false;
             }
-            y = (int) new SubTransaction(() -> m_RMs[1].queryCars(xid, location)).call();
-            if (y < 1 && car) {
-                return false;
-            }
-            y = (int) new SubTransaction(() -> m_RMs[2].queryRooms(xid, location)).call();
-            if (y < 1 && room) {
-                return false;
-            }
-
-            //int y = m_RMs[0].queryFlight(xid, Integer.parseInt(flightNumber));
-
-            if (car) {
-                y = m_RMs[1].queryCars(xid, location);
-                if (y < 1) {
-                    return false;
-                }
-            }
-            if (room) {
-                y = m_RMs[2].queryRooms(xid, location);
-                if (y < 1) {
-                    return false;
-                }
-            }
         }
+        int z = (int) new SubTransaction(() -> m_RMs[1].queryCars(xid, location)).call();
+        int w = (int) new SubTransaction(() -> m_RMs[2].queryRooms(xid, location)).call();
+        if (room && w < 1) {
+            return false;
+        }
+        if (car && z < 1) {
+            return false;
+        }
+        boolean m = true;
+        boolean n = true;
+        boolean o = true;
         for (String flightNumber : flightNumbers) {
-            m_RMs[0].reserveFlight(xid, customerId, Integer.parseInt(flightNumber));
+            m = (boolean) new SubTransaction(() -> m_RMs[0].reserveFlight(xid, customerId, Integer.parseInt(flightNumber))).call();
+            System.out.println("here");
         }
         if (car) {
-            m_RMs[1].reserveCar(xid, customerId, location);
+            n = (boolean) new SubTransaction(() -> m_RMs[1].reserveCar(xid, customerId, location)).call();
         }
         if (room) {
-            m_RMs[2].reserveRoom(xid, customerId, location);
+            o = (boolean) new SubTransaction(() -> m_RMs[2].reserveRoom(xid, customerId, location)).call();
         }
-        return true;
+        if (m && n && o) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public int start() throws RemoteException {
@@ -433,7 +349,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
         return true;
     }
 
-    public synchronized void updateTM(List<String> RMNames, int xid, boolean needsImage) throws RemoteException, ConcurrentModificationException {
+    public synchronized void updateTM(List<String> RMNames, int xid, TransactionLockObject.LockType locktype) throws RemoteException, ConcurrentModificationException {
         int position = 0;
             int length = RMNames.size();
             for (int i = 0; i < length; i++) {
@@ -447,7 +363,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
                     position = 2;
                 }
                 RMHashMap[] l = tm.undoData.get(xid);
-                if (needsImage && l[position] == null) {
+                if (locktype == TransactionLockObject.LockType.LOCK_WRITE && l[position] == null) {
                     RMHashMap[] list = tm.undoData.get(xid);
                     list[position] = m_RMs[position].getData();
                     tm.undoData.put(xid, list);
@@ -466,18 +382,17 @@ public class Middleware extends ResourceManager implements IResourceManager {
         System.out.println("Active Transactions" + tm.activeTransactions);
         //update timer
         Timer t = new Timer();
-        t.schedule(new
-
-                           TimerTask() {
-                               public void run() {
-                                   try {
-                                       System.out.println("The transaction" + xid + "has timed out");
-                                       abort(xid);
-                                       throw new TransactionAbortedException(xid);
-                                   } catch (Exception e) {
-                                   }
-                               }
-                           }, TTL_TIMEOUT);
+        t.schedule(new TimerTask() {
+            public void run() {
+                try {
+                    System.out.println("The transaction " + xid + " has timed out");
+                    abort(xid);
+                    System.out.println(tm.activeTransactions);
+                    throw new TransactionAbortedException(xid);
+                } catch (Exception e) {
+                }
+            }
+        }, TTL_TIMEOUT);
         if (tm.TTLMap.get(xid) != null) {
             tm.TTLMap.get(xid).cancel();
         }
@@ -504,12 +419,16 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public class SubTransaction implements Callable {
         protected Callable method;
         protected Object x;
+        protected int subID;
 
         public SubTransaction(Callable method) {
             this.method = method;
+            this.subID = ThreadLocalRandom.current().nextInt(0, 100000);
         }
 
         public Object call() {
+            System.out.println("Running subtransaction: " + subID);
+
             try {
                 x = method.call();
             } catch (Exception e) {

@@ -39,7 +39,6 @@ public class LockManager
 		// Two objects in lock table for easy lookup
 		TransactionLockObject xLockObject = new TransactionLockObject(xid, data, lockType);
 		DataLockObject dataLockObject = new DataLockObject(xid, data, lockType);
-
 		// Return true when there is no lock conflict or throw a deadlock exception
 		try {
 			boolean bConflict = true;
@@ -61,7 +60,7 @@ public class LockManager
 							WaitLockObject waitLockObject = new WaitLockObject(xid, data, lockType);
 							this.waitTable.remove(waitLockObject);
 						}
-						if (bConvert.get(0) == true) {
+						if (bConvert.get(0)) {
 							//TODO: Lock conversion
 							this.lockTable.removeAll(dataLockObject);
 							this.lockTable.removeAll(xLockObject);

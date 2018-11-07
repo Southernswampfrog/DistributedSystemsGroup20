@@ -20,7 +20,7 @@ public class RMITestClient extends Client {
     private static boolean multiClient = false;
     private static int numberOfClients = 0;
     private static int numberOfTransPerS = 0;
-    private int numberOfRuns = 1;
+    private int numberOfRuns = 10;
 
 
     private static String s_rmiPrefix = "group20";
@@ -287,12 +287,11 @@ class RMITestClientThread extends RMITestClient implements Runnable {
         for (int j = 0; j < numberOfRuns; j++) {
             String[] testCases = {
                     "start\r",
-                    "AddCustomerID," + (j + 1) + "," + (100+threadnumber) +"\r",
-                    "AddCustomer," + (j + 1) + "\r",
-                    "AddFlight," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
+                    /*"AddCustomer," + (j + threadnumber) + "\r",
+                    "AddFlight," + (j + threadnumber) + ",2,2," + (2+threadnumber) +"\r",
                     "AddRooms," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
                     "AddCars," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
-                    "QueryFlight," + (j + 1) + "," + (2+threadnumber) +"\r",
+                    */"QueryFlight," + (j + threadnumber) + "," + (2+threadnumber) +"\r",/*
                     "QueryCars," + (j + 1) + "," + (2+threadnumber) +"\r",
                     "QueryRooms," + (j + 1) + "," + (2+threadnumber) +"\r",
                     "QueryCustomer," + (j + 1) + "," + (100+threadnumber) +"\r",
@@ -310,8 +309,8 @@ class RMITestClientThread extends RMITestClient implements Runnable {
                     "QueryFlight," + (j + 1) + "," + (2+threadnumber) +"\r",
                     "QueryCars," + (j + 1) + "," + (2+threadnumber) +"\r",
                     "QueryRooms," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryCustomer," + (j + 1) + "," + (1000+threadnumber) +"\r",
-                    "commit," + (j + 1) + "\r",
+                    "QueryCustomer," + (j + 1) + "," + (1000+threadnumber) +"\r",*/
+                  //  "commit," + (j + threadnumber) + "\r",
             };
             for (int i = 0; i < testCases.length; i++) {
                 // Read the next command
