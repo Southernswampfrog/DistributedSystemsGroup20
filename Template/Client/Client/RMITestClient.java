@@ -2,6 +2,10 @@ package Client;
 
 import Server.Interface.IResourceManager;
 
+import java.io.*;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -20,7 +24,7 @@ public class RMITestClient extends Client {
     private static boolean multiClient = false;
     private static int numberOfClients = 0;
     private static int numberOfTransPerS = 0;
-    private int numberOfRuns = 10;
+    private int numberOfRuns = 1;
 
 
     private static String s_rmiPrefix = "group20";
@@ -96,16 +100,40 @@ public class RMITestClient extends Client {
 
     public void start() {
         if (multiClient) {
+            try {
+                String path = RMITestClient.class.getResource("averageMultiClient.txt").getPath();
+                File fold = new File(path);
+                fold.delete();
+                BufferedWriter writer = new BufferedWriter(new FileWriter(path, true));
+                writer.append(String.valueOf(0));
+                writer.close();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            Thread[] threads = new Thread[numberOfClients];
             for (int i = 0; i < numberOfClients; i++) {
-                new Thread(new RMITestClientThread(numberOfClients, numberOfTransPerS, numberOfRuns, i)).start();
+                threads[i] = new Thread(new RMITestClientThread(numberOfClients, numberOfTransPerS, numberOfRuns, i));
+                threads[i].start();
+            }
+            try {
+                //while (threads[numberOfClients].getState().equals(""))
+                String path = RMITestClient.class.getResource("averageMultiClient.txt").getPath();
+                File fold = new File(path);
+                long result = Long.parseLong(new String(Files.readAllBytes(Paths.get(path))));
+                fold.delete();
+                BufferedWriter writer = new BufferedWriter(new FileWriter(path, true));
+                writer.append(String.valueOf(result/numberOfClients));
+                writer.close();
+            } catch (Exception e){
+                e.printStackTrace();
             }
         } else {
             System.out.println();
 
             String[] testScheduleSteps = {"Add", "Add", "Reserve", "Query", "Delete"};
-            long[] averageRespTimesSingleRM = new long[testScheduleSteps.length];
+            long averageRespTimeSingleRM = 0;
             ArrayList<Long>[] respTimesSingleRM = new ArrayList[testScheduleSteps.length];
-            long[] averageRespTimesAllRM = new long[testScheduleSteps.length];
+            long averageRespTimeAllRM = 0;
             ArrayList<Long>[] respTimesAllRM = new ArrayList[testScheduleSteps.length];
             for (int i = 0; i < respTimesSingleRM.length; i++) {
                 respTimesSingleRM[i] = new ArrayList<Long>();
@@ -122,15 +150,23 @@ public class RMITestClient extends Client {
                 for (String testScheduleStep : testScheduleSteps) {
                     testCasesAllRM.addAll(parameterizedTransactions(j, true, testScheduleStep));
                 }
-                for (int i = 0; i < testCasesSingleRM.size(); i++) {
+                for (int i = -2; i < testCasesSingleRM.size() + 1; i++) {
                     // Read the next command
                     String command = "";
                     Vector<String> arguments = new Vector<String>();
                     System.out.print((char) 27 + "[32;1m\n>] " + (char) 27 + "[0m");
-                    command = testCasesSingleRM.get(i);
                     long startTime = System.nanoTime();
                     try {
-                        arguments = parse(command);
+                        if (i == -2) {
+                            arguments = parse("start\r");
+                        } else if (i == -1) {
+                            arguments = parse("AddCustomer," + j + "\r");
+                        } else if (i == testCasesSingleRM.size()) {
+                            arguments = parse("commit," + j + "\r");
+                        } else {
+                            command = testCasesSingleRM.get(i);
+                            arguments = parse(command);
+                        }
                         Command cmd = Command.fromString((String) arguments.elementAt(0));
                         try {
                             execute(cmd, arguments);
@@ -143,22 +179,32 @@ public class RMITestClient extends Client {
                         e.printStackTrace();
                     }
                     long endTime = System.nanoTime();
-                    respTimesSingleRM[i % 5].add(endTime - startTime);
+                    if (!(i < 0 || i == testCasesSingleRM.size())) {
+                        respTimesSingleRM[i % 5].add(endTime - startTime);
+                    }
                     try {
                         //TimeUnit.SECONDS.sleep(3);
                     } catch (Exception e) {
                         System.out.println(e);
                     }
                 }
-                for (int i = 0; i < testCasesAllRM.size(); i++) {
+                for (int i = -2; i < testCasesAllRM.size() + 1; i++) {
                     // Read the next command
                     String command = "";
                     Vector<String> arguments = new Vector<String>();
                     System.out.print((char) 27 + "[32;1m\n>] " + (char) 27 + "[0m");
-                    command = testCasesAllRM.get(i);
                     long startTime = System.nanoTime();
                     try {
-                        arguments = parse(command);
+                        if (i == -2) {
+                            arguments = parse("start\r");
+                        } else if (i == -1) {
+                            arguments = parse("AddCustomer," + j + "\r");
+                        } else if (i == testCasesSingleRM.size()) {
+                            arguments = parse("commit," + j + "\r");
+                        } else {
+                            command = testCasesAllRM.get(i);
+                            arguments = parse(command);
+                        }
                         Command cmd = Command.fromString((String) arguments.elementAt(0));
                         try {
                             execute(cmd, arguments);
@@ -171,6 +217,7 @@ public class RMITestClient extends Client {
                         e.printStackTrace();
                     }
                     long endTime = System.nanoTime();
+                    if (!(i < 0 || i == testCasesAllRM.size()))
                     respTimesAllRM[i % 5].add(endTime - startTime);
                     try {
                         //TimeUnit.SECONDS.sleep(3);
@@ -180,28 +227,28 @@ public class RMITestClient extends Client {
                 }
 
             }
+            long averageSingleRM = 0;
             for (int i = 0; i < respTimesSingleRM.length; i++) {
-                long averageSingleRM = 0;
                 for (long time : respTimesSingleRM[i]) {
                     averageSingleRM += time;
                 }
-                averageRespTimesSingleRM[i] = averageSingleRM / numberOfRuns;
                 //System.out.println(respTimesSingleRM[i]);
             }
-            for (int k = 0; k < averageRespTimesSingleRM.length; k++) {
-                System.out.println(averageRespTimesSingleRM[k] + "---" + testScheduleSteps[k]);
-            }
+            averageRespTimeSingleRM = averageSingleRM / respTimesSingleRM.length / numberOfRuns;
+            //for (int k = 0; k < averageRespTimeSingleRM.length; k++) {
+            System.out.println(averageRespTimeSingleRM);
+            //}
+            long averageAllRM = 0;
             for (int i = 0; i < respTimesAllRM.length; i++) {
-                long averageAllRM = 0;
                 for (long time : respTimesAllRM[i]) {
                     averageAllRM += time;
                 }
-                averageRespTimesAllRM[i] = averageAllRM / numberOfRuns;
                 //System.out.println(respTimesAllRM[i]);
             }
-            for (int k = 0; k < averageRespTimesAllRM.length; k++) {
-                System.out.println(averageRespTimesAllRM[k] + "---" + testScheduleSteps[k]);
-            }
+            averageRespTimeAllRM = averageAllRM / respTimesAllRM.length / numberOfRuns;
+            //for (int k = 0; k < averageRespTimeAllRM.length; k++) {
+            System.out.println(averageRespTimeAllRM);
+            //}
         }
     }
 
@@ -226,8 +273,8 @@ public class RMITestClient extends Client {
                     break;
                 case "Reserve":
                     transactions.add(type + "Flight," + paramNumber + "," + paramNumber + "," + paramNumber + "\r");
-                    transactions.add(type + "Cars," + paramNumber + "," + paramNumber + ",location" + paramNumber + "\r");
-                    transactions.add(type + "Rooms," + paramNumber + "," + paramNumber + ",location" + paramNumber + "\r");
+                    transactions.add(type + "Car," + paramNumber + "," + paramNumber + ",location" + paramNumber + "\r");
+                    transactions.add(type + "Room," + paramNumber + "," + paramNumber + ",location" + paramNumber + "\r");
                     break;
             }
         } else {
@@ -279,7 +326,7 @@ class RMITestClientThread extends RMITestClient implements Runnable {
         System.out.println();
 
 
-        long[] averageRespTimesSingleRM = new long[26];
+        long averageRespTimesSingleRM = 0;
         ArrayList<Long>[] respTimesSingleRM = new ArrayList[26];
         for (int i = 0; i < respTimesSingleRM.length; i++) {
             respTimesSingleRM[i] = new ArrayList<Long>();
@@ -287,30 +334,31 @@ class RMITestClientThread extends RMITestClient implements Runnable {
         for (int j = 0; j < numberOfRuns; j++) {
             String[] testCases = {
                     "start\r",
-                    /*"AddCustomer," + (j + threadnumber) + "\r",
-                    "AddFlight," + (j + threadnumber) + ",2,2," + (2+threadnumber) +"\r",
-                    "AddRooms," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
-                    "AddCars," + (j + 1) + ",2,2," + (2+threadnumber) +"\r",
-                    */"QueryFlight," + (j + threadnumber) + "," + (2+threadnumber) +"\r",/*
-                    "QueryCars," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryRooms," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryCustomer," + (j + 1) + "," + (100+threadnumber) +"\r",
-                    "QueryFlightPrice," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryRoomsPrice," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryCarsPrice," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "ReserveFlight," + (j + 1) + ",100," + (2+threadnumber) +"\r",
-                    "ReserveCar," + (j + 1) + ",100," + (2+threadnumber) +"\r",
-                    "ReserveRoom," + (j + 1) + ",100," + (2+threadnumber) +"\r",
-                    "QueryFlight," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryCars," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryRooms," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "Bundle," + (j + 1) + ",100,2," + (2+threadnumber) +",true,true\r",
-                    "Bundle," + (j + 1) + ",100,2," + (2+threadnumber) +",true,true\r",
-                    "QueryFlight," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryCars," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryRooms," + (j + 1) + "," + (2+threadnumber) +"\r",
-                    "QueryCustomer," + (j + 1) + "," + (1000+threadnumber) +"\r",*/
-                  //  "commit," + (j + threadnumber) + "\r",
+                    "AddCustomerID," + (j + threadnumber) + "," + (j + threadnumber) + "\r",
+                    "AddCustomer," + (j + threadnumber) + "\r",
+                    "AddFlight," + (j + threadnumber) + ",2,2," + (2 + threadnumber) + "\r",
+                    "AddRooms," + (j + 1) + ",2,2," + (2 + threadnumber) + "\r",
+                    "AddCars," + (j + 1) + ",2,2," + (2 + threadnumber) + "\r",
+                    "QueryFlight," + (j + threadnumber) + "," + (2 + threadnumber) + "\r",
+                    "QueryCars," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "QueryRooms," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "QueryCustomer," + (j + 1) + "," + (100 + threadnumber) + "\r",
+                    "QueryFlightPrice," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "QueryRoomsPrice," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "QueryCarsPrice," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "ReserveFlight," + (j + 1) + ",100," + (2 + threadnumber) + "\r",
+                    "ReserveCar," + (j + 1) + ",100," + (2 + threadnumber) + "\r",
+                    "ReserveRoom," + (j + 1) + ",100," + (2 + threadnumber) + "\r",
+                    "QueryFlight," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "QueryCars," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "QueryRooms," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "Bundle," + (j + 1) + ",100,2," + (2 + threadnumber) + ",true,true\r",
+                    "Bundle," + (j + 1) + ",100,2," + (2 + threadnumber) + ",true,true\r",
+                    "QueryFlight," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "QueryCars," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "QueryRooms," + (j + 1) + "," + (2 + threadnumber) + "\r",
+                    "QueryCustomer," + (j + 1) + "," + (1000 + threadnumber) + "\r",
+                    "commit," + (j + threadnumber) + "\r",
             };
             for (int i = 0; i < testCases.length; i++) {
                 // Read the next command
@@ -343,16 +391,34 @@ class RMITestClientThread extends RMITestClient implements Runnable {
                 }
             }
         }
+        long averageSingleRM = 0;
         for (int i = 0; i < respTimesSingleRM.length; i++) {
-            long averageSingleRM = 0;
             for (long time : respTimesSingleRM[i]) {
                 averageSingleRM += time;
             }
-            averageRespTimesSingleRM[i] = averageSingleRM / numberOfRuns;
             //System.out.println(respTimesSingleRM[i]);
         }
-        for (int k = 0; k < averageRespTimesSingleRM.length; k++) {
-            System.out.println(averageRespTimesSingleRM[k] + "---" + k);
+        averageRespTimesSingleRM = averageSingleRM / respTimesSingleRM.length / numberOfRuns;
+        long currentAmount = 0;
+        try {
+            Thread.sleep(threadnumber * 500);
+            String path = RMITestClient.class.getResource("averageMultiClient.txt").getPath();
+            File fold=new File(path);
+            currentAmount = Long.parseLong(new String(Files.readAllBytes(Paths.get(path))));
+            fold.delete();
+            currentAmount += averageRespTimesSingleRM;
+            System.out.println(currentAmount);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(path, true));
+            writer.append(String.valueOf(currentAmount));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
+        /*for (int k = 0; k < averageRespTimesSingleRM.length; k++) {
+            System.out.println(averageRespTimesSingleRM[k] + "---" + k);
+        }*/
     }
 }
