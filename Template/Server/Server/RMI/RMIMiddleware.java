@@ -92,7 +92,7 @@ public class RMIMiddleware extends Middleware
 						break;
 					} catch (NotBoundException | RemoteException e) {
 						if (first) {
-							System.out.println("Waiting for '" + servers[i] + "' server [" + servers[i] + ":" + port + "/" + s_rmiPrefix + servers[i]+ "]");
+							System.out.println("Waiting for '" + servers[i] + "' server [" + servers[i] + ":" + port + "/" + names[i] + servers[i]+ "]");
 							first = false;
 						}
 					}

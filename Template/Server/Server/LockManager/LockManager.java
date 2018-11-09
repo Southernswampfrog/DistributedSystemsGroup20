@@ -35,7 +35,7 @@ public class LockManager
 		}
 
 		Trace.info("LM::lock(" + xid + ", " + data + ", " + lockType + ") called");
-
+		System.out.println(lockTable.allElements());
 		// Two objects in lock table for easy lookup
 		TransactionLockObject xLockObject = new TransactionLockObject(xid, data, lockType);
 		DataLockObject dataLockObject = new DataLockObject(xid, data, lockType);
@@ -201,28 +201,23 @@ public class LockManager
 	// lock), then this is ignored. This is done by throwing RedundantLockRequestException which is handled 
 	// appropriately by the caller. If the lock request is a conversion from READ lock to WRITE lock, then bitset 
 	// is set. 
-	private boolean LockConflict(DataLockObject dataLockObject, BitSet bitset) throws DeadlockException, RedundantLockRequestException
-	{
+	private boolean LockConflict(DataLockObject dataLockObject, BitSet bitset) throws DeadlockException, RedundantLockRequestException {
 		Vector vect = this.lockTable.elements(dataLockObject);
 		int size = vect.size();
 
 		// As soon as a lock that conflicts with the current lock request is found, return true
-		for (int i = 0; i < size; i++)
-		{
-			DataLockObject l_dataLockObject = (DataLockObject)vect.elementAt(i);
-			if (dataLockObject.getXId() == l_dataLockObject.getXId())
-			{    
+		for (int i = 0; i < size; i++) {
+			DataLockObject l_dataLockObject = (DataLockObject) vect.elementAt(i);
+			System.out.println(l_dataLockObject);
+			if (dataLockObject.getXId() == l_dataLockObject.getXId()) {
 				// The transaction already has a lock on this data item which means that it is either
 				// relocking it or is converting the lock
-				if (dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_READ)
-				{
+				if (dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_READ) {
 					// Since transaction already has a lock (may be READ, may be WRITE. we don't
 					// care) on this data item and it is requesting a READ lock, this lock request
 					// is redundant.
 					throw new RedundantLockRequestException(dataLockObject.getXId(), "redundant READ lock request");
-				}
-				else if (dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_WRITE)
-				{
+				} else if (dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_WRITE) {
 					// Transaction already has a lock and is requesting a WRITE lock
 					// now there are two cases to analyze here
 					// (1) transaction already had a READ lock
@@ -230,28 +225,28 @@ public class LockManager
 					// Seeing the comments at the top of this function might be helpful
 
 					//TODO: Lock conversion
-					if(l_dataLockObject.m_lockType == TransactionLockObject.LockType.LOCK_READ) {
+					if (l_dataLockObject.m_lockType == TransactionLockObject.LockType.LOCK_READ) {
+						for (int j = 0; j < vect.size(); j++) {
+							if(((DataLockObject)vect.elementAt(j)).m_lockType == TransactionLockObject.LockType.LOCK_READ &&
+									((DataLockObject) vect.elementAt(j)).getXId() != l_dataLockObject.getXId()) {
+								return true;
+							}
+						}
 						bitset.set(0);
-					}
-					else if (l_dataLockObject.m_lockType == TransactionLockObject.LockType.LOCK_WRITE){
+					} else if (l_dataLockObject.m_lockType == TransactionLockObject.LockType.LOCK_WRITE) {
 						// Already have a WRITE lock, and want to request a WRITE lock
 						throw new RedundantLockRequestException(dataLockObject.getXId(), "redundant WRITE lock request");
 					}
 				}
 				return false;
-			} 
-			else if (dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_READ)
-			{
-				if (l_dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_WRITE)
-				{
+			} else if (dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_READ) {
+				if (l_dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_WRITE) {
 					// Transaction is requesting a READ lock and some other transaction
 					// already has a WRITE lock on it ==> conflict
 					Trace.info("LM::lockConflict(" + dataLockObject.getXId() + ", " + dataLockObject.getDataName() + ") Want READ, someone has WRITE");
 					return true;
 				}
-			}
-		       	else if (dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_WRITE)
-			{
+			} else if (dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_WRITE) {
 				// Transaction is requesting a WRITE lock and some other transaction has either
 				// a READ or a WRITE lock on it ==> conflict
 				Trace.info("LM::lockConflict(" + dataLockObject.getXId() + ", " + dataLockObject.getDataName() + ") Want WRITE, someone has READ or WRITE");

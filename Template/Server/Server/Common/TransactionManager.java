@@ -51,9 +51,12 @@ public class TransactionManager {
         System.out.println(activeTransactions);
         activeTransactions.remove(xid);
         lm.UnlockAll(xid);
-        for (Runnable i : undo.get(xid)) {
-            i.run();
+        int size = undo.get(xid).size();
+        ArrayList<Runnable> undoes = undo.get(xid);
+        for (int i = 0; i < size; i++) {
+            undoes.get(i).run();
         }
+        undo.remove(xid);
         TTLMap.get(xid).cancel();
         TTLMap.remove(xid);
         undoData.remove(xid);
