@@ -35,7 +35,6 @@ public class LockManager
 		}
 
 		Trace.info("LM::lock(" + xid + ", " + data + ", " + lockType + ") called");
-		System.out.println(lockTable.allElements());
 		// Two objects in lock table for easy lookup
 		TransactionLockObject xLockObject = new TransactionLockObject(xid, data, lockType);
 		DataLockObject dataLockObject = new DataLockObject(xid, data, lockType);
@@ -208,7 +207,6 @@ public class LockManager
 		// As soon as a lock that conflicts with the current lock request is found, return true
 		for (int i = 0; i < size; i++) {
 			DataLockObject l_dataLockObject = (DataLockObject) vect.elementAt(i);
-			System.out.println(l_dataLockObject);
 			if (dataLockObject.getXId() == l_dataLockObject.getXId()) {
 				// The transaction already has a lock on this data item which means that it is either
 				// relocking it or is converting the lock

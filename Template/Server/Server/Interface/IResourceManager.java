@@ -212,12 +212,15 @@ public interface IResourceManager extends Remote
      */
     public String getName()
         throws RemoteException;
-
     public int start() throws RemoteException;
-    public boolean commit(int transactionId) throws RemoteException,
+    public boolean commit(int xid) throws RemoteException,
             TransactionAbortedException, InvalidTransactionException;
-    public void abort(int transactionId) throws RemoteException,
+    public void abort(int xid) throws RemoteException,
             InvalidTransactionException;
-    public boolean shutdown() throws RemoteException;
-
+    public boolean prepare(int xid)
+        throws RemoteException, TransactionAbortedException, InvalidTransactionException;
+    public void resetCrashes() throws RemoteException;
+    public void crashMiddleware(int mode) throws RemoteException;
+    public void crashResourceManager(String name /* RM Name */, int mode)
+            throws RemoteException;
 }

@@ -325,6 +325,7 @@ public class Middleware extends ResourceManager implements IResourceManager  {
 
     public int start() throws RemoteException {
         int xid = tm.start();
+        System.out.println("Transaction " + xid + " started.");
         //get current state of RMs
         return xid;
     }
@@ -346,18 +347,31 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         tm.abort(xid);
 
     }
-
-    public boolean shutdown(int xid) throws RemoteException {
-        lm.UnlockAll(xid);
-        return true;
+    public void resetCrashes() throws RemoteException{
+        tm.crash_mode = 0;
+        for(int i = 0; i < m_RMs.length; i++) {
+            m_RMs[i].resetCrashes();
+        }
     }
-
+    public void crashMiddleware(int mode) throws RemoteException {
+        tm.crash_mode = mode;
+    }
+    public void crashResourceManager(String name /* RM Name */, int mode)
+            throws RemoteException{
+        for(int i = 0; i < m_RMs.length; i++) {
+            if(name.equals(m_RMs[i].getName())){
+                m_RMs[i].crashResourceManager(name,mode);
+                return;
+            }
+        }
+        System.out.println("No such RM exists");
+    }
     public synchronized void updateTM(List<String> RMNames, int xid, TransactionLockObject.LockType locktype) throws RemoteException, ConcurrentModificationException {
         int position = 0;
             int length = RMNames.size();
             for (int i = 0; i < length; i++) {
                 String j = RMNames.get(i);
-                tm.activeTransactions.get(xid).add(j);
+
                 if (j.contains("flight")) {
                     position = 0;
                 } else if (j.contains("car")) {
@@ -365,6 +379,7 @@ public class Middleware extends ResourceManager implements IResourceManager  {
                 } else if (j.contains("room")) {
                     position = 2;
                 }
+                tm.activeTransactions.get(xid).add(m_RMs[position]);
                 RMHashMap[] l = tm.undoData.get(xid);
                 if (locktype == TransactionLockObject.LockType.LOCK_WRITE && l[position] == null) {
                     l[position] = m_RMs[position].getData();
@@ -381,7 +396,6 @@ public class Middleware extends ResourceManager implements IResourceManager  {
 
                 }
             }
-        System.out.println("Active Transactions" + tm.activeTransactions);
         //update timer
         Timer t = new Timer();
         t.schedule(new TimerTask() {

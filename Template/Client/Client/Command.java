@@ -37,7 +37,9 @@ public enum Command {
 	Commit("Commit current transaction","<xid>"),
 	Start("Indicate start of transaction","<xid>"),
 	Abort("Abort current transaction",""),
-
+	CrashMiddleware("bring that baby down!!","<mode>"),
+	CrashResourceManager("bring this puppy down!!","<mode>"),
+	ResetCrashes("no more crashing for you....",""),
 	Quit("Exit the client application", "");
 
 	String m_description;

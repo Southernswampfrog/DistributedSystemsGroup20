@@ -14,10 +14,13 @@ public class ResourceManager implements IResourceManager
 {
 	protected String m_name = "";
 	public RMHashMap m_data = new RMHashMap();
-
+	public RMHashMap m_committed_data = new RMHashMap();
+	public ArrayList<String> master_record = new ArrayList<>();
+	public int crash_mode = 0;
 	public ResourceManager(String p_name)
 	{
 		m_name = p_name;
+
 	}
 	public ResourceManager(RMHashMap another, String p_name) {
 		this.m_name = p_name;
@@ -414,15 +417,26 @@ public class ResourceManager implements IResourceManager
 	public int start() throws RemoteException{
 		return 1;
 	}
-	public boolean commit(int transactionId) throws RemoteException,
+	public boolean commit(int xid) throws RemoteException,
 			TransactionAbortedException, InvalidTransactionException {
-		return false;
+		m_committed_data = (RMHashMap) m_data.clone();
+		String s = "committing transaction " + xid;
+		System.out.println(s);
+		master_record.add(s);
+		return true;
 	}
-	public void abort(int transactionId) throws RemoteException,
-			InvalidTransactionException{
+	public void abort(int xid) throws RemoteException,
+			InvalidTransactionException{}
+	public boolean prepare(int xid) throws RemoteException, TransactionAbortedException, InvalidTransactionException{
+		return true;
 	}
-	public boolean shutdown() throws RemoteException{
-		return false;
+	public void resetCrashes() throws RemoteException{
+		crash_mode = 0;
+	}
+	public void crashMiddleware(int mode) throws RemoteException{}
+	public void crashResourceManager(String name /* RM Name */, int mode)
+			throws RemoteException{
+		crash_mode = mode;
 	}
 }
  

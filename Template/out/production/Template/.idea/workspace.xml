@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="94c3b4da-68fc-4401-9524-e0f0df3e36fe" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../Template.tar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/RMIInterface.jar" beforeDir="false" afterPath="$PROJECT_DIR$/Server/RMIInterface.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware$SubTransaction.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware$SubTransaction.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/ResourceManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/ResourceManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/ResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/ResourceManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/TransactionManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/TransactionManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/TransactionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/TransactionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Interface/IResourceManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Interface/IResourceManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Interface/IResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Interface/IResourceManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/LockManager/LockManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/LockManager/LockManager.java" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/out/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="-992382713">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="24" />
+          <entry key="project.open.time.10" value="7" />
+          <entry key="project.open.time.11" value="6" />
+          <entry key="project.open.time.12" value="2" />
+          <entry key="project.open.time.13" value="5" />
+          <entry key="project.open.time.14" value="4" />
+          <entry key="project.open.time.15" value="1" />
+          <entry key="project.open.time.16" value="1" />
+          <entry key="project.open.time.20" value="1" />
+          <entry key="project.open.time.21" value="1" />
+          <entry key="project.open.time.3" value="1" />
+          <entry key="project.open.time.8" value="1" />
+          <entry key="project.opened" value="31" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="MF" value="1" />
+          <entry key="Makefile" value="14" />
+          <entry key="class" value="5" />
+          <entry key="iml" value="1" />
+          <entry key="java" value="206" />
+          <entry key="sh" value="53" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="CLASS" value="5" />
+          <entry key="IDEA_MODULE" value="1" />
+          <entry key="JAVA" value="206" />
+          <entry key="Manifest" value="1" />
+          <entry key="PLAIN_TEXT" value="67" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="Makefile" value="734" />
+          <entry key="java" value="37762" />
+          <entry key="sh" value="585" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="JAVA" value="37762" />
+          <entry key="PLAIN_TEXT" value="1319" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Server/Server/Interface/IResourceManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret lean-forward="true" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Server/Server/Common/ResourceManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="18" column="30" selection-start-line="18" selection-start-column="30" selection-end-line="18" selection-end-column="30" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Server/Server/Common/Middleware.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="105">
+              <caret line="351" column="36" selection-start-line="351" selection-start-column="36" selection-end-line="351" selection-end-column="36" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Server/Server/Common/TransactionManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="528">
+              <caret line="60" lean-forward="true" selection-start-line="60" selection-end-line="60" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Server/Server/LockManager/LockManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="176">
+              <caret line="166" column="42" selection-start-line="166" selection-start-column="36" selection-end-line="166" selection-end-column="42" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>outputStream.close();</find>
+      <find>outputStream.write(method.toString().getBytes())</find>
+      <find>client.shutdownOutput()</find>
+      <find>os.write</find>
+      <find>.getBytes()</find>
+      <find>case</find>
+      <find>connected</find>
+      <find>xid</find>
+      <find>customerId</find>
+      <find>queryflightprice</find>
+      <find>getBill</find>
+      <find>reserve</find>
+      <find>accep</find>
+      <find>customer</find>
+      <find>anal</find>
+      <find>querycu</find>
+      <find>todo</find>
+      <find>deadlock</find>
+      <find>nextTXVAL</find>
+      <find>vector</find>
+      <find>multiClient</find>
+      <find>&quot;Rooms&quot;</find>
+      <find>system.</find>
+      <find>system</find>
+      <find>sys</find>
+      <find>updateTM(RMs, xid);</find>
+      <find>needsImage</find>
+      <find>RMs</find>
+      <find>Rooms</find>
+      <find>queryNum</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>next_xid</replace>
+      <replace>RMs</replace>
+      <replace>updateTM(RMs,xid,needsImage);</replace>
+      <replace>locktype</replace>
+      <replace>dataToLock</replace>
+      <replace />
+      <replace>room</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/Server/Server/RMI/RMIResourceManager.java" />
+        <option value="$PROJECT_DIR$/Server/Server/Common/TCPResourceManager.java" />
+        <option value="$PROJECT_DIR$/Client/JSONObject.java" />
+        <option value="$PROJECT_DIR$/Server/run_tcp_server.sh" />
+        <option value="$PROJECT_DIR$/Client/run_tcp_client.sh" />
+        <option value="$PROJECT_DIR$/Client/prep_tcp.sh" />
+        <option value="$PROJECT_DIR$/Server/run_tcp_servers.sh" />
+        <option value="$PROJECT_DIR$/Server/run_tcp_servers_locally.sh" />
+        <option value="$PROJECT_DIR$/Server/run_tcp_middleware.sh" />
+        <option value="$PROJECT_DIR$/Client/run_tcp_test_client.sh" />
+        <option value="$PROJECT_DIR$/Client/Client/TCPTestClient.java" />
+        <option value="$PROJECT_DIR$/Server/Server/Common/Customer.java" />
+        <option value="$PROJECT_DIR$/Client/Client/TCPClient.java" />
+        <option value="$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java" />
+        <option value="$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java" />
+        <option value="$PROJECT_DIR$/Server/run_servers.sh" />
+        <option value="$PROJECT_DIR$/Server/run_rmi_servers_locally.sh" />
+        <option value="$PROJECT_DIR$/Server/Server/LockManager/Server/Server/LockManager/TimeObject.java" />
+        <option value="$PROJECT_DIR$/Client/Client/RMIClient.java" />
+        <option value="$PROJECT_DIR$/Client/Client/Command.java" />
+        <option value="$PROJECT_DIR$/Server/Server/LockManager/InvalidTransactionException.java" />
+        <option value="$PROJECT_DIR$/Server/Server/LockManager/TransactionAbortedException.java" />
+        <option value="$PROJECT_DIR$/Server/Makefile" />
+        <option value="$PROJECT_DIR$/Client/Makefile" />
+        <option value="$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware.java" />
+        <option value="$PROJECT_DIR$/Client/Client/RMITestClient.java" />
+        <option value="$PROJECT_DIR$/Client/Client/PerformanceAnalysis.java" />
+        <option value="$PROJECT_DIR$/Client/run_rmi_test_client.sh" />
+        <option value="$PROJECT_DIR$/Client/Client/RMITEST.java" />
+        <option value="$PROJECT_DIR$/Client/Client/Client.java" />
+        <option value="$PROJECT_DIR$/Server/Server/Interface/IResourceManager.java" />
+        <option value="$PROJECT_DIR$/Server/Server/Common/ResourceManager.java" />
+        <option value="$PROJECT_DIR$/Server/Server/Common/Middleware.java" />
+        <option value="$PROJECT_DIR$/Server/Server/Common/TransactionManager.java" />
+        <option value="$PROJECT_DIR$/Server/Server/LockManager/LockManager.java" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState>
+      <expand />
+      <select />
+    </treeState>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="138" />
+    <option name="y" value="179" />
+    <option name="width" value="1161" />
+    <option name="height" value="664" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Template" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Template" type="462c0819:PsiDirectoryNode" />
+              <item name="Client" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Template" type="462c0819:PsiDirectoryNode" />
+              <item name="Client" type="462c0819:PsiDirectoryNode" />
+              <item name="Client" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Template" type="462c0819:PsiDirectoryNode" />
+              <item name="Client" type="462c0819:PsiDirectoryNode" />
+              <item name="java-json.jar" type="ab9368bb:PsiFileNode" />
+            </path>
+            <path>
+              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Template" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Template" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Template" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+              <item name="Common" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Template" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+              <item name="Interface" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Template" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+              <item name="LockManager" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Template" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Template" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+              <item name="Server" type="462c0819:PsiDirectoryNode" />
+              <item name="RMI" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ToolWindowAnt Build.ShowToolbar" value="false" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1542821869154" />
+    <property name="extract.method.default.visibility" value="private" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Client/java-json.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="" />
+      <recent name="Server.Common" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Server/Server/LockManager" />
+      <recent name="$PROJECT_DIR$/Server/Server" />
+      <recent name="$PROJECT_DIR$/Server" />
+      <recent name="$PROJECT_DIR$/Client/Client" />
+      <recent name="$PROJECT_DIR$/Server/Server/TCP" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="94c3b4da-68fc-4401-9524-e0f0df3e36fe" name="Default Changelist" comment="" />
+      <created>1537562967835</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1537562967835</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="67" y="25" width="1299" height="743" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25778133" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32952693" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50039905" side_tool="true" weight="0.32952693" />
+      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49960095" weight="0.036163524" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" auto_hide="true" id="Ant Build" internal_type="SLIDING" order="1" type="SLIDING" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info anchor="right" id="Palette&#9;" order="6" />
+      <window_info anchor="right" id="Maven Projects" order="7" weight="0.32960895" />
+    </layout>
+    <layout-to-restore>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25139666" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" visible="true" weight="0.32952693" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50039905" side_tool="true" weight="0.32952693" />
+      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49960095" weight="0.036163524" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" auto_hide="true" id="Ant Build" internal_type="SLIDING" order="1" type="SLIDING" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info anchor="right" id="Palette&#9;" order="6" />
+      <window_info anchor="right" id="Maven Projects" order="7" weight="0.32960895" />
+    </layout-to-restore>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Client/Client/TCPClient.java</url>
+          <line>54</line>
+          <properties />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware$1.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPResourceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="50" column="25" selection-start-line="50" selection-start-column="25" selection-end-line="50" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/TCP/TCPMiddleware.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3975">
+          <caret line="275" column="27" selection-start-line="275" selection-start-column="27" selection-end-line="275" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/run_rmi.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/run_test_client/sh.java" />
+    <entry file="file://$PROJECT_DIR$/Client/Client/TCPClient$1.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/run_tcp_test_client.sh" />
+    <entry file="file://$PROJECT_DIR$/Server/run_tcp_servers_locally.sh" />
+    <entry file="file://$PROJECT_DIR$/Server/run_tcp_middleware.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="75" selection-start-column="75" selection-end-column="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/run_tcp_servers.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="168" selection-start-line="17" selection-start-column="168" selection-end-line="17" selection-end-column="168" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/run_tcp_server.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/LockManager/Server/Server/LockManager/TimeObject.java" />
+    <entry file="file://$PROJECT_DIR$/Server/Server/LockManager/Server/Server/LockManager/DataLockObject.java" />
+    <entry file="file://$PROJECT_DIR$/Server/Server/LockManager.java" />
+    <entry file="file://$PROJECT_DIR$/Server/run_middleware.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/LockManager/TransactionLockObject.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/LockManager/DataLockObject.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/LockManager/TransactionObject.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" lean-forward="true" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/Middleware.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/TCPClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="913">
+          <caret line="504" column="24" lean-forward="true" selection-start-line="504" selection-start-column="24" selection-end-line="504" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/Command.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="401">
+          <caret line="38" column="39" selection-start-line="38" selection-start-column="39" selection-end-line="38" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/RMITestingClient.java" />
+    <entry file="file://$PROJECT_DIR$/Server/Server/LockManager/DeadlockException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="43" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/Customer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="17" column="41" selection-start-line="17" selection-start-column="41" selection-end-line="17" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/Trace.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/RMHashMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/RMItem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/run_tcp_client.sh" />
+    <entry file="file://$PROJECT_DIR$/Client/run_client.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="117" selection-start-line="13" selection-start-column="117" selection-end-line="13" selection-end-column="117" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="55" selection-start-line="14" selection-start-column="55" selection-end-line="14" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/InvalidTransactionException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/LockManager/TimeObject.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="49" selection-start-line="4" selection-start-column="49" selection-end-line="4" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/TransactionAbortedException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="22" lean-forward="true" selection-start-column="22" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/run_servers.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/run_rmi_servers_locally.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/run_server.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIResourceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="44" selection-start-line="44" selection-end-line="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/TCPTestClient.java" />
+    <entry file="file://$PROJECT_DIR$/Client/Client/PerformanceAnalysis.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="48">
+          <caret line="389" column="9" lean-forward="true" selection-start-line="389" selection-start-column="9" selection-end-line="389" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2132#2133#0" expanded="true" />
+            <element signature="e#2155#2156#0" expanded="true" />
+            <element signature="e#2190#2191#0" expanded="true" />
+            <element signature="e#2261#2262#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/run_test_client.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="84" column="20" selection-start-line="84" selection-start-column="20" selection-end-line="84" selection-end-column="20" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="435" column="49" selection-start-line="435" selection-start-column="49" selection-end-line="435" selection-end-column="49" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/RMIClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="70" column="12" selection-start-line="70" selection-start-column="12" selection-end-line="70" selection-end-column="12" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Client/RMITEST.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="155" column="32" selection-start-line="155" selection-start-column="32" selection-end-line="155" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/Middleware.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="351" column="36" selection-start-line="351" selection-start-column="36" selection-end-line="351" selection-end-column="36" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Interface/IResourceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/ResourceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="18" column="30" selection-start-line="18" selection-start-column="30" selection-end-line="18" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/TransactionManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="60" lean-forward="true" selection-start-line="60" selection-end-line="60" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/LockManager/LockManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="166" column="42" selection-start-line="166" selection-start-column="36" selection-end-line="166" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>10</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>Template</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>10</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>java-json</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
