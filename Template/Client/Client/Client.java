@@ -435,6 +435,7 @@ public abstract class Client
 					int xid = toInt(arguments.elementAt(1));
 					m_resourceManager.abort(xid);
 					System.out.println("Transaction " + xid + " Aborted");
+					break;
 				}
 				case Quit:
 					checkArgumentsCount(1, arguments.size());

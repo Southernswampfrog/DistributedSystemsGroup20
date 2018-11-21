@@ -3,7 +3,6 @@ package Client;
 import Server.Interface.IResourceManager;
 
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.rmi.NotBoundException;
@@ -11,12 +10,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.TreeMap;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
-public class RMITestClient extends Client {
+public class PerformanceAnalysis extends Client {
 
     private static String s_serverHost = "localhost";
     private static int s_serverPort = 1099;
@@ -55,7 +52,7 @@ public class RMITestClient extends Client {
 
         // Get a reference to the RMIRegister
         try {
-            RMITestClient client = new RMITestClient();
+            PerformanceAnalysis client = new PerformanceAnalysis();
             client.connectServer();
             client.start();
         } catch (Exception e) {
@@ -65,7 +62,7 @@ public class RMITestClient extends Client {
         }
     }
 
-    public RMITestClient() {
+    public PerformanceAnalysis() {
         super();
     }
 
@@ -101,7 +98,7 @@ public class RMITestClient extends Client {
     public void start() {
         if (multiClient) {
             try {
-                String path = RMITestClient.class.getResource("averageMultiClient.txt").getPath();
+                String path = PerformanceAnalysis.class.getResource("averageMultiClient.txt").getPath();
                 File fold = new File(path);
                 fold.delete();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(path, true));
@@ -117,7 +114,7 @@ public class RMITestClient extends Client {
             }
             try {
                 //while (threads[numberOfClients].getState().equals(""))
-                String path = RMITestClient.class.getResource("averageMultiClient.txt").getPath();
+                String path = PerformanceAnalysis.class.getResource("averageMultiClient.txt").getPath();
                 File fold = new File(path);
                 long result = Long.parseLong(new String(Files.readAllBytes(Paths.get(path))));
                 fold.delete();
@@ -305,7 +302,7 @@ public class RMITestClient extends Client {
     }
 }
 
-class RMITestClientThread extends RMITestClient implements Runnable {
+class RMITestClientThread extends PerformanceAnalysis implements Runnable {
     private int numberOfClients;
     private int numberOfTransPerS;
     private int numberOfRuns;
@@ -334,12 +331,12 @@ class RMITestClientThread extends RMITestClient implements Runnable {
         for (int j = 0; j < numberOfRuns; j++) {
             String[] testCases = {
                     "start\r",
-                    "AddCustomerID," + (j + threadnumber) + "," + (j + threadnumber) + "\r",
-               //     "AddCustomer," + (j + threadnumber) + "\r",
-                    "AddFlight," + (j + threadnumber) + ",2,2," + (2 + threadnumber) + "\r",
+                 //   "AddCustomerID," + (j + threadnumber + 1) + "," + (j + threadnumber + 1) + "\r",
+                 //   "AddCustomer," + (j + threadnumber + 1) + "\r",
+                    "AddFlight," + (j + threadnumber + 1) + ",2,2," + (2 + threadnumber) + "\r",
                     "AddRooms," + (j + 1) + ",2,2," + (2 + threadnumber) + "\r",
                     "AddCars," + (j + 1) + ",2,2," + (2 + threadnumber) + "\r",
-                    "QueryFlight," + (j + threadnumber) + "," + (2 + threadnumber) + "\r",
+                    "QueryFlight," + (j + threadnumber + 1) + "," + (2 + threadnumber) + "\r",
                     "QueryCars," + (j + 1) + "," + (2 + threadnumber) + "\r",
                     "QueryRooms," + (j + 1) + "," + (2 + threadnumber) + "\r",
                     "QueryCustomer," + (j + 1) + "," + (100 + threadnumber) + "\r",
@@ -402,7 +399,7 @@ class RMITestClientThread extends RMITestClient implements Runnable {
         long currentAmount = 0;
         try {
             Thread.sleep(threadnumber * 500);
-            String path = RMITestClient.class.getResource("averageMultiClient.txt").getPath();
+            String path = PerformanceAnalysis.class.getResource("averageMultiClient.txt").getPath();
             File fold=new File(path);
             currentAmount = Long.parseLong(new String(Files.readAllBytes(Paths.get(path))));
             fold.delete();
