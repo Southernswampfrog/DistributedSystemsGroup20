@@ -7,6 +7,7 @@ package Server.Common;
 
 import Server.Interface.*;
 
+import java.io.*;
 import java.util.*;
 import java.rmi.RemoteException;
 
@@ -14,18 +15,52 @@ public class ResourceManager implements IResourceManager
 {
 	protected String m_name = "";
 	public RMHashMap m_data = new RMHashMap();
-	public RMHashMap m_committed_data = new RMHashMap();
-	public ArrayList<String> master_record = new ArrayList<>();
+	File A;
+	File B;
+	File master_record;
+	char master_record_pointer;
 	public int crash_mode = 0;
-	public ResourceManager(String p_name)
-	{
+
+	public ResourceManager(String p_name) {
 		m_name = p_name;
-
+		//check if persistence exists, if so, get it!!
+		A = new File("Persistence/" + p_name + "_A.ser");
+		B = new File("Persistence/" + p_name + "_B.ser");
+		master_record = new File("Persistence/" + p_name + "_master_record.ser");
+		try {
+			A.createNewFile();
+			B.createNewFile();
+			master_record.createNewFile();
+		}
+		catch (Exception e) {
+			System.out.println("Trouble with file creating");
+		}
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
+			master_record_pointer = (char)ois.readObject();
+		}catch (Exception e) {
+			System.out.println(e + "master record");
+		}
+		System.out.println(master_record_pointer);
+		try {
+			if (master_record_pointer == 'A') {
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(A));
+				m_data = (RMHashMap) ois.readObject();
+				System.out.println("reading from file A");
+			} else if (master_record_pointer == 'B') {
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(B));
+				m_data = (RMHashMap) ois.readObject();
+				System.out.println("reading from file B");
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e + ", could not fetch file data");
+		}
 	}
-	public ResourceManager(RMHashMap another, String p_name) {
-		this.m_name = p_name;
-		this.m_data = another;
 
+	public ResourceManager(String p_name, RMHashMap another) {
+		m_name = p_name;
+		m_data = another;
 	}
 	// Reads a data item
 	protected RMItem readData(int xid, String key)
@@ -419,10 +454,23 @@ public class ResourceManager implements IResourceManager
 	}
 	public boolean commit(int xid) throws RemoteException,
 			TransactionAbortedException, InvalidTransactionException {
-		m_committed_data = (RMHashMap) m_data.clone();
-		String s = "committing transaction " + xid;
+		if(master_record_pointer == 'A') {
+			master_record_pointer = 'B';
+		}
+		else {
+			master_record_pointer = 'A';
+		}
+		String s = "committing transaction " + xid + "to file " + m_name + "_" + master_record_pointer;
+		try {
+			ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_" + master_record_pointer + ".ser"));
+			ois.writeObject(m_data);
+			ois = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_master_record.ser"));
+			ois.writeObject(master_record_pointer);
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		System.out.println(s);
-		master_record.add(s);
 		return true;
 	}
 	public void abort(int xid) throws RemoteException,

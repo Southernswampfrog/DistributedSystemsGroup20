@@ -8,6 +8,8 @@ package Server.Common;
 import Server.Interface.IResourceManager;
 import Server.LockManager.*;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.*;
@@ -26,6 +28,7 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         super(p_name);
         m_name = p_name;
         dataToLock = new ArrayList<>();
+
     }
 
     // Create a new flight, or add seats to existing flight
@@ -388,7 +391,7 @@ public class Middleware extends ResourceManager implements IResourceManager  {
                     //store method at Transaction Manager to recall this state
                     Runnable x = (() -> {
                         RMHashMap[] undoData = tm.undoData.get(xid);
-                        m_RMs[y] = (new ResourceManager(undoData[y], j));
+                        m_RMs[y] = (new ResourceManager(j, undoData[y]));
                     });
                     if (tm.undo.containsKey(xid)) {
                         tm.undo.get(xid).add(x);

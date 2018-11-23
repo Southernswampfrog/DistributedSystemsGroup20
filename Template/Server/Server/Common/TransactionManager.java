@@ -76,7 +76,6 @@ public class TransactionManager {
             IResourceManager ir = irm.next();
             boolean prepared = ir.prepare(xid);
             if (!(prepared)) {
-                //send doAbort to all rms (in this case abortion is handled at tm.....)
                 abort(xid);
                 return false;
             }
