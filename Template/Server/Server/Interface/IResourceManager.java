@@ -1,4 +1,5 @@
 package Server.Interface;
+import java.io.File;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.*;
@@ -217,10 +218,13 @@ public interface IResourceManager extends Remote
             TransactionAbortedException, InvalidTransactionException;
     public void abort(int xid) throws RemoteException,
             InvalidTransactionException;
-    public boolean prepare(int xid)
+    public void prepare(int xid)
         throws RemoteException, TransactionAbortedException, InvalidTransactionException;
     public void resetCrashes() throws RemoteException;
     public void crashMiddleware(int mode) throws RemoteException;
     public void crashResourceManager(String name /* RM Name */, int mode)
             throws RemoteException;
+    public boolean getPrepare(int xid) throws RemoteException;
+    public void queryLog() throws RemoteException;
+
 }

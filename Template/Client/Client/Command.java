@@ -40,6 +40,7 @@ public enum Command {
 	CrashMiddleware("bring that baby down!!","<mode>"),
 	CrashResourceManager("bring this puppy down!!","<mode>"),
 	ResetCrashes("no more crashing for you....",""),
+	QueryLog("see whats been happening","<RM name>"),
 	Quit("Exit the client application", "");
 
 	String m_description;

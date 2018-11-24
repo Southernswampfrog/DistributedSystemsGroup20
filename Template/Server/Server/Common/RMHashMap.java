@@ -7,7 +7,7 @@ package Server.Common;
 
 import java.util.*;
 
-// A specialization of HashMap with some extra diagnostics
+// shadow_file_A specialization of HashMap with some extra diagnostics
 public class RMHashMap extends HashMap<String, RMItem>
 {
 	public RMHashMap() {

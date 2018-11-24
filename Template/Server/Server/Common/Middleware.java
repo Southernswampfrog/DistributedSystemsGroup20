@@ -9,7 +9,9 @@ import Server.Interface.IResourceManager;
 import Server.LockManager.*;
 
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.ObjectInputStream;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.*;
@@ -348,27 +350,38 @@ public class Middleware extends ResourceManager implements IResourceManager  {
             throw new InvalidTransactionException(xid);
         }
         tm.abort(xid);
-
     }
+
     public void resetCrashes() throws RemoteException{
         tm.crash_mode = 0;
         for(int i = 0; i < m_RMs.length; i++) {
             m_RMs[i].resetCrashes();
         }
     }
+
+    public void queryLog() throws RemoteException {
+        for(int i = 0; i < m_RMs.length; i++) {
+            m_RMs[i].queryLog();
+        }
+        tm.queryLog();
+    }
+
     public void crashMiddleware(int mode) throws RemoteException {
         tm.crash_mode = mode;
     }
+
     public void crashResourceManager(String name /* RM Name */, int mode)
             throws RemoteException{
         for(int i = 0; i < m_RMs.length; i++) {
             if(name.equals(m_RMs[i].getName())){
                 m_RMs[i].crashResourceManager(name,mode);
+                System.out.println("crashing " +m_RMs[i].getName());
                 return;
             }
         }
         System.out.println("No such RM exists");
     }
+
     public synchronized void updateTM(List<String> RMNames, int xid, TransactionLockObject.LockType locktype) throws RemoteException, ConcurrentModificationException {
         int position = 0;
             int length = RMNames.size();
@@ -390,13 +403,16 @@ public class Middleware extends ResourceManager implements IResourceManager  {
                     final int y = position;
                     //store method at Transaction Manager to recall this state
                     Runnable x = (() -> {
-                        RMHashMap[] undoData = tm.undoData.get(xid);
-                        m_RMs[y] = (new ResourceManager(j, undoData[y]));
+                        try {
+                            m_RMs[y].abort(xid);
+                        }
+                        catch (Exception e) {
+                            System.out.println("Could not undo");
+                        }
                     });
                     if (tm.undo.containsKey(xid)) {
                         tm.undo.get(xid).add(x);
                     }
-
                 }
             }
         //update timer
@@ -443,7 +459,6 @@ public class Middleware extends ResourceManager implements IResourceManager  {
             this.method = method;
             this.subID = ThreadLocalRandom.current().nextInt(0, 100000);
         }
-
         public Object call() {
             System.out.println("Running subtransaction: " + subID);
             try {
@@ -452,7 +467,6 @@ public class Middleware extends ResourceManager implements IResourceManager  {
                 System.out.println(e);
             }
             return x;
-
         }
     }
 }

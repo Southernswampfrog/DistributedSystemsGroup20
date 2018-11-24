@@ -13,55 +13,80 @@ import java.rmi.RemoteException;
 
 public class ResourceManager implements IResourceManager
 {
-	protected String m_name = "";
-	public RMHashMap m_data = new RMHashMap();
-	File A;
-	File B;
-	File master_record;
-	char master_record_pointer;
-	public int crash_mode = 0;
+	protected String m_name;
+	public RMHashMap m_data;
+	public File shadow_file_A;
+	public File shadow_file_B;
+	public File master_record;
+	public File log;
+	public String[] master_record_pointer;
+	public int crash_mode;
+	ArrayList<String> live_log;
+	Timer decision_timer;
+	protected static int DECISION_TIMEOUT = 50000;
+	HashMap<Integer, Boolean> prepared;
+
 
 	public ResourceManager(String p_name) {
+		prepared = new HashMap<>();
+		crash_mode = 0;
 		m_name = p_name;
+		m_data = new RMHashMap();
 		//check if persistence exists, if so, get it!!
-		A = new File("Persistence/" + p_name + "_A.ser");
-		B = new File("Persistence/" + p_name + "_B.ser");
+		shadow_file_A = new File("Persistence/" + p_name + "_shadow_file_A.ser");
+		shadow_file_B = new File("Persistence/" + p_name + "_shadow_file_B.ser");
 		master_record = new File("Persistence/" + p_name + "_master_record.ser");
+		log = new File("Persistence/" + p_name + "_log.ser");
 		try {
-			A.createNewFile();
-			B.createNewFile();
-			master_record.createNewFile();
-		}
-		catch (Exception e) {
-			System.out.println("Trouble with file creating");
+			shadow_file_A.createNewFile();
+			shadow_file_B.createNewFile();
+		} catch (Exception e) {
+			System.out.println(e + "Trouble with file creating");
 		}
 		try {
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
-			master_record_pointer = (char)ois.readObject();
-		}catch (Exception e) {
-			System.out.println(e + "master record");
+		    if(!master_record.createNewFile()) {
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
+                master_record_pointer = (String[]) ois.readObject();
+            }
+		} catch (Exception e) {
+			System.out.println(e + "at master record reading.");
 		}
-		System.out.println(master_record_pointer);
+		if(master_record_pointer == null) {
+			master_record_pointer = new String[]{"",""};
+		}
+		if(crash_mode == 5) {
+			System.exit(1);
+		}
 		try {
-			if (master_record_pointer == 'A') {
-				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(A));
+		    if (!log.createNewFile()) {
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(log));
+                live_log = (ArrayList<String>) ois.readObject();
+            }
+		} catch(Exception e) {
+			System.out.println(e + "at log reading.");
+		}
+		if(live_log == null) {
+			live_log = new ArrayList<>();
+		}
+		try {
+			if (master_record_pointer[0].equals("shadow_file_A")) {
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(shadow_file_A));
 				m_data = (RMHashMap) ois.readObject();
-				System.out.println("reading from file A");
-			} else if (master_record_pointer == 'B') {
-				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(B));
+				System.out.println("Reading from file shadow_file_A.");
+			} else if (master_record_pointer[0].equals("shadow_file_B")) {
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(shadow_file_B));
 				m_data = (RMHashMap) ois.readObject();
-				System.out.println("reading from file B");
+				System.out.println("Reading from file shadow_file_B.");
 			}
-		}
-		catch (Exception e) {
-			System.out.println(e + ", could not fetch file data");
+		} catch (Exception e) {
+			System.out.println(e + " at file data");
 		}
 	}
 
-	public ResourceManager(String p_name, RMHashMap another) {
+/*	public ResourceManager(String p_name, RMHashMap another) {
 		m_name = p_name;
 		m_data = another;
-	}
+	}*/
 	// Reads a data item
 	protected RMItem readData(int xid, String key)
 	{
@@ -445,27 +470,29 @@ public class ResourceManager implements IResourceManager
 	{
 		return false;
 	}
+
 	public String getName() throws RemoteException
 	{
 		return m_name;
 	}
+
 	public int start() throws RemoteException{
 		return 1;
 	}
+
 	public boolean commit(int xid) throws RemoteException,
 			TransactionAbortedException, InvalidTransactionException {
-		if(master_record_pointer == 'A') {
-			master_record_pointer = 'B';
+		if(crash_mode == 4) {
+			System.exit(1);
 		}
-		else {
-			master_record_pointer = 'A';
-		}
-		String s = "committing transaction " + xid + "to file " + m_name + "_" + master_record_pointer;
+		decision_timer.cancel();
+		String s = "Committing transaction # " + xid + " to file " + m_name + "_" + master_record_pointer[0] + ".";
+		live_log.add("COMMIT " + xid);
 		try {
-			ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_" + master_record_pointer + ".ser"));
-			ois.writeObject(m_data);
-			ois = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_master_record.ser"));
+			ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_master_record.ser"));
 			ois.writeObject(master_record_pointer);
+			ois = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
+			ois.writeObject(live_log);
 		}
 		catch(Exception e) {
 			System.out.println(e);
@@ -473,18 +500,110 @@ public class ResourceManager implements IResourceManager
 		System.out.println(s);
 		return true;
 	}
+
 	public void abort(int xid) throws RemoteException,
-			InvalidTransactionException{}
-	public boolean prepare(int xid) throws RemoteException, TransactionAbortedException, InvalidTransactionException{
-		return true;
+			InvalidTransactionException{
+		//write to log, and then reread master record
+		if(crash_mode == 4) {
+			System.exit(1);
+		}
+		live_log.add("ABORT " + xid);
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
+			master_record_pointer = (String[]) ois.readObject();
+			System.out.println(master_record_pointer[0] + " while undoing");
+			if (master_record_pointer[0].equals("shadow_file_A")) {
+				ois = new ObjectInputStream(new FileInputStream(shadow_file_A));
+				m_data = (RMHashMap) ois.readObject();
+				System.out.println("Undoing by reading from file shadow_file_A.");
+			} else if (master_record_pointer[0].equals("shadow_file_B")) {
+				ois = new ObjectInputStream(new FileInputStream(shadow_file_B));
+				m_data = (RMHashMap) ois.readObject();
+				System.out.println("Undoing by reading from file shadow_file_B.");
+			} else {
+				m_data = new RMHashMap();
+			}
+		}
+			catch(Exception e) {
+				System.out.println("could not reinstate old image while aborting " + xid );
+			}
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
+			master_record_pointer = (String[])ois.readObject();
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
+			oos.writeObject(live_log);
+
+		} catch (Exception e) {
+			System.out.println(e + " at master record reading.");
+		}
+		if(master_record_pointer == null) {
+			master_record_pointer = new String[]{"",""};
+		}
 	}
+
+	public void prepare(int xid) throws RemoteException, TransactionAbortedException, InvalidTransactionException{
+		//first write main mem copy to NOT last committed version, then write master record, then say yes
+		if(crash_mode == 1) {
+			System.exit(1);
+		}
+		live_log.add("YES " + xid);
+		if(master_record_pointer[0].equals("shadow_file_A")) {
+			master_record_pointer[0] = "shadow_file_B";
+		} else {
+			master_record_pointer[0] =  "shadow_file_A";
+		}
+		master_record_pointer[1] = Integer.toString(xid);
+		String s = "Committing transaction " + xid + " to file " + m_name + "_" + master_record_pointer[0] + ".";
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_" + master_record_pointer[0] + ".ser"));
+			oos.writeObject(m_data);
+			oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
+			oos.writeObject(live_log);
+		}
+		catch(Exception e) {
+			System.out.println(e + "trying to write log");
+		}
+		if(crash_mode == 2) {
+			System.exit(1);
+		}
+		//start decision timeout
+		decision_timer = new Timer();
+		decision_timer.schedule(new TimerTask() {
+			public void run() {
+				try {
+					System.out.println("The RM" + m_name + " has given up waiting for decision on " + xid);
+					abort(xid);
+					throw new TransactionAbortedException(xid);
+				} catch (Exception e) {
+				}
+			}
+		}, DECISION_TIMEOUT);
+		prepared.put(xid,true);
+		if(crash_mode == 3) {
+			System.exit(1);
+		}
+	}
+	public boolean getPrepare(int xid) {
+		return prepared.get(xid);
+	}
+
 	public void resetCrashes() throws RemoteException{
 		crash_mode = 0;
 	}
+
 	public void crashMiddleware(int mode) throws RemoteException{}
+
 	public void crashResourceManager(String name /* RM Name */, int mode)
 			throws RemoteException{
 		crash_mode = mode;
+	}
+	public void queryLog() throws RemoteException{
+		System.out.println("Log for " + m_name);
+		if(live_log != null) {
+            for (String i : live_log) {
+                System.out.println(i);
+            }
+        }
 	}
 }
  

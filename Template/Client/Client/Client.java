@@ -427,7 +427,11 @@ public abstract class Client {
                     System.out.println("Transaction " + xid + " Aborted");
                     break;
                 }
-
+                case QueryLog: {
+                    checkArgumentsCount(1,arguments.size());
+                    m_resourceManager.queryLog();
+                    break;
+                }
                 case CrashMiddleware: {
                     checkArgumentsCount(2, arguments.size());
                     int mode = toInt(arguments.elementAt(1));
@@ -464,6 +468,26 @@ public abstract class Client {
                     checkArgumentsCount(3, arguments.size());
                     int mode = toInt(arguments.elementAt(1));
                     String name = (arguments.elementAt(2));
+                    if (!name.equals("Flights") || !name.equals("Cars") || !name.equals("Rooms")){
+                        System.out.println("please enter one of the following:\n Flights \n Cars \n Rooms");
+                    }
+                    switch (mode) {
+                        case 1:
+                            System.out.println("Crash after receive vote request but before sending answer");
+                            break;
+                        case 2:
+                            System.out.println("Crash after decigin which answer to send(commit / abort)");
+                            break;
+                        case 3:
+                            System.out.println("Crash after sending answer");
+                            break;
+                        case 4:
+                            System.out.println(" after receiving decision but before committing / aborting");
+                            break;
+                        case 5:
+                            System.out.println("Crash during recovery");
+                            break;
+                    }
                     m_resourceManager.crashResourceManager(name, mode);
                     break;
                 }
