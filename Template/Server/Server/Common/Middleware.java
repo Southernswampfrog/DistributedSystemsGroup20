@@ -23,17 +23,13 @@ public class Middleware extends ResourceManager implements IResourceManager  {
     protected IResourceManager[] m_RMs = new IResourceManager[3];
     protected LockManager lm = new LockManager();
     protected TransactionManager tm = new TransactionManager(lm);
-    protected static int TTL_TIMEOUT = 50000;
+    protected static int TTL_TIMEOUT = 30000;
     protected List<String> dataToLock;
-    protected HashMap<String, Integer> rmNameMap = new HashMap<>();
 
     public Middleware(String p_name) {
         super(p_name);
         m_name = p_name;
         dataToLock = new ArrayList<>();
-        rmNameMap.put("flight", 0);
-        rmNameMap.put("car", 1);
-        rmNameMap.put("room",2);
     }
 
     // Create a new flight, or add seats to existing flight
@@ -43,10 +39,15 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
         dataToLock.add("flight-" + flightNum);
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        int position = rmNameMap.get("flight");
-        return m_RMs[position].addFlight(xid, flightNum, flightSeats, flightPrice);
+        try {
+            updateTM(dataToLock, xid, lockType);
+            dataToLock.clear();
+            return m_RMs[0].addFlight(xid, flightNum, flightSeats, flightPrice);
+        }
+        catch(Exception e) {
+            System.out.println("Could not connect to Flight Resource Manager.");
+            return false;
+        }
     }
 
     // Create a new car location or add cars to an existing location
@@ -245,7 +246,6 @@ public class Middleware extends ResourceManager implements IResourceManager  {
     public boolean newCustomer(int xid, int customerID)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-
         dataToLock.add("flightCust-"+customerID);
         dataToLock.add("carCust-"+customerID);
         dataToLock.add("roomCust-"+customerID);
@@ -335,7 +335,6 @@ public class Middleware extends ResourceManager implements IResourceManager  {
     public int start() throws RemoteException {
         int xid = tm.start();
         System.out.println("Transaction " + xid + " started.");
-        //get current state of RMs
         return xid;
     }
 
@@ -344,16 +343,11 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         if (!tm.activeTransactions.containsKey(xid)) {
             throw new InvalidTransactionException(xid);
         }
-        boolean x = false;
         try {
-            x = tm.commit(xid);
+           return tm.commit(xid);
+        } catch (Exception e) {
+            return false;
         }
-        catch (ConnectException e) {
-            m_RMs[0] = m_RMs[1];
-            rmNameMap.put("flight", 1);
-            System.out.println(rmNameMap.values() + " " + rmNameMap.keySet());
-        }
-        return x;
     }
 
     public void abort(int xid) throws RemoteException,
@@ -366,8 +360,13 @@ public class Middleware extends ResourceManager implements IResourceManager  {
 
     public void resetCrashes() throws RemoteException{
         tm.crash_mode = 0;
-        for(int i = 0; i < m_RMs.length; i++) {
-            m_RMs[i].resetCrashes();
+        try {
+            for (int i = 0; i < m_RMs.length; i++) {
+                m_RMs[i].resetCrashes();
+            }
+        }
+        catch (Exception e) {
+            System.out.println("reset crashes failure");
         }
     }
 
@@ -394,41 +393,20 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         System.out.println("No such RM exists");
     }
 
-    public synchronized void updateTM(List<String> RMNames, int xid, TransactionLockObject.LockType locktype) throws RemoteException, ConcurrentModificationException {
+    public synchronized void updateTM(List<String> RMNames, int xid, TransactionLockObject.LockType locktype)
+            throws RemoteException {
         int position = 0;
             int length = RMNames.size();
             for (int i = 0; i < length; i++) {
                 String j = RMNames.get(i);
                 if (j.contains("flight")) {
-                    position = rmNameMap.get("flight");
+                    position = 0;
                 } else if (j.contains("car")) {
-                    position = rmNameMap.get("car");
+                    position = 1;
                 } else if (j.contains("room")) {
-                    position = rmNameMap.get("room");
+                    position = 2;
                 }
                 tm.activeTransactions.get(xid).add(m_RMs[position]);
-                RMHashMap[] l = tm.undoData.get(xid);
-                if (locktype == TransactionLockObject.LockType.LOCK_WRITE && l[position] == null) {
-                    l[position] = m_RMs[position].getData();
-                    tm.undoData.put(xid, l);
-                    final int y = position;
-                    //store method at Transaction Manager to recall this state
-                    Runnable x = (() -> {
-                        try {
-                            m_RMs[y].abort(xid);
-                        }
-                        catch (Exception e) {
-                            System.out.println(e + "at undo map.");
-                            m_RMs[0] = m_RMs[1];
-                            rmNameMap.put("flight", 1);
-                            System.out.println(rmNameMap.values() + " " + rmNameMap.keySet());
-
-                        }
-                    });
-                    if (tm.undo.containsKey(xid)) {
-                        tm.undo.get(xid).add(x);
-                    }
-                }
             }
         //update timer
         Timer t = new Timer();

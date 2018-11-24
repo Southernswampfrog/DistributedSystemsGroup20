@@ -14,10 +14,8 @@ public class TransactionManager {
     protected HashMap<Integer, Set<IResourceManager>> activeTransactions;
     protected int next_xid;
     protected Map<Integer, Timer> TTLMap = new HashMap<>();
-    protected Map<Integer, RMHashMap[]> undoData;
-    protected static int TTL_TIMEOUT = 50000;
+    protected static int TTL_TIMEOUT = 30000;
     protected LockManager lm;
-    protected Map<Integer, ArrayList<Runnable>> undo;
     public int crash_mode = 0;
     public ArrayList<String> live_log;
     public File log;
@@ -38,8 +36,6 @@ public class TransactionManager {
         activeTransactions = new HashMap<>();
         next_xid = 0;
         lm = lockmanager;
-        undo = new HashMap<>();
-        undoData = new HashMap<>();
     }
 
     public synchronized int start() {
@@ -49,8 +45,6 @@ public class TransactionManager {
         }
         next_xid++;
         activeTransactions.put(next_xid, new HashSet<>());
-        undo.put(next_xid, new ArrayList<>());
-        undoData.put(next_xid, new RMHashMap[3]);
         Timer t = new Timer();
         int transactionNum = next_xid;
         t.schedule(new TimerTask() {
@@ -76,16 +70,8 @@ public class TransactionManager {
         }
         Iterator<IResourceManager> irm = activeTransactions.get(xid).iterator();
         lm.UnlockAll(xid);
-        int size = undo.get(xid).size();
-        ArrayList<Runnable> undoes = undo.get(xid);
-        for (int i = 0; i < size; i++) {
-            undoes.get(i).run();
-        }
-        undo.remove(xid);
         TTLMap.get(xid).cancel();
         TTLMap.remove(xid);
-        undoData.remove(xid);
-        undo.remove(xid);
         while (irm.hasNext()) {
             IResourceManager ir = irm.next();
             ir.abort(xid);
@@ -110,7 +96,7 @@ public class TransactionManager {
             try {
                 ir.prepare(xid);
             } catch (Exception e) {
-                System.out.println("node failure");
+                System.out.println("Node failure while trying to prepare commit for " + xid + ".");
                 abort(xid);
                 return false;
             }
@@ -131,57 +117,39 @@ public class TransactionManager {
         }
         if (crash_mode == 3) {
             System.exit(1);
-    }
-    irm = activeTransactions.get(xid).
-
-    iterator();
-        if(crash_mode ==4)
-
-    {
-        System.exit(1);
-    }
-        live_log.add("COMMIT "+xid);
-        try
-
-    {
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(log));
-        oos.writeObject(live_log);
-    } catch(
-    Exception e)
-
-    {
-        System.out.println("Cannot write TM log while committing");
-    }
-        if(crash_mode ==5)
-
-    {
-        System.exit(1);
-    }
-        while(irm.hasNext())
-
-    {
-        IResourceManager ir = irm.next();
-        boolean committed = ir.commit(xid);
-        if (!committed) {
-            return false;
         }
-        System.out.println(ir.getName() + " committed.");
-    }
-        if(crash_mode ==7)
-
-    {
-        System.exit(1);
-    }
+        irm = activeTransactions.get(xid).iterator();
+        if (crash_mode == 4) {
+            System.exit(1);
+        }
+        live_log.add("COMMIT " + xid);
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(log));
+            oos.writeObject(live_log);
+        } catch (
+                Exception e) {
+            System.out.println("Cannot write TM log while committing");
+        }
+        if (crash_mode == 5) {
+            System.exit(1);
+        }
+        while (irm.hasNext()) {
+            IResourceManager ir = irm.next();
+            boolean committed = ir.commit(xid);
+            if (!committed) {
+                return false;
+            }
+            System.out.println(ir.getName() + " committed.");
+        }
+        if (crash_mode == 7) {
+            System.exit(1);
+        }
         activeTransactions.remove(xid);
         lm.UnlockAll(xid);
-        TTLMap.get(xid).
-
-    cancel();
+        TTLMap.get(xid).cancel();
         TTLMap.remove(xid);
-        undoData.remove(xid);
-        undo.remove(xid);
         return true;
-}
+    }
 
     public void queryLog() {
         System.out.println("TM log:");

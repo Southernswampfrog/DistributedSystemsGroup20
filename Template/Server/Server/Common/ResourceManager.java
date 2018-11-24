@@ -512,12 +512,17 @@ public class ResourceManager implements IResourceManager
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
 			master_record_pointer = (String[]) ois.readObject();
 			System.out.println(master_record_pointer[0] + " while undoing");
+		}
+		catch (Exception e) {
+			System.out.println(e + "reading master record");
+		}
+		try {
 			if (master_record_pointer[0].equals("shadow_file_A")) {
-				ois = new ObjectInputStream(new FileInputStream(shadow_file_A));
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(shadow_file_A));
 				m_data = (RMHashMap) ois.readObject();
 				System.out.println("Undoing by reading from file shadow_file_A.");
 			} else if (master_record_pointer[0].equals("shadow_file_B")) {
-				ois = new ObjectInputStream(new FileInputStream(shadow_file_B));
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(shadow_file_B));
 				m_data = (RMHashMap) ois.readObject();
 				System.out.println("Undoing by reading from file shadow_file_B.");
 			} else {
@@ -525,7 +530,7 @@ public class ResourceManager implements IResourceManager
 			}
 		}
 			catch(Exception e) {
-				System.out.println("could not reinstate old image while aborting " + xid );
+				System.out.println(e + " while aborting " + xid );
 			}
 		try {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
