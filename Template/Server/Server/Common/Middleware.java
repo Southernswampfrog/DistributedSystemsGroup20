@@ -25,12 +25,15 @@ public class Middleware extends ResourceManager implements IResourceManager  {
     protected TransactionManager tm = new TransactionManager(lm);
     protected static int TTL_TIMEOUT = 50000;
     protected List<String> dataToLock;
+    protected HashMap<String, Integer> rmNameMap = new HashMap<>();
 
     public Middleware(String p_name) {
         super(p_name);
         m_name = p_name;
         dataToLock = new ArrayList<>();
-
+        rmNameMap.put("flight", 0);
+        rmNameMap.put("car", 1);
+        rmNameMap.put("room",2);
     }
 
     // Create a new flight, or add seats to existing flight
@@ -42,7 +45,8 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         ValidityAndLockCheck(dataToLock, xid, lockType);
         updateTM(dataToLock, xid, lockType);
         dataToLock.clear();
-        return m_RMs[0].addFlight(xid, flightNum, flightSeats, flightPrice);
+        int position = rmNameMap.get("flight");
+        return m_RMs[position].addFlight(xid, flightNum, flightSeats, flightPrice);
     }
 
     // Create a new car location or add cars to an existing location
@@ -340,7 +344,15 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         if (!tm.activeTransactions.containsKey(xid)) {
             throw new InvalidTransactionException(xid);
         }
-        boolean x = tm.commit(xid);
+        boolean x = false;
+        try {
+            x = tm.commit(xid);
+        }
+        catch (ConnectException e) {
+            m_RMs[0] = m_RMs[1];
+            rmNameMap.put("flight", 1);
+            System.out.println(rmNameMap.values() + " " + rmNameMap.keySet());
+        }
         return x;
     }
 
@@ -387,13 +399,12 @@ public class Middleware extends ResourceManager implements IResourceManager  {
             int length = RMNames.size();
             for (int i = 0; i < length; i++) {
                 String j = RMNames.get(i);
-
                 if (j.contains("flight")) {
-                    position = 0;
+                    position = rmNameMap.get("flight");
                 } else if (j.contains("car")) {
-                    position = 1;
+                    position = rmNameMap.get("car");
                 } else if (j.contains("room")) {
-                    position = 2;
+                    position = rmNameMap.get("room");
                 }
                 tm.activeTransactions.get(xid).add(m_RMs[position]);
                 RMHashMap[] l = tm.undoData.get(xid);
@@ -407,7 +418,11 @@ public class Middleware extends ResourceManager implements IResourceManager  {
                             m_RMs[y].abort(xid);
                         }
                         catch (Exception e) {
-                            System.out.println("Could not undo");
+                            System.out.println(e + "at undo map.");
+                            m_RMs[0] = m_RMs[1];
+                            rmNameMap.put("flight", 1);
+                            System.out.println(rmNameMap.values() + " " + rmNameMap.keySet());
+
                         }
                     });
                     if (tm.undo.containsKey(xid)) {

@@ -573,8 +573,8 @@ public class ResourceManager implements IResourceManager
 				try {
 					System.out.println("The RM" + m_name + " has given up waiting for decision on " + xid);
 					abort(xid);
-					throw new TransactionAbortedException(xid);
 				} catch (Exception e) {
+					System.out.println(e + "at undo");
 				}
 			}
 		}, DECISION_TIMEOUT);

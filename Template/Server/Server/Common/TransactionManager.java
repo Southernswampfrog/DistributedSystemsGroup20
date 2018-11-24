@@ -1,7 +1,9 @@
 package Server.Common;
+
 import Server.Interface.IResourceManager;
 
 import java.io.*;
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.*;
 
@@ -25,13 +27,12 @@ public class TransactionManager {
         try {
             if (!log.createNewFile()) {
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(log));
-                live_log = (ArrayList<String>)ois.readObject();
+                live_log = (ArrayList<String>) ois.readObject();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e);
         }
-        if(live_log == null) {
+        if (live_log == null) {
             live_log = new ArrayList<>();
         }
         activeTransactions = new HashMap<>();
@@ -42,7 +43,7 @@ public class TransactionManager {
     }
 
     public synchronized int start() {
-        for (String i : live_log){
+        for (String i : live_log) {
             int max = Character.getNumericValue(i.charAt(i.length() - 1));
             next_xid = Math.max(max, next_xid);
         }
@@ -70,8 +71,7 @@ public class TransactionManager {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(log));
             oos.writeObject(live_log);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("cannot write TM log while aborting");
         }
         Iterator<IResourceManager> irm = activeTransactions.get(xid).iterator();
@@ -86,7 +86,7 @@ public class TransactionManager {
         TTLMap.remove(xid);
         undoData.remove(xid);
         undo.remove(xid);
-        while(irm.hasNext()) {
+        while (irm.hasNext()) {
             IResourceManager ir = irm.next();
             ir.abort(xid);
         }
@@ -98,8 +98,7 @@ public class TransactionManager {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(log));
             oos.writeObject(live_log);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("Cannot write TM log while committing");
         }
         Iterator<IResourceManager> irm = activeTransactions.get(xid).iterator();
@@ -108,11 +107,18 @@ public class TransactionManager {
         }
         while (irm.hasNext()) {
             IResourceManager ir = irm.next();
-            ir.prepare(xid);
+            try {
+                ir.prepare(xid);
+            } catch (Exception e) {
+                System.out.println("node failure");
+                abort(xid);
+                return false;
+            }
         }
         if (crash_mode == 2) {
             System.exit(1);
         }
+
         irm = activeTransactions.get(xid).iterator();
         while (irm.hasNext()) {
             IResourceManager ir = irm.next();
@@ -122,48 +128,64 @@ public class TransactionManager {
                 return false;
             }
             System.out.println(ir.getName() + " can commit.");
-            if(crash_mode == 3) {
-                System.exit(1);
-            }
         }
+        if (crash_mode == 3) {
+            System.exit(1);
+    }
+    irm = activeTransactions.get(xid).
 
-        irm = activeTransactions.get(xid).iterator();
-        if(crash_mode == 4) {
-            System.exit(1);
+    iterator();
+        if(crash_mode ==4)
+
+    {
+        System.exit(1);
+    }
+        live_log.add("COMMIT "+xid);
+        try
+
+    {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(log));
+        oos.writeObject(live_log);
+    } catch(
+    Exception e)
+
+    {
+        System.out.println("Cannot write TM log while committing");
+    }
+        if(crash_mode ==5)
+
+    {
+        System.exit(1);
+    }
+        while(irm.hasNext())
+
+    {
+        IResourceManager ir = irm.next();
+        boolean committed = ir.commit(xid);
+        if (!committed) {
+            return false;
         }
-        live_log.add("COMMIT " + xid);
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(log));
-            oos.writeObject(live_log);
-        }
-        catch(Exception e) {
-            System.out.println("Cannot write TM log while committing");
-        }
-        if(crash_mode == 5) {
-            System.exit(1);
-        }
-        while(irm.hasNext()){
-            IResourceManager ir = irm.next();
-            boolean committed = ir.commit(xid);
-            if (!committed) {
-                return false;
-            }
-            System.out.println(ir.getName() + " committed.");
-        }
-        if(crash_mode == 7) {
-            System.exit(1);
-        }
+        System.out.println(ir.getName() + " committed.");
+    }
+        if(crash_mode ==7)
+
+    {
+        System.exit(1);
+    }
         activeTransactions.remove(xid);
         lm.UnlockAll(xid);
-        TTLMap.get(xid).cancel();
+        TTLMap.get(xid).
+
+    cancel();
         TTLMap.remove(xid);
         undoData.remove(xid);
         undo.remove(xid);
         return true;
-    }
+}
+
     public void queryLog() {
         System.out.println("TM log:");
-        for(String i : live_log) {
+        for (String i : live_log) {
             System.out.println(i);
         }
     }
