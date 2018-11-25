@@ -227,4 +227,6 @@ public interface IResourceManager extends Remote
             throws RemoteException;
     public void vote(int xid, int decision) throws RemoteException;
     public void queryLog() throws RemoteException;
+    public boolean didCommit(int xid) throws RemoteException;
+    public void updateLog(int xid) throws RemoteException;
 }

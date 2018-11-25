@@ -82,7 +82,7 @@ public class RMITEST extends Client {
 
     public void start() {
         String[] testCases = {
-              "CrashResourceManager,2,Flights",
+              "CrashResourceManager,1,Flights",
                 "start",
                 "AddFlight,1,1,1,1",
                 "commit,1",

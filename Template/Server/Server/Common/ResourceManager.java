@@ -6,6 +6,8 @@
 package Server.Common;
 
 import Server.Interface.*;
+
+import javax.sound.midi.Soundbank;
 import java.io.*;
 import java.util.*;
 import java.rmi.RemoteException;
@@ -80,21 +82,6 @@ public class ResourceManager implements IResourceManager
 			}
 		} catch (Exception e) {
 			System.out.println(e + " at file data");
-		}
-		//recovery
-		for(Integer i : live_log.keySet()) {
-			if(live_log.get(i).contains("YES") && !(live_log.get(i).contains("COMMIT") || live_log.get(i).contains("ABORT"))){
-				//have to abort!!
-				try {
-					middleware.vote(i, 0);
-					if(crash_mode == 5) {
-						System.exit(1);
-					}
-				}
-				catch(Exception e){
-					System.out.println(e + "Could not send recovery vote");
-				}
-			}
 		}
 	}
 
@@ -491,11 +478,12 @@ public class ResourceManager implements IResourceManager
 
 	public boolean commit(int xid) throws RemoteException,
 			TransactionAbortedException, InvalidTransactionException {
+
+		String s = "Committing transaction # " + xid + " to file " + m_name + "_" + master_record_pointer[0] + ".";
+		live_log.get(xid).add("COMMIT");
 		if(crash_mode == 4) {
 			System.exit(1);
 		}
-		String s = "Committing transaction # " + xid + " to file " + m_name + "_" + master_record_pointer[0] + ".";
-		live_log.get(xid).add("COMMIT");
 		try {
 			ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_master_record.ser"));
 			ois.writeObject(master_record_pointer);
@@ -515,7 +503,14 @@ public class ResourceManager implements IResourceManager
 		if(crash_mode == 4) {
 			System.exit(1);
 		}
-		live_log.get(xid).add("ABORT");
+		if(live_log.get(xid) == null) {
+			ArrayList<String> list = new ArrayList<>();
+			list.add("ABORT");
+			live_log.put(xid,list);
+		}
+		else {
+			live_log.get(xid).add("ABORT");
+		}
 		try {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
 			master_record_pointer = (String[]) ois.readObject();
@@ -528,11 +523,11 @@ public class ResourceManager implements IResourceManager
 			if (master_record_pointer[0].equals("shadow_file_A")) {
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(shadow_file_A));
 				m_data = (RMHashMap) ois.readObject();
-				System.out.println("Undoing by reading from file shadow_file_A.");
+				System.out.println("Undoing by reading from file " + master_record_pointer[0]);
 			} else if (master_record_pointer[0].equals("shadow_file_B")) {
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(shadow_file_B));
 				m_data = (RMHashMap) ois.readObject();
-				System.out.println("Undoing by reading from file shadow_file_B.");
+				System.out.println("Undoing by reading from file " + master_record_pointer[0]);
 			} else {
 				m_data = new RMHashMap();
 			}
@@ -568,9 +563,11 @@ public class ResourceManager implements IResourceManager
 			master_record_pointer[0] = "shadow_file_A";
 		}
 		master_record_pointer[1] = Integer.toString(xid);
+		System.out.println(master_record_pointer[0] + " " + master_record_pointer[1]);
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_" + master_record_pointer[0] + ".ser"));
 			oos.writeObject(m_data);
+			System.out.println("Preparing to commit xid " + xid + " by writing to " + master_record_pointer[0]);
 			oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
 			oos.writeObject(live_log);
 		} catch (Exception e) {
@@ -611,6 +608,65 @@ public class ResourceManager implements IResourceManager
 			}
 			System.out.println("\n");
 		}
+	}
+
+	public boolean didCommit(int xid) {
+		return false;
+	}
+
+	protected void recover() {
+		for(Integer i : live_log.keySet()) {
+			if(live_log.get(i).contains("YES") && !(live_log.get(i).contains("COMMIT") || live_log.get(i).contains("ABORT"))){
+				try {
+					if(middleware.didCommit(i)) {
+						//need to read from OTHER data site...
+						if (master_record_pointer[0].equals("shadow_file_A")) {
+							master_record_pointer[0] = "shadow_file_B";
+						} else {
+							master_record_pointer[0] = "shadow_file_A";
+						}
+						master_record_pointer[1] = Integer.toString(i);
+						ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Persistence/" + m_name + "_" + master_record_pointer[0] + ".ser"));
+						m_data = (RMHashMap) ois.readObject();
+						commit(i);
+						System.out.println("Commiting transaction " + i + " upon recovery by reading from " + master_record_pointer[0]);
+					}
+					else{
+						abort(i);
+						System.out.println("Aborting transaction " + i + " upon recovery");
+					}
+				}
+				catch(Exception e){
+					System.out.println("at rm recovery....");
+					e.printStackTrace();
+				}
+				if(crash_mode == 5) {
+					System.exit(1);
+				}
+			}
+			else if (live_log.get(i).contains("COMMIT") && Integer.parseInt(master_record_pointer[1]) < i) {
+				//only wrote commit but did not actually commit!!
+				try {
+					if (master_record_pointer[0].equals("shadow_file_A")) {
+						master_record_pointer[0] = "shadow_file_B";
+					} else {
+						master_record_pointer[0] = "shadow_file_A";
+					}
+					master_record_pointer[1] = Integer.toString(i);
+					ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Persistence/" + m_name + "_" + master_record_pointer[0] + ".ser"));
+					m_data = (RMHashMap) ois.readObject();
+					commit(i);
+					System.out.println("Commiting transaction " + i + " upon recovery by reading from " + master_record_pointer[0]);
+				}
+				catch(Exception e) {
+
+				}
+			}
+		}
+	}
+	public void updateLog(int xid) {
+		ArrayList<String> list = new ArrayList<>();
+		live_log.put(xid,list);
 	}
 }
  

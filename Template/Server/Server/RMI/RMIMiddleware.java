@@ -31,7 +31,7 @@ public class RMIMiddleware extends Middleware
 		// Create the RMI server entry
 		try {
 			// Create a new Server object
-			RMIMiddleware server = new RMIMiddleware(s_serverName);
+			RMIMiddleware server = new RMIMiddleware(s_serverName, s_serverPort,s_RMNames);
 			server.connectServer();
 			// Dynamically generate the stub (client proxy)
 			IResourceManager resourceManager = (IResourceManager)UnicastRemoteObject.exportObject(server, 0);
@@ -107,8 +107,8 @@ public class RMIMiddleware extends Middleware
         }
     }
 
-	public RMIMiddleware(String name)
+	public RMIMiddleware(String name, int port, String[] servers)
 	{
-		super(name);
+		super(name, s_serverPort, s_RMNames);
 	}
 }

@@ -54,8 +54,6 @@ public abstract class Client {
                 System.err.println((char) 27 + "[31;1mCommand exception: " + (char) 27 + "[0m" + e.getLocalizedMessage());
             } catch (ConnectException | UnmarshalException e) {
                 System.err.println((char) 27 + "[31;1mCommand exception: " + (char) 27 + "[0mConnection to server lost");
-            } catch(RemoteException re) {
-                System.out.println("caught remote");
             }
             catch (Exception e) {
                 System.err.println((char) 27 + "[31;1mCommand exception: " + (char) 27 + "[0mUncaught exception");
@@ -509,6 +507,8 @@ public abstract class Client {
             System.out.println(ite);
         } catch (TransactionAbortedException tae) {
             System.out.println(tae);
+        } catch(RemoteException re) {
+            System.out.println("Could not execute command.");
         }
     }
 

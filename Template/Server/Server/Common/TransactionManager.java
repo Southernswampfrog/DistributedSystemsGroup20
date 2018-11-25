@@ -13,7 +13,7 @@ public class TransactionManager {
     protected HashMap<Integer, Set<IResourceManager>> activeTransactions;
     protected int next_xid;
     protected Map<Integer, Timer> TTLMap = new HashMap<>();
-    protected static int TTL_TIMEOUT = 30000;
+    protected static int TTL_TIMEOUT = 50000;
     protected LockManager lm;
     public int crash_mode = 0;
     public HashMap<Integer, ArrayList<String>> live_log;
@@ -62,12 +62,19 @@ public class TransactionManager {
     }
 
     public synchronized void abort(int xid) throws RemoteException, InvalidTransactionException {
-        live_log.get(xid).add("ABORT");
+        if(live_log.get(xid) == null) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add("ABORT");
+            live_log.put(xid,list);
+        }
+        else {
+            live_log.get(xid).add("ABORT");
+        }
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(log));
             oos.writeObject(live_log);
         } catch (Exception e) {
-            System.out.println("cannot write TM log while aborting");
+            System.out.println(e + "cannot write TM log while aborting");
         }
         Iterator<IResourceManager> irm = activeTransactions.get(xid).iterator();
         lm.UnlockAll(xid);
@@ -80,9 +87,10 @@ public class TransactionManager {
             }
         }
         catch(Exception e) {
-            System.out.println("Error at TM abort.");
+            System.out.println(e + " Error while attempting TM abort.");
         }
         activeTransactions.remove(xid);
+        System.out.println("Transaction " + xid + " aborted.");
     }
 
     public synchronized boolean commit(int xid) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
@@ -110,7 +118,8 @@ public class TransactionManager {
                 irm.next().prepare(xid);
             }
             catch(Exception e) {
-                System.out.println("error at sending vote-req to participants");
+                System.out.println(e + "error at sending vote-req to participants");
+
             }
         }
         if (crash_mode == 2) {
@@ -150,7 +159,7 @@ public class TransactionManager {
 
 
         //write COMMIT to log, send commit to all participants
-        live_log.get(xid).add("COMMIT ");
+        live_log.get(xid).add("COMMIT");
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(log));
             oos.writeObject(live_log);

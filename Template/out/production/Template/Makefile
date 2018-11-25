@@ -1,20 +1,23 @@
-all: java.policy compile-client
+all: java.policy compile-server-rmi
 
 java.policy: FORCE
-	@echo "Creating client java policy"
+	@echo "Creating server java policy"
 	@echo "grant codebase \"file:`pwd`/\" {" > java.policy
 	@echo "permission java.security.AllPermission;" >> java.policy
 	@echo "};" >> java.policy
 
 FORCE: ;
 
-../Server/RMIInterface.jar: ../Server/Server/Interface/IResourceManager.java
-	make -C ../Server/ RMIInterface.jar
+RMIInterface.jar: Server/Interface/IResourceManager.java
+	@echo "Compiling RMI server interface"
+	javac Server/Interface/IResourceManager.java Server/LockManager/*.java Server/Common/*.java
+	jar cvf RMIInterface.jar Server/Interface/IResourceManager.class Server/LockManager/*.class Server/Common/*.class
 
-compile-client: ../Server/RMIInterface.jar
-	javac -cp ../Server/RMIInterface.jar:java-json.jar: Client/*.java
+compile-server-rmi: Server/RMI/*.java Server/Interface/IResourceManager.java Server/Common/*.java Server/LockManager/*.java
+	javac -cp java-json.jar Server/RMI/*.java Server/Interface/IResourceManager.java Server/Common/*.java Server/LockManager/*.java
 
 clean:
-	rm -f Client/*.class
-	rm -f ../Server/RMIInterface.jar
+	rm -f Server/Interface/*.class Server/Common/*.class Server/RMI/*.class Server/LockManager/*.class
+	rm -f RMIInterface.jar
 	rm -f java.policy
+	rm -r Persistence/*

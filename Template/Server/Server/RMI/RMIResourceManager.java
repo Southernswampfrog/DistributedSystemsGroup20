@@ -59,7 +59,7 @@ public class RMIResourceManager extends ResourceManager
 			});                                       
 			System.out.println("'" + s_serverName + "' resource manager server ready and bound to '" + s_rmiPrefix + s_serverName + "'");
 			server.connectServer();
-
+			server.recover();
 		}
 		catch (Exception e) {
 			System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");

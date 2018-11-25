@@ -12,7 +12,6 @@ public class RMIClient extends Client
 	private static int s_serverPort = 1099;
 	private static String s_serverName = "Server";
 
-	//TODO: REPLACE 'ALEX' WITH YOUR GROUP NUMBER TO COMPILE
 	private static String s_rmiPrefix = "group20";
 
 	public static void main(String args[])
@@ -67,7 +66,6 @@ public class RMIClient extends Client
 			while (true) {
 				try {
 					Registry registry = LocateRegistry.getRegistry(server, port);
-					System.out.println(registry);
 					m_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name);
 					System.out.println("Connected to '" + name + "' server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
 					break;
