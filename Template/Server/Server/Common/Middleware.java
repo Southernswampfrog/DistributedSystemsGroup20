@@ -8,11 +8,6 @@ package Server.Common;
 import Server.Interface.IResourceManager;
 import Server.LockManager.*;
 
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.ObjectInputStream;
-import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -22,7 +17,7 @@ public class Middleware extends ResourceManager implements IResourceManager  {
     protected String m_name = "";
     protected IResourceManager[] m_RMs = new IResourceManager[3];
     protected LockManager lm = new LockManager();
-    protected TransactionManager tm = new TransactionManager(lm);
+    protected TransactionManager tm;
     protected static int TTL_TIMEOUT = 30000;
     protected List<String> dataToLock;
 
@@ -30,6 +25,7 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         super(p_name);
         m_name = p_name;
         dataToLock = new ArrayList<>();
+        tm = new TransactionManager(lm);
     }
 
     // Create a new flight, or add seats to existing flight
@@ -40,12 +36,12 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("flight-" + flightNum);
         ValidityAndLockCheck(dataToLock, xid, lockType);
         try {
-            updateTM(dataToLock, xid, lockType);
+            updateTM(dataToLock, xid);
             dataToLock.clear();
             return m_RMs[0].addFlight(xid, flightNum, flightSeats, flightPrice);
         }
         catch(Exception e) {
-            System.out.println("Could not connect to Flight Resource Manager.");
+            System.out.println("Error at addFlights with xid " + xid);
             return false;
         }
     }
@@ -57,9 +53,14 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
         dataToLock.add("car-"+location);
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[1].addCars(xid, location, count, price);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[1].addCars(xid, location, count, price);
+        } catch (Exception e) {
+            System.out.println("Error at addCars with xid " + xid);
+            return false;
+        }
 
     }
 
@@ -71,9 +72,14 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("room-"+location);
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[2].addRooms(xid, location, count, price);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[2].addRooms(xid, location, count, price);
+        } catch (Exception e) {
+            System.out.println("Error at addRooms with xid " + xid);
+            return false;
+        }
     }
 
     // Deletes flight
@@ -82,21 +88,31 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("flight-"+flightNum);
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[0].deleteFlight(xid, flightNum);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[0].deleteFlight(xid, flightNum);
+        } catch (Exception e) {
+            System.out.println("Error at deleteFlight with xid " + xid);
+            return false;
+        }
     }
 
 
     // Delete cars at a location
     public boolean deleteCars(int xid, String location)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
-        dataToLock.add("car-"+location);
+        dataToLock.add("car-" + location);
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[1].deleteCars(xid, location);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[1].deleteCars(xid, location);
+        } catch (Exception e) {
+            System.out.println("Error at deleteCars with xid " + xid);
+            return false;
+        }
     }
 
     // Delete rooms at a location
@@ -105,9 +121,14 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("room-"+location);
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[2].deleteRooms(xid, location);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[2].deleteRooms(xid, location);
+        } catch (Exception e) {
+            System.out.println("Error at deleteRooms with xid" + xid);
+            return false;
+        }
     }
 
     // Returns the number of empty seats in this flight
@@ -116,9 +137,13 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
         dataToLock.add("flight-"+flightNum);
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[0].queryFlight(xid, flightNum);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[0].queryFlight(xid, flightNum);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     // Returns the number of cars available at a location
@@ -127,9 +152,13 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("car-"+location);
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[1].queryCars(xid, location);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[1].queryCars(xid, location);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     // Returns the amount of rooms available at a location
@@ -138,9 +167,14 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
         dataToLock.add("room-"+location);
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[2].queryRooms(xid, location);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[2].queryRooms(xid, location);
+        } catch (Exception e) {
+            System.out.println("");
+            return 0;
+        }
     }
 
     // Returns price of a seat in this flight
@@ -150,7 +184,7 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
         dataToLock.add("flight-"+flightNum);
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
+        updateTM(dataToLock, xid);
         dataToLock.clear();
         return m_RMs[0].queryFlightPrice(xid, flightNum);
     }
@@ -161,9 +195,13 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("car-"+location);
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[1].queryCarsPrice(xid, location);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[1].queryCarsPrice(xid, location);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     // Returns room price at this location
@@ -172,9 +210,14 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("room-"+location);
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[2].queryRoomsPrice(xid, location);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[2].queryRoomsPrice(xid, location);
+        } catch (Exception e) {
+            System.out.println();
+            return 0;
+        }
     }
 
     // Adds flight reservation to this customer
@@ -183,9 +226,14 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("flight-"+flightNum);
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[0].reserveFlight(xid, customerID, flightNum);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[0].reserveFlight(xid, customerID, flightNum);
+        } catch (Exception e) {
+            System.out.println();
+            return false;
+        }
     }
 
     // Adds car reservation to this customer
@@ -194,9 +242,14 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
         dataToLock.add("car-"+location);
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[1].reserveCar(xid, customerID, location);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[1].reserveCar(xid, customerID, location);
+        } catch (Exception e) {
+            System.out.println();
+            return false;
+        }
     }
 
     // Adds room reservation to this customer
@@ -205,9 +258,13 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_READ;
         dataToLock.add("room"+location);
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        return m_RMs[2].reserveRoom(xid, customerID, location);
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            return m_RMs[2].reserveRoom(xid, customerID, location);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String queryCustomerInfo(int xid, int customerID)
@@ -217,29 +274,39 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("carCust-"+customerID);
         dataToLock.add("roomCust-"+customerID);
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        String x = "Bill for Customer " + customerID + ":";
-        for (int i = 0; i < 3; i++) {
-            x = x + m_RMs[i].queryCustomerInfo(xid, customerID);
+        try {
+            updateTM(dataToLock, xid);
+            String x = "Bill for Customer " + customerID + ":";
+            for (int i = 0; i < 3; i++) {
+                x = x + m_RMs[i].queryCustomerInfo(xid, customerID);
+            }
+            x = x.replace("Bill for customer " + customerID, "");
+            x = x.replace("\n", " ");
+            dataToLock.clear();
+            return x;
+        } catch (Exception e) {
+            return "";
         }
-        x = x.replace("Bill for customer " + customerID, "");
-        x = x.replace("\n", " ");
-        dataToLock.clear();
-        return x;
     }
 
     public int newCustomer(int xid)
             throws RemoteException, InvalidTransactionException, TransactionAbortedException {
-        int x = m_RMs[0].newCustomer(xid);
-        TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
-        dataToLock.add("flightCust-"+x);
-        dataToLock.add("carCust-"+x);
-        dataToLock.add("roomCust-"+x);
-        ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        m_RMs[1].newCustomer(xid, x);
-        m_RMs[2].newCustomer(xid, x);
-        dataToLock.clear();
+        int x = 0;
+        try {
+            x = m_RMs[0].newCustomer(xid);
+            TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
+            dataToLock.add("flightCust-"+x);
+            dataToLock.add("carCust-"+x);
+            dataToLock.add("roomCust-"+x);
+            ValidityAndLockCheck(dataToLock, xid, lockType);
+            updateTM(dataToLock, xid);
+            m_RMs[1].newCustomer(xid, x);
+            m_RMs[2].newCustomer(xid, x);
+            dataToLock.clear();
+        } catch (Exception e) {
+            System.out.println("Could not make new customer");
+                    x = 0;
+        }
         return x;
     }
 
@@ -250,12 +317,18 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("carCust-"+customerID);
         dataToLock.add("roomCust-"+customerID);
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
         boolean x = false;
-        for (int i = 0; i < 3; i++) {
-            x = m_RMs[i].newCustomer(xid, customerID);
+        try {
+            updateTM(dataToLock, xid);
+            x = false;
+            for (int i = 0; i < 3; i++) {
+                x = m_RMs[i].newCustomer(xid, customerID);
+            }
+            dataToLock.clear();
+        } catch (Exception e){
+            System.out.println("Could not create new customer.");
+            x = false;
         }
-        dataToLock.clear();
         return x;
     }
 
@@ -266,12 +339,18 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         dataToLock.add("carCust-"+customerID);
         dataToLock.add("roomCust-"+customerID);
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
         boolean x = false;
-        for (int i = 0; i < 3; i++) {
-            x = m_RMs[i].deleteCustomer(xid, customerID);
+        try {
+            updateTM(dataToLock, xid);
+            x = false;
+            for (int i = 0; i < 3; i++) {
+                x = m_RMs[i].deleteCustomer(xid, customerID);
+            }
+            dataToLock.clear();
+        } catch (Exception e) {
+            System.out.println("");
+            return false;
         }
-        dataToLock.clear();
         return x;
     }
 
@@ -290,44 +369,49 @@ public class Middleware extends ResourceManager implements IResourceManager  {
             dataToLock.add("room"+location);
         }
         ValidityAndLockCheck(dataToLock, xid, lockType);
-        updateTM(dataToLock, xid, lockType);
-        dataToLock.clear();
-        //check before actually doing any writes
-        int y;
-        String custExist = (String)(new SubTransaction(() -> m_RMs[0].queryCustomerInfo(xid,customerId)).call());
-        if (custExist.equals("")) {
-            return false;
-        }
-        for (String flightNumber : flightNumbers) {
-            y = (int) new SubTransaction(() -> m_RMs[0].queryFlight(xid, Integer.parseInt(flightNumber))).call();
-            if (y < 1) {
+        try {
+            updateTM(dataToLock, xid);
+            dataToLock.clear();
+            //check before actually doing any writes
+            int y;
+            String custExist = (String)(new SubTransaction(() -> m_RMs[0].queryCustomerInfo(xid,customerId)).call());
+            if (custExist.equals("")) {
                 return false;
             }
-        }
-        int z = (int) new SubTransaction(() -> m_RMs[1].queryCars(xid, location)).call();
-        int w = (int) new SubTransaction(() -> m_RMs[2].queryRooms(xid, location)).call();
-        if (room && w < 1) {
-            return false;
-        }
-        if (car && z < 1) {
-            return false;
-        }
-        boolean m = true;
-        boolean n = true;
-        boolean o = true;
-        for (String flightNumber : flightNumbers) {
-            m = (boolean) new SubTransaction(() -> m_RMs[0].reserveFlight(xid, customerId, Integer.parseInt(flightNumber))).call();
-        }
-        if (car) {
-            n = (boolean) new SubTransaction(() -> m_RMs[1].reserveCar(xid, customerId, location)).call();
-        }
-        if (room) {
-            o = (boolean) new SubTransaction(() -> m_RMs[2].reserveRoom(xid, customerId, location)).call();
-        }
-        if (m && n && o) {
-            return true;
-        }
-        else {
+            for (String flightNumber : flightNumbers) {
+                y = (int) new SubTransaction(() -> m_RMs[0].queryFlight(xid, Integer.parseInt(flightNumber))).call();
+                if (y < 1) {
+                    return false;
+                }
+            }
+            int z = (int) new SubTransaction(() -> m_RMs[1].queryCars(xid, location)).call();
+            int w = (int) new SubTransaction(() -> m_RMs[2].queryRooms(xid, location)).call();
+            if (room && w < 1) {
+                return false;
+            }
+            if (car && z < 1) {
+                return false;
+            }
+            boolean reserveFlight = true;
+            boolean reserveCar = true;
+            boolean reserveRoom = true;
+            for (String flightNumber : flightNumbers) {
+                reserveFlight = (boolean) new SubTransaction(() -> m_RMs[0].reserveFlight(xid, customerId, Integer.parseInt(flightNumber))).call();
+            }
+            if (car) {
+                reserveCar = (boolean) new SubTransaction(() -> m_RMs[1].reserveCar(xid, customerId, location)).call();
+            }
+            if (room) {
+                reserveRoom = (boolean) new SubTransaction(() -> m_RMs[2].reserveRoom(xid, customerId, location)).call();
+            }
+            if (reserveFlight && reserveCar && reserveRoom) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Error at bundle");
             return false;
         }
     }
@@ -346,6 +430,7 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         try {
            return tm.commit(xid);
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -366,7 +451,7 @@ public class Middleware extends ResourceManager implements IResourceManager  {
             }
         }
         catch (Exception e) {
-            System.out.println("reset crashes failure");
+            System.out.println("Could not reset crashes.");
         }
     }
 
@@ -374,7 +459,12 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         for(int i = 0; i < m_RMs.length; i++) {
             m_RMs[i].queryLog();
         }
-        tm.queryLog();
+        try {
+            tm.queryLog();
+        }
+        catch (Exception e){
+            System.out.println("Could not query log.");
+        }
     }
 
     public void crashMiddleware(int mode) throws RemoteException {
@@ -393,7 +483,7 @@ public class Middleware extends ResourceManager implements IResourceManager  {
         System.out.println("No such RM exists");
     }
 
-    public synchronized void updateTM(List<String> RMNames, int xid, TransactionLockObject.LockType locktype)
+    public synchronized void updateTM(List<String> RMNames, int xid)
             throws RemoteException {
         int position = 0;
             int length = RMNames.size();
@@ -461,6 +551,9 @@ public class Middleware extends ResourceManager implements IResourceManager  {
             }
             return x;
         }
+    }
+    public void vote(int xid, int decision) {
+        tm.votes.get(xid).add(decision);
     }
 }
  

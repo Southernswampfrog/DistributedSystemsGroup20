@@ -6,7 +6,6 @@
 package Server.Common;
 
 import Server.Interface.*;
-
 import java.io.*;
 import java.util.*;
 import java.rmi.RemoteException;
@@ -21,14 +20,15 @@ public class ResourceManager implements IResourceManager
 	public File log;
 	public String[] master_record_pointer;
 	public int crash_mode;
-	ArrayList<String> live_log;
-	Timer decision_timer;
+	public HashMap<Integer, ArrayList<String>> live_log;
 	protected static int DECISION_TIMEOUT = 50000;
-	HashMap<Integer, Boolean> prepared;
+	Timer crash_timer;
+	public IResourceManager middleware;
+
 
 
 	public ResourceManager(String p_name) {
-		prepared = new HashMap<>();
+
 		crash_mode = 0;
 		m_name = p_name;
 		m_data = new RMHashMap();
@@ -60,13 +60,13 @@ public class ResourceManager implements IResourceManager
 		try {
 		    if (!log.createNewFile()) {
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(log));
-                live_log = (ArrayList<String>) ois.readObject();
+                live_log = (HashMap<Integer, ArrayList<String>>) ois.readObject();
             }
 		} catch(Exception e) {
 			System.out.println(e + "at log reading.");
 		}
 		if(live_log == null) {
-			live_log = new ArrayList<>();
+			live_log = new HashMap<>();
 		}
 		try {
 			if (master_record_pointer[0].equals("shadow_file_A")) {
@@ -81,13 +81,23 @@ public class ResourceManager implements IResourceManager
 		} catch (Exception e) {
 			System.out.println(e + " at file data");
 		}
+		//recovery
+		for(Integer i : live_log.keySet()) {
+			if(live_log.get(i).contains("YES") && !(live_log.get(i).contains("COMMIT") || live_log.get(i).contains("ABORT"))){
+				//have to abort!!
+				try {
+					middleware.vote(i, 0);
+					if(crash_mode == 5) {
+						System.exit(1);
+					}
+				}
+				catch(Exception e){
+					System.out.println(e + "Could not send recovery vote");
+				}
+			}
+		}
 	}
 
-/*	public ResourceManager(String p_name, RMHashMap another) {
-		m_name = p_name;
-		m_data = another;
-	}*/
-	// Reads a data item
 	protected RMItem readData(int xid, String key)
 	{
 		synchronized(m_data) {
@@ -98,7 +108,6 @@ public class ResourceManager implements IResourceManager
 			return null;
 		}
 	}
-
 	// Writes a data item
 	protected void writeData(int xid, String key, RMItem value)
 	{
@@ -485,9 +494,8 @@ public class ResourceManager implements IResourceManager
 		if(crash_mode == 4) {
 			System.exit(1);
 		}
-		decision_timer.cancel();
 		String s = "Committing transaction # " + xid + " to file " + m_name + "_" + master_record_pointer[0] + ".";
-		live_log.add("COMMIT " + xid);
+		live_log.get(xid).add("COMMIT");
 		try {
 			ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_master_record.ser"));
 			ois.writeObject(master_record_pointer);
@@ -507,7 +515,7 @@ public class ResourceManager implements IResourceManager
 		if(crash_mode == 4) {
 			System.exit(1);
 		}
-		live_log.add("ABORT " + xid);
+		live_log.get(xid).add("ABORT");
 		try {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
 			master_record_pointer = (String[]) ois.readObject();
@@ -541,74 +549,68 @@ public class ResourceManager implements IResourceManager
 		} catch (Exception e) {
 			System.out.println(e + " at master record reading.");
 		}
-		if(master_record_pointer == null) {
-			master_record_pointer = new String[]{"",""};
+		if (master_record_pointer == null) {
+			master_record_pointer = new String[]{"", ""};
 		}
 	}
 
-	public void prepare(int xid) throws RemoteException, TransactionAbortedException, InvalidTransactionException{
+	public void prepare(int xid) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
 		//first write main mem copy to NOT last committed version, then write master record, then say yes
-		if(crash_mode == 1) {
+		if (crash_mode == 1) {
 			System.exit(1);
 		}
-		live_log.add("YES " + xid);
-		if(master_record_pointer[0].equals("shadow_file_A")) {
+		ArrayList<String> list = new ArrayList<>();
+		list.add("YES");
+		live_log.put(xid, list);
+		if (master_record_pointer[0].equals("shadow_file_A")) {
 			master_record_pointer[0] = "shadow_file_B";
 		} else {
-			master_record_pointer[0] =  "shadow_file_A";
+			master_record_pointer[0] = "shadow_file_A";
 		}
 		master_record_pointer[1] = Integer.toString(xid);
-		String s = "Committing transaction " + xid + " to file " + m_name + "_" + master_record_pointer[0] + ".";
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_" + master_record_pointer[0] + ".ser"));
 			oos.writeObject(m_data);
 			oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
 			oos.writeObject(live_log);
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			System.out.println(e + "trying to write log");
 		}
-		if(crash_mode == 2) {
+		if (crash_mode == 2) {
 			System.exit(1);
 		}
-		//start decision timeout
-		decision_timer = new Timer();
-		decision_timer.schedule(new TimerTask() {
-			public void run() {
-				try {
-					System.out.println("The RM" + m_name + " has given up waiting for decision on " + xid);
-					abort(xid);
-				} catch (Exception e) {
-					System.out.println(e + "at undo");
-				}
-			}
-		}, DECISION_TIMEOUT);
-		prepared.put(xid,true);
-		if(crash_mode == 3) {
-			System.exit(1);
-		}
-	}
-	public boolean getPrepare(int xid) {
-		return prepared.get(xid);
-	}
+        vote(xid,1);
+        if (crash_mode == 3) {
+            System.exit(1);
+        }
+    }
 
-	public void resetCrashes() throws RemoteException{
+
+	public void resetCrashes() throws RemoteException {
 		crash_mode = 0;
 	}
 
-	public void crashMiddleware(int mode) throws RemoteException{}
+	public void crashMiddleware(int mode) throws RemoteException {
+	}
 
 	public void crashResourceManager(String name /* RM Name */, int mode)
-			throws RemoteException{
+			throws RemoteException {
 		crash_mode = mode;
 	}
-	public void queryLog() throws RemoteException{
+	public void vote(int xid, int decision) throws RemoteException {
+		System.out.println(m_name + " votes " + decision + " on " + xid);
+		middleware.vote(xid,decision);
+	}
+
+	public void queryLog() throws RemoteException {
 		System.out.println("Log for " + m_name);
-		if(live_log != null) {
-            for (String i : live_log) {
-                System.out.println(i);
-            }
-        }
+		for (Integer i : live_log.keySet()) {
+			System.out.print(i + " ");
+			for (String j : live_log.get(i)) {
+				System.out.print(j + " ");
+			}
+			System.out.println("\n");
+		}
 	}
 }
  

@@ -471,7 +471,7 @@ public abstract class Client {
                     checkArgumentsCount(3, arguments.size());
                     int mode = toInt(arguments.elementAt(1));
                     String name = (arguments.elementAt(2));
-                    if (!name.equals("Flights") || !name.equals("Cars") || !name.equals("Rooms")){
+                    if (!name.equals("Flights") && !name.equals("Cars") && !name.equals("Rooms")){
                         System.out.println("please enter one of the following:\n Flights \n Cars \n Rooms");
                     }
                     switch (mode) {

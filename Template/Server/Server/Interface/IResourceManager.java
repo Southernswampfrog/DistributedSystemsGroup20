@@ -7,6 +7,7 @@ import java.util.*;
 import Server.Common.InvalidTransactionException;
 import Server.Common.RMHashMap;
 import Server.Common.TransactionAbortedException;
+import Server.Common.TransactionManager;
 
 /**
  * Simplified version from CSE 593 Univ. of Washington
@@ -224,7 +225,6 @@ public interface IResourceManager extends Remote
     public void crashMiddleware(int mode) throws RemoteException;
     public void crashResourceManager(String name /* RM Name */, int mode)
             throws RemoteException;
-    public boolean getPrepare(int xid) throws RemoteException;
+    public void vote(int xid, int decision) throws RemoteException;
     public void queryLog() throws RemoteException;
-
 }

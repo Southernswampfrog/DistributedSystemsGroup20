@@ -32,7 +32,6 @@ public class RMIResourceManager extends ResourceManager
 		try {
 			// Create a new Server object
 			RMIResourceManager server = new RMIResourceManager(s_serverName);
-
 			// Dynamically generate the stub (client proxy)
 			IResourceManager resourceManager = (IResourceManager)UnicastRemoteObject.exportObject(server, 0);
 
@@ -59,6 +58,8 @@ public class RMIResourceManager extends ResourceManager
 				}
 			});                                       
 			System.out.println("'" + s_serverName + "' resource manager server ready and bound to '" + s_rmiPrefix + s_serverName + "'");
+			server.connectServer();
+
 		}
 		catch (Exception e) {
 			System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
@@ -72,7 +73,35 @@ public class RMIResourceManager extends ResourceManager
 			System.setSecurityManager(new SecurityManager());
 		}
 	}
-
+	public void connectServer()
+	{
+		connectServer("Middleware",1099, s_serverName);
+	}
+	public void connectServer(String servers, int port, String name)
+	{
+		try {
+			boolean first = true;
+				while (true) {
+					try {
+						Registry registry = LocateRegistry.getRegistry("localhost", port);
+						middleware = (IResourceManager) registry.lookup("group20Middleware");
+						System.out.println("Connected to '" + servers + "' server [" + servers + ":" + port + "/" + s_rmiPrefix + servers + "]");
+						break;
+					} catch (NotBoundException | RemoteException e) {
+						if (first) {
+							System.out.println("Waiting for '" + servers + "' server [" + servers+ ":" + port + "/" + servers+ "]");
+							first = false;
+						}
+					}
+				Thread.sleep(500);
+			}
+		}
+		catch (Exception e) {
+			System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
 	public RMIResourceManager(String name)
 	{
 		super(name);

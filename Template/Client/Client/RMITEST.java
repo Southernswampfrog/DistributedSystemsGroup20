@@ -89,7 +89,8 @@ public class RMITEST extends Client {
                 "resetCrashes",
                 "start",
                 "AddFlight,2,1,1,1",
-                "commit,2"
+                "commit,2",
+                "querylog"
         };
         for (int i = 0; i < testCases.length; i++) {
             // Read the next command

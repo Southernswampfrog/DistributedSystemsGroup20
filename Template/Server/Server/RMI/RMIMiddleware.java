@@ -50,7 +50,7 @@ public class RMIMiddleware extends Middleware
 				public void run() {
 					try {
 						registry.unbind(s_rmiPrefix + s_serverName);
-						System.out.println("'" + s_serverName + "' middlerware unbound");
+						System.out.println("'" + s_serverName + "' Middleware unbound");
 					}
 					catch(Exception e){
 						System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
@@ -59,13 +59,13 @@ public class RMIMiddleware extends Middleware
 				}
 			});
 			System.out.println("'" + s_serverName + "' middleware server ready and bound to '" + s_rmiPrefix + s_serverName + "'");
+
 		}
 		catch (Exception e) {
 			System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
 			e.printStackTrace();
 			System.exit(1);
 		}
-
 		// Create and install a security manager
 		if (System.getSecurityManager() == null)
 		{
