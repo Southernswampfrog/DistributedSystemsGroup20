@@ -9,6 +9,8 @@ import Server.Interface.*;
 
 import javax.sound.midi.Soundbank;
 import java.io.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.*;
 import java.rmi.RemoteException;
 
@@ -478,7 +480,9 @@ public class ResourceManager implements IResourceManager
 
 	public boolean commit(int xid) throws RemoteException,
 			TransactionAbortedException, InvalidTransactionException {
-
+		if(live_log.get(xid) == null || live_log.get(xid).contains("COMMIT")) {
+			return false;
+		}
 		String s = "Committing transaction # " + xid + " to file " + m_name + "_" + master_record_pointer[0] + ".";
 		live_log.get(xid).add("COMMIT");
 		if(crash_mode == 4) {
@@ -499,6 +503,9 @@ public class ResourceManager implements IResourceManager
 
 	public void abort(int xid) throws RemoteException,
 			InvalidTransactionException{
+		if(live_log.get(xid) == null || live_log.get(xid).contains("ABORT")) {
+			return;
+		}
 		//write to log, and then reread master record
 		if(crash_mode == 4) {
 			System.exit(1);
@@ -596,7 +603,19 @@ public class ResourceManager implements IResourceManager
 	}
 	public void vote(int xid, int decision) throws RemoteException {
 		System.out.println(m_name + " votes " + decision + " on " + xid);
-		middleware.vote(xid,decision);
+		try {
+			middleware.vote(xid, decision);
+		}
+		catch(Exception e) {
+			try {
+				Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+				middleware = (IResourceManager) registry.lookup("group20Middleware");
+				middleware.vote(xid, decision);
+			}
+			catch(Exception f) {
+				System.out.println("Could not reconnect to middleware");
+			}
+		}
 	}
 
 	public void queryLog() throws RemoteException {
@@ -638,7 +657,7 @@ public class ResourceManager implements IResourceManager
 				}
 				catch(Exception e){
 					System.out.println("at rm recovery....");
-					e.printStackTrace();
+
 				}
 				if(crash_mode == 5) {
 					System.exit(1);

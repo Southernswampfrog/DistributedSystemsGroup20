@@ -507,8 +507,6 @@ public abstract class Client {
             System.out.println(ite);
         } catch (TransactionAbortedException tae) {
             System.out.println(tae);
-        } catch(RemoteException re) {
-            System.out.println("Could not execute command.");
         }
     }
 

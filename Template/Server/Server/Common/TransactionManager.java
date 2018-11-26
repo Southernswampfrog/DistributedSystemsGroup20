@@ -87,7 +87,7 @@ public class TransactionManager {
             }
         }
         catch(Exception e) {
-            System.out.println(e + " Error while attempting TM abort.");
+            System.out.println("Error while attempting TM abort.");
         }
         activeTransactions.remove(xid);
         System.out.println("Transaction " + xid + " aborted.");
@@ -118,7 +118,8 @@ public class TransactionManager {
                 irm.next().prepare(xid);
             }
             catch(Exception e) {
-                System.out.println(e + "error at sending vote-req to participants");
+                e.printStackTrace();
+                System.out.println("Error while sending vote-req to participants.");
 
             }
         }

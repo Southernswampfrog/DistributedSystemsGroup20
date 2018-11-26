@@ -59,7 +59,7 @@ public class RMIMiddleware extends Middleware
 				}
 			});
 			System.out.println("'" + s_serverName + "' middleware server ready and bound to '" + s_rmiPrefix + s_serverName + "'");
-
+			server.recovery();
 		}
 		catch (Exception e) {
 			System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
@@ -88,11 +88,11 @@ public class RMIMiddleware extends Middleware
 					try {
 						Registry registry = LocateRegistry.getRegistry(servers[i], port);
 						m_RMs[i] = (IResourceManager) registry.lookup(s_rmiPrefix + names[i]);
-						System.out.println("Connected to '" + servers[i] + "' server [" + servers[i] + ":" + port + "/" + s_rmiPrefix + servers[i] + "]");
+						System.out.println("Connected to '" + names[i] + "' server [" + servers[i] + ":" + port + "/" + s_rmiPrefix + servers[i] + "]");
 						break;
 					} catch (NotBoundException | RemoteException e) {
 						if (first) {
-							System.out.println("Waiting for '" + servers[i] + "' server [" + servers[i] + ":" + port + "/" + names[i] + servers[i]+ "]");
+							System.out.println("Waiting for '" + names[i] + "' server [" + servers[i] + ":" + port + "/" + names[i] + servers[i]+ "]");
 							first = false;
 						}
 					}

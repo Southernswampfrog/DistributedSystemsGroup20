@@ -4,6 +4,8 @@ package Server.Common;
 import Server.Interface.IResourceManager;
 import Server.LockManager.*;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -479,13 +481,13 @@ public class Middleware extends ResourceManager implements IResourceManager {
                           boolean room) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         TransactionLockObject.LockType lockType = TransactionLockObject.LockType.LOCK_WRITE;
         for (String flightNumber : flightNumbers) {
-            dataToLock.add("flight" + flightNumber);
+            dataToLock.add("flight-" + flightNumber);
         }
         if (car) {
-            dataToLock.add("car" + location);
+            dataToLock.add("car-" + location);
         }
         if (room) {
-            dataToLock.add("room" + location);
+            dataToLock.add("room-" + location);
         }
         ValidityAndLockCheck(dataToLock, xid, lockType);
         try {
@@ -546,6 +548,13 @@ public class Middleware extends ResourceManager implements IResourceManager {
 
     public int start() {
         int xid = tm.start();
+        tm.live_log.put(xid,new ArrayList<>());
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(tm.log));
+            oos.writeObject(tm.live_log);
+        } catch (Exception e) {
+            System.out.println("Cannot write TM log at start");
+        }
         System.out.println("Transaction " + xid + " started.");
         return xid;
     }
@@ -711,5 +720,41 @@ public class Middleware extends ResourceManager implements IResourceManager {
             return false;
         }
         return tm.live_log.get(xid).contains("COMMIT");
+    }
+    public void recovery() throws RemoteException,InvalidTransactionException,TransactionAbortedException{
+        try {
+            for (Integer i : tm.live_log.keySet()) {
+                //if no start 2pc but know it started the transaction
+                if (!tm.live_log.get(i).contains("START") && !tm.live_log.get(i).contains("ABORT")) {
+                    System.out.println("Found no start on transaction " + i);
+                }
+                //start with no commit
+                else if (tm.live_log.get(i).contains("START")
+                        && !(tm.live_log.get(i).contains("COMMIT") || tm.live_log.get(i).contains("ABORT"))) {
+                    System.out.println("Found  start on transaction " + i + "but no commit/abort");
+
+                }
+                //finds commit/abort
+                else if (tm.live_log.get(i).contains("START")
+                        && (tm.live_log.get(i).contains("COMMIT") || tm.live_log.get(i).contains("ABORT"))) {
+                    if (tm.live_log.get(i).contains("COMMIT")) {
+                        System.out.println("Found  commit on transaction " + i);
+
+                        for (int j = 0; j < 3; j++) {
+                            m_RMs[j].commit(i);
+                        }
+                    } else {
+                        System.out.println("Found abort on transaction " + i);
+
+                        for (int j = 0; j < 3; j++) {
+                            m_RMs[j].abort(i);
+                        }
+                    }
+                }
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e + " Bad time at Middleware recorvery");
+        }
     }
 }
