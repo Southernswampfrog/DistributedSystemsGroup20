@@ -47,8 +47,8 @@ public abstract class Client {
                 try {
                     execute(cmd, arguments);
                 } catch (ConnectException e) {
-                    connectServer();
-                    execute(cmd, arguments);
+                        connectServer();
+                        execute(cmd, arguments);
                 }
             } catch (IllegalArgumentException | ServerException e) {
                 System.err.println((char) 27 + "[31;1mCommand exception: " + (char) 27 + "[0m" + e.getLocalizedMessage());

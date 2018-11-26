@@ -20,6 +20,7 @@ public class RMIResourceManager extends ResourceManager
 {
 	private static String s_serverName = "Server";
 	private static String s_rmiPrefix = "group20";
+	private static String s_MiddleWareServer = "localhost";
 
 	public static void main(String args[])
 	{
@@ -27,7 +28,11 @@ public class RMIResourceManager extends ResourceManager
 		{
 			s_serverName = args[0];
 		}
-			
+
+		if (args.length > 1)
+		{
+			s_MiddleWareServer = args[1];
+		}
 		// Create the RMI server entry
 		try {
 			// Create a new Server object
@@ -83,7 +88,7 @@ public class RMIResourceManager extends ResourceManager
 			boolean first = true;
 				while (true) {
 					try {
-						Registry registry = LocateRegistry.getRegistry("localhost", port);
+						Registry registry = LocateRegistry.getRegistry(s_MiddleWareServer, port);
 						middleware = (IResourceManager) registry.lookup("group20Middleware");
 						System.out.println("Connected to '" + servers + "' server [" + servers + ":" + port + "/" + s_rmiPrefix + servers + "]");
 						break;

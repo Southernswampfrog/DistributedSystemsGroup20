@@ -546,7 +546,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
         return false;
     }
 
-    public int start() {
+    public int start() throws RemoteException{
         int xid = tm.start();
         tm.live_log.put(xid,new ArrayList<>());
         try {
@@ -556,6 +556,9 @@ public class Middleware extends ResourceManager implements IResourceManager {
             System.out.println("Cannot write TM log at start");
         }
         System.out.println("Transaction " + xid + " started.");
+        for(int i = 0; i < m_RMs.length; i++) {
+            m_RMs[i].updateVoteReqTimer(xid);
+        }
         return xid;
     }
 
@@ -633,7 +636,6 @@ public class Middleware extends ResourceManager implements IResourceManager {
             tm.activeTransactions.get(xid).add(m_RMs[position]);
             m_RMs[position].updateLog(xid);
         }
-
         //update timer
         Timer t = new Timer();
         t.schedule(new
@@ -680,7 +682,6 @@ public class Middleware extends ResourceManager implements IResourceManager {
             this.method = method;
             this.subID = ThreadLocalRandom.current().nextInt(0, 100000);
         }
-
         public Object call() {
             System.out.println("Running subtransaction: " + subID);
             try {
@@ -721,31 +722,42 @@ public class Middleware extends ResourceManager implements IResourceManager {
         }
         return tm.live_log.get(xid).contains("COMMIT");
     }
+
+
     public void recovery() throws RemoteException,InvalidTransactionException,TransactionAbortedException{
         try {
             for (Integer i : tm.live_log.keySet()) {
                 //if no start 2pc but know it started the transaction
                 if (!tm.live_log.get(i).contains("START") && !tm.live_log.get(i).contains("ABORT")) {
-                    System.out.println("Found no start on transaction " + i);
+                    System.out.println("Found no start on transaction " + i + ", Aborting.");
+                    for(int j = 0; i < m_RMs.length; i++) {
+                        tm.live_log.get(i).add("ABORT");
+                        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
+                        oos.writeObject(live_log);
+                        abort(i);
+                    }
                 }
                 //start with no commit
                 else if (tm.live_log.get(i).contains("START")
                         && !(tm.live_log.get(i).contains("COMMIT") || tm.live_log.get(i).contains("ABORT"))) {
-                    System.out.println("Found  start on transaction " + i + "but no commit/abort");
-
+                    System.out.println("Found  start on transaction " + i + "but no commit/abort. Aborting.");
+                    for(int j = 0; i < m_RMs.length; i++) {
+                        tm.live_log.get(i).add("ABORT");
+                        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
+                        oos.writeObject(live_log);
+                        m_RMs[j].abort(i);
+                    }
                 }
                 //finds commit/abort
                 else if (tm.live_log.get(i).contains("START")
                         && (tm.live_log.get(i).contains("COMMIT") || tm.live_log.get(i).contains("ABORT"))) {
                     if (tm.live_log.get(i).contains("COMMIT")) {
-                        System.out.println("Found  commit on transaction " + i);
-
+                        System.out.println("Found  commit on transaction " + i + ". Resending Commit.");
                         for (int j = 0; j < 3; j++) {
                             m_RMs[j].commit(i);
                         }
                     } else {
-                        System.out.println("Found abort on transaction " + i);
-
+                        System.out.println("Found abort on transaction " + i + ". Resending Abort.");
                         for (int j = 0; j < 3; j++) {
                             m_RMs[j].abort(i);
                         }
@@ -754,7 +766,8 @@ public class Middleware extends ResourceManager implements IResourceManager {
             }
         }
         catch(Exception e) {
-            System.out.println(e + " Bad time at Middleware recorvery");
+            e.printStackTrace();
+            System.out.println("Error time at Middleware recorvery");
         }
     }
 }

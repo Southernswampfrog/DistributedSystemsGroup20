@@ -82,16 +82,16 @@ public class RMITEST extends Client {
 
     public void start() {
         String[] testCases = {
-                "CrashMiddleware,1",
+                "CrashMiddleware,6",
                 "start",
                 "AddFlight,1,1,1,1",
                 "AddFlight,1,2,2,2",
                 "AddCars,1,1,1,1",
                 "AddRooms,1,1,1,1",
                 "AddCustomerID,1,1",
-                "bundle,1,1,1,2,1,true,true",
+                "AddCustomer,1",
+                "bundle,1,1,1,2,1,false,true",
                 "commit,1",
-                "start"
         };
         for (int i = 0; i < testCases.length; i++) {
             // Read the next command

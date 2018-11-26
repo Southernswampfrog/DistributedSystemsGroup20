@@ -7,7 +7,6 @@ package Server.Common;
 
 import Server.Interface.*;
 
-import javax.sound.midi.Soundbank;
 import java.io.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -28,11 +27,12 @@ public class ResourceManager implements IResourceManager
 	protected static int DECISION_TIMEOUT = 50000;
 	Timer crash_timer;
 	public IResourceManager middleware;
+	public HashMap<Integer, Timer> vote_req_timers;
 
 
 
 	public ResourceManager(String p_name) {
-
+		vote_req_timers = new HashMap<>();
 		crash_mode = 0;
 		m_name = p_name;
 		m_data = new RMHashMap();
@@ -476,12 +476,17 @@ public class ResourceManager implements IResourceManager
 	}
 
 	public int start() throws RemoteException{
+
 		return 1;
 	}
 
 	public boolean commit(int xid) throws RemoteException,
 			TransactionAbortedException, InvalidTransactionException {
 		if(live_log.get(xid) == null || live_log.get(xid).contains("COMMIT")) {
+			return false;
+		}
+		if (live_log.get(xid).contains("ABORT")) {
+			vote(xid,0);
 			return false;
 		}
 		String s = "Committing transaction # " + xid + " to file " + m_name + "_" + master_record_pointer[0] + ".";
@@ -524,10 +529,9 @@ public class ResourceManager implements IResourceManager
 		try {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
 			master_record_pointer = (String[]) ois.readObject();
-			System.out.println(master_record_pointer[0] + " while undoing");
 		}
 		catch (Exception e) {
-			System.out.println(e + "reading master record");
+			System.out.println(e + " while reading master record");
 		}
 		try {
 			if (master_record_pointer[0].equals("shadow_file_A")) {
@@ -557,6 +561,7 @@ public class ResourceManager implements IResourceManager
 		if (master_record_pointer == null) {
 			master_record_pointer = new String[]{"", ""};
 		}
+		System.out.println("Aborting transaction " + xid + ".");
 	}
 
 	public void prepare(int xid) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
@@ -569,6 +574,7 @@ public class ResourceManager implements IResourceManager
 		ArrayList<String> list = new ArrayList<>();
 		list.add("YES");
 		live_log.put(xid, list);
+		vote_req_timers.get(xid).cancel();
 		if (master_record_pointer[0].equals("shadow_file_A")) {
 			master_record_pointer[0] = "shadow_file_B";
 		} else {
@@ -693,6 +699,22 @@ public class ResourceManager implements IResourceManager
 	public void updateLog(int xid) {
 		ArrayList<String> list = new ArrayList<>();
 		live_log.put(xid,list);
+	}
+	public void updateVoteReqTimer(int xid) {
+		Timer t = new Timer();
+		t.schedule(new
+
+						   TimerTask() {
+							   public void run() {
+								   try {
+									   System.out.println("Vote req timer timed out.");
+									   abort(xid);
+									   throw new TransactionAbortedException(xid);
+								   } catch (Exception e) {
+								   }
+							   }
+						   }, 40000);
+		vote_req_timers.put(xid, t);
 	}
 }
  

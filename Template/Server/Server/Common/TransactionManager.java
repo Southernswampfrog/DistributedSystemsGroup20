@@ -87,7 +87,7 @@ public class TransactionManager {
             }
         }
         catch(Exception e) {
-            System.out.println("Error while attempting TM abort.");
+            System.out.println(e + " Error while attempting TM abort.");
         }
         activeTransactions.remove(xid);
         System.out.println("Transaction " + xid + " aborted.");
@@ -119,8 +119,7 @@ public class TransactionManager {
                 irm.next().prepare(xid);
             }
             catch(Exception e) {
-                e.printStackTrace();
-                System.out.println("Error while sending vote-req to participants.");
+                System.out.println(e + "error at sending vote-req to participants");
 
             }
         }
@@ -132,7 +131,7 @@ public class TransactionManager {
         //wait for answers on vote-req
         int j = 0;
         try {
-            while (votes.get(xid).size() < activeTransactions.get(xid).size() && j++ < 100) {
+            while (votes.get(xid).size() < activeTransactions.get(xid).size() && j++ < 350) {
                 Thread.sleep(100);
                 // crash after receiving some replies but not all
                 if (votes.get(xid).size() > Math.round(activeTransactions.get(xid).size()/2.0) && crash_mode == 3) {
