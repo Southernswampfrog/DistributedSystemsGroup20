@@ -106,6 +106,7 @@ public class TransactionManager {
         } catch (Exception e) {
             System.out.println("Cannot write TM log at committing");
         }
+        // crash before sending vote requests
         if (crash_mode == 1) {
             System.exit(1);
         }
@@ -122,6 +123,7 @@ public class TransactionManager {
 
             }
         }
+        // crash after sending vote-reqs but before receiving any replies
         if (crash_mode == 2) {
             System.exit(1);
         }
@@ -131,7 +133,8 @@ public class TransactionManager {
         try {
             while (votes.get(xid).size() < activeTransactions.get(xid).size() && j++ < 100) {
                 Thread.sleep(100);
-                if (crash_mode == 3) {
+                // crash after receiving some replies but not all
+                if (votes.get(xid).size() > Math.round(activeTransactions.get(xid).size()/2.0) && crash_mode == 3) {
                     System.exit(1);
                 }
             }
@@ -143,6 +146,7 @@ public class TransactionManager {
             abort(xid);
             return false;
         }
+        // crash after receiving all replies but before deciding
         if (crash_mode == 4) {
             System.exit(1);
         }
@@ -166,31 +170,36 @@ public class TransactionManager {
         } catch (Exception e) {
             System.out.println("Cannot write TM log at committing");
         }
+        // crash after deciding but before sending decision
         if (crash_mode == 5) {
             System.exit(1);
         }
         try {
             irm = activeTransactions.get(xid).iterator();
+            int crashcounter = activeTransactions.get(xid).size();
             while (irm.hasNext()) {
                 IResourceManager ir = irm.next();
                 ir.commit(xid);
                 System.out.println(ir.getName() + " committed.");
-                if (crash_mode == 6) {
+                // crash after sending some but not all decisions
+                if ( crashcounter ==  Math.round(activeTransactions.get(xid).size()/2.0) && crash_mode == 6) {
                     System.exit(1);
                 }
+                crashcounter--;
             }
         }
         catch(Exception e) {
             System.out.println("error at sending commit to participants");
         }
 
+        // crash after having sent all decisions
+        if (crash_mode == 7) {
+            System.exit(1);
+        }
         activeTransactions.remove(xid);
         lm.UnlockAll(xid);
         TTLMap.get(xid).cancel();
         TTLMap.remove(xid);
-        if (crash_mode == 7) {
-            System.exit(1);
-        }
         return true;
     }
 

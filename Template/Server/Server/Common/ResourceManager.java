@@ -56,6 +56,7 @@ public class ResourceManager implements IResourceManager
 		if(master_record_pointer == null) {
 			master_record_pointer = new String[]{"",""};
 		}
+		// crash during recovery
 		if(crash_mode == 5) {
 			System.exit(1);
 		}
@@ -481,6 +482,7 @@ public class ResourceManager implements IResourceManager
 
 		String s = "Committing transaction # " + xid + " to file " + m_name + "_" + master_record_pointer[0] + ".";
 		live_log.get(xid).add("COMMIT");
+		// crash after receiving decision but before committing/aborting
 		if(crash_mode == 4) {
 			System.exit(1);
 		}
@@ -500,6 +502,7 @@ public class ResourceManager implements IResourceManager
 	public void abort(int xid) throws RemoteException,
 			InvalidTransactionException{
 		//write to log, and then reread master record
+		// crash after receiving decision but before committing/aborting
 		if(crash_mode == 4) {
 			System.exit(1);
 		}
@@ -551,6 +554,8 @@ public class ResourceManager implements IResourceManager
 
 	public void prepare(int xid) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
 		//first write main mem copy to NOT last committed version, then write master record, then say yes
+
+		// crash after receiving vote request, but before sending answer
 		if (crash_mode == 1) {
 			System.exit(1);
 		}
@@ -573,10 +578,12 @@ public class ResourceManager implements IResourceManager
 		} catch (Exception e) {
 			System.out.println(e + "trying to write log");
 		}
+		// crash after decision which answer to send
 		if (crash_mode == 2) {
 			System.exit(1);
 		}
         vote(xid,1);
+		// crash after sending answer
         if (crash_mode == 3) {
             System.exit(1);
         }
