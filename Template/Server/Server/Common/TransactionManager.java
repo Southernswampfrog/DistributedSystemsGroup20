@@ -4,6 +4,8 @@ import Server.Interface.IResourceManager;
 
 import java.io.*;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.*;
 
 import Server.LockManager.*;
@@ -19,8 +21,12 @@ public class TransactionManager {
     public HashMap<Integer, ArrayList<String>> live_log;
     public File log;
     public Map<Integer, ArrayList<Integer>> votes;
+    public int serverport;
+    public String[] servers;
 
-    public TransactionManager(LockManager lockmanager) {
+    public TransactionManager(LockManager lockmanager, int serverport, String[] servers) {
+        this.serverport = serverport;
+        this.servers = servers;
         votes = new HashMap<>();
         log = new File("Persistence/TM_log.ser");
         try {
@@ -113,16 +119,35 @@ public class TransactionManager {
 
 
         //send VOTE-REQ to participants
-        Iterator<IResourceManager> irm = activeTransactions.get(xid).iterator();
-        while (irm.hasNext()) {
-            try {
-                irm.next().prepare(xid);
+            Iterator<IResourceManager> irm = activeTransactions.get(xid).iterator();
+            while (irm.hasNext()) {
+                IResourceManager ir = irm.next();
+                try {
+                    ir.prepare(xid);
+                }
+                catch(Exception e) {
+                    int position = 0;
+                    activeTransactions.remove(ir);
+                    if (ir.getName().equals("Flights")) {
+                        position = 0;
+                    }
+                    else if (ir.getName().equals("Cars")) {
+                        position = 1;
+                    }
+                    else if(ir.getName().equals("Rooms")){
+                        position = 2;
+                    }
+                    try {
+                        Registry registry = LocateRegistry.getRegistry(servers[position], serverport);
+                        IResourceManager irnew = (IResourceManager) registry.lookup("group20" + ir.getName());
+                        irnew.prepare(xid);
+                        activeTransactions.get(xid).add(irnew);
+                    }
+                    catch(Exception f) {
+                        System.out.println("could not find new RM");
+                    }
+                }
             }
-            catch(Exception e) {
-                System.out.println(e + "error at sending vote-req to participants");
-
-            }
-        }
         // crash after sending vote-reqs but before receiving any replies
         if (crash_mode == 2) {
             System.exit(1);
@@ -131,6 +156,7 @@ public class TransactionManager {
         //wait for answers on vote-req
         int j = 0;
         try {
+            System.out.println(votes.get(xid).size() + " " + activeTransactions.get(xid).size());
             while (votes.get(xid).size() < activeTransactions.get(xid).size() && j++ < 350) {
                 Thread.sleep(100);
                 // crash after receiving some replies but not all
@@ -141,7 +167,7 @@ public class TransactionManager {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (j >= 99) {
+        if (j >= 349) {
             System.out.println("Coordinator timed out on vote-req.");
             abort(xid);
             return false;

@@ -36,17 +36,18 @@ public class RMIResourceManager extends ResourceManager
 		// Create the RMI server entry
 		try {
 			// Create a new Server object
-			RMIResourceManager server = new RMIResourceManager(s_serverName);
-			// Dynamically generate the stub (client proxy)
-			IResourceManager resourceManager = (IResourceManager)UnicastRemoteObject.exportObject(server, 0);
-
-			// Bind the remote object's stub in the registry
 			Registry l_registry;
 			try {
 				l_registry = LocateRegistry.createRegistry(1099);
 			} catch (RemoteException e) {
 				l_registry = LocateRegistry.getRegistry(1099);
 			}
+			RMIResourceManager server = new RMIResourceManager(s_serverName);
+			// Dynamically generate the stub (client proxy)
+			IResourceManager resourceManager = (IResourceManager)UnicastRemoteObject.exportObject(server, 0);
+
+			// Bind the remote object's stub in the registry
+
 			final Registry registry = l_registry;
 			registry.rebind(s_rmiPrefix + s_serverName, resourceManager);
 

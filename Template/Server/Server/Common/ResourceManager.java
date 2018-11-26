@@ -482,10 +482,8 @@ public class ResourceManager implements IResourceManager
 
 	public boolean commit(int xid) throws RemoteException,
 			TransactionAbortedException, InvalidTransactionException {
-		if(live_log.get(xid) == null || live_log.get(xid).contains("COMMIT")) {
-			return false;
-		}
-		if (live_log.get(xid).contains("ABORT")) {
+		if(live_log.get(xid) == null || live_log.get(xid).contains("COMMIT") || live_log.get(xid).contains("ABORT")) {
+			System.out.println(m_name + " is voting no.");
 			vote(xid,0);
 			return false;
 		}
@@ -565,6 +563,11 @@ public class ResourceManager implements IResourceManager
 	}
 
 	public void prepare(int xid) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		if(live_log.get(xid) == null || live_log.get(xid).contains("COMMIT") || live_log.get(xid).contains("ABORT")) {
+			System.out.println(m_name + " is voting no.");
+			vote(xid,0);
+			return;
+		}
 		//first write main mem copy to NOT last committed version, then write master record, then say yes
 
 		// crash after receiving vote request, but before sending answer
@@ -665,7 +668,6 @@ public class ResourceManager implements IResourceManager
 					}
 					else{
 						abort(i);
-						System.out.println("Aborting transaction " + i + " upon recovery");
 					}
 				}
 				catch(Exception e){
@@ -691,7 +693,15 @@ public class ResourceManager implements IResourceManager
 					System.out.println("Commiting transaction " + i + " upon recovery by reading from " + master_record_pointer[0]);
 				}
 				catch(Exception e) {
-
+				}
+			}
+			else if (!live_log.get(i).contains("YES") && !live_log.get(i).contains("COMMIT") && !live_log.get(i).contains("ABORT")) {
+				try {
+					System.out.println("Aborting transaction " + i + " at recovery.");
+					abort(i);
+				}
+				catch(Exception e){
+					System.out.println("Could not abort " + i + " at recovery.");
 				}
 			}
 		}
@@ -699,6 +709,13 @@ public class ResourceManager implements IResourceManager
 	public void updateLog(int xid) {
 		ArrayList<String> list = new ArrayList<>();
 		live_log.put(xid,list);
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
+			oos.writeObject(live_log);
+		}
+		catch(Exception e) {
+
+		}
 	}
 	public void updateVoteReqTimer(int xid) {
 		Timer t = new Timer();

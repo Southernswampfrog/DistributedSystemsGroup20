@@ -31,7 +31,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
         serverport = port;
         servers = RM_servers;
         dataToLock = new ArrayList<>();
-        tm = new TransactionManager(lm);
+        tm = new TransactionManager(lm, serverport, servers);
     }
 
     // Create a new flight, or add seats to existing flight
@@ -556,9 +556,6 @@ public class Middleware extends ResourceManager implements IResourceManager {
             System.out.println("Cannot write TM log at start");
         }
         System.out.println("Transaction " + xid + " started.");
-        for(int i = 0; i < m_RMs.length; i++) {
-            m_RMs[i].updateVoteReqTimer(xid);
-        }
         return xid;
     }
 
@@ -569,7 +566,17 @@ public class Middleware extends ResourceManager implements IResourceManager {
         try {
             return tm.commit(xid);
         } catch (Exception e) {
-            e.printStackTrace();
+            for (int i = 0; i < 3; i++) {
+                String[] servers1 = {"Flights", "Cars", "Rooms"};
+                tm.activeTransactions.get(xid).remove(m_RMs[i]);
+                connectServer(servers[i], serverport, servers1[i], i);
+                tm.activeTransactions.get(xid).add(m_RMs[i]);
+            }
+            try {
+                return tm.commit(xid);
+            } catch (Exception f) {
+            }
+
             return false;
         }
     }
@@ -635,6 +642,9 @@ public class Middleware extends ResourceManager implements IResourceManager {
             }
             tm.activeTransactions.get(xid).add(m_RMs[position]);
             m_RMs[position].updateLog(xid);
+            for(int k = 0; k < m_RMs.length; k++) {
+                m_RMs[k].updateVoteReqTimer(xid);
+            }
         }
         //update timer
         Timer t = new Timer();
@@ -728,13 +738,13 @@ public class Middleware extends ResourceManager implements IResourceManager {
         try {
             for (Integer i : tm.live_log.keySet()) {
                 //if no start 2pc but know it started the transaction
-                if (!tm.live_log.get(i).contains("START") && !tm.live_log.get(i).contains("ABORT")) {
+                if (!tm.live_log.get(i).contains("START") && !tm.live_log.get(i).contains("ABORT") && tm.live_log.get(i) != null) {
                     System.out.println("Found no start on transaction " + i + ", Aborting.");
                     for(int j = 0; i < m_RMs.length; i++) {
                         tm.live_log.get(i).add("ABORT");
                         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
                         oos.writeObject(live_log);
-                        abort(i);
+                        m_RMs[j].abort(i);
                     }
                 }
                 //start with no commit
@@ -767,7 +777,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
         }
         catch(Exception e) {
             e.printStackTrace();
-            System.out.println("Error time at Middleware recorvery");
+            System.out.println("Error at Middleware recorvery");
         }
     }
 }
