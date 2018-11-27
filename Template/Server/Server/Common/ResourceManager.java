@@ -21,10 +21,11 @@ public class ResourceManager implements IResourceManager
 	public File shadow_file_B;
 	public File master_record;
 	public File log;
+	public File crash_mode_log;
 	public String[] master_record_pointer;
 	public int crash_mode;
 	public HashMap<Integer, ArrayList<String>> live_log;
-	protected static int DECISION_TIMEOUT = 50000;
+	protected static int DECISION_TIMEOUT = 70000;
 	Timer crash_timer;
 	public IResourceManager middleware;
 	public HashMap<Integer, Timer> vote_req_timers;
@@ -34,9 +35,11 @@ public class ResourceManager implements IResourceManager
 	public ResourceManager(String p_name) {
 		vote_req_timers = new HashMap<>();
 		crash_mode = 0;
+
 		m_name = p_name;
 		m_data = new RMHashMap();
 		//check if persistence exists, if so, get it!!
+		crash_mode_log = new File("Persistence/" + p_name + "_crash_mode_log.ser");
 		shadow_file_A = new File("Persistence/" + p_name + "_shadow_file_A.ser");
 		shadow_file_B = new File("Persistence/" + p_name + "_shadow_file_B.ser");
 		master_record = new File("Persistence/" + p_name + "_master_record.ser");
@@ -50,7 +53,7 @@ public class ResourceManager implements IResourceManager
 		try {
 		    if(!master_record.createNewFile()) {
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
-                master_record_pointer = (String[]) ois.readObject();
+                master_record_pointer = (String[])ois.readObject();
             }
 		} catch (Exception e) {
 			System.out.println(e + "at master record reading.");
@@ -58,10 +61,7 @@ public class ResourceManager implements IResourceManager
 		if(master_record_pointer == null) {
 			master_record_pointer = new String[]{"",""};
 		}
-		// crash during recovery
-		if(crash_mode == 5) {
-			System.exit(1);
-		}
+
 		try {
 		    if (!log.createNewFile()) {
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(log));
@@ -483,7 +483,7 @@ public class ResourceManager implements IResourceManager
 	public boolean commit(int xid) throws RemoteException,
 			TransactionAbortedException, InvalidTransactionException {
 		if(live_log.get(xid) == null || live_log.get(xid).contains("COMMIT") || live_log.get(xid).contains("ABORT")) {
-			System.out.println(m_name + " is voting no.");
+			System.out.println(m_name + " is voting no at transaction " + xid);
 			vote(xid,0);
 			return false;
 		}
@@ -616,6 +616,12 @@ public class ResourceManager implements IResourceManager
 	public void crashResourceManager(String name /* RM Name */, int mode)
 			throws RemoteException {
 		crash_mode = mode;
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/"+m_name+"_crash_mode_log.ser"));
+			oos.writeObject(crash_mode);
+		}
+		catch(Exception e){
+		}
 	}
 	public void vote(int xid, int decision) throws RemoteException {
 		System.out.println(m_name + " votes " + decision + " on " + xid);
@@ -650,6 +656,12 @@ public class ResourceManager implements IResourceManager
 	}
 
 	protected void recover() {
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Persistence/" + m_name + "_crash_mode_log.ser"));
+			crash_mode = (int) ois.readObject();
+		}
+		catch(Exception e) {
+		}
 		for(Integer i : live_log.keySet()) {
 			if(live_log.get(i).contains("YES") && !(live_log.get(i).contains("COMMIT") || live_log.get(i).contains("ABORT"))){
 				try {
@@ -663,6 +675,7 @@ public class ResourceManager implements IResourceManager
 						master_record_pointer[1] = Integer.toString(i);
 						ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Persistence/" + m_name + "_" + master_record_pointer[0] + ".ser"));
 						m_data = (RMHashMap) ois.readObject();
+
 						commit(i);
 						System.out.println("Commiting transaction " + i + " upon recovery by reading from " + master_record_pointer[0]);
 					}
@@ -704,6 +717,17 @@ public class ResourceManager implements IResourceManager
 					System.out.println("Could not abort " + i + " at recovery.");
 				}
 			}
+			// crash during recovery
+			if(crash_mode == 5) {
+				crash_mode = 0;
+				try {
+					ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_crash_mode_log.ser"));
+					oos.writeObject(crash_mode);
+				}
+				catch(Exception e) {
+				}
+				System.exit(1);
+			}
 		}
 	}
 	public void updateLog(int xid) {
@@ -719,6 +743,9 @@ public class ResourceManager implements IResourceManager
 	}
 	public void updateVoteReqTimer(int xid) {
 		Timer t = new Timer();
+		if(vote_req_timers.get(xid) != null) {
+			vote_req_timers.get(xid).cancel();
+		}
 		t.schedule(new
 
 						   TimerTask() {

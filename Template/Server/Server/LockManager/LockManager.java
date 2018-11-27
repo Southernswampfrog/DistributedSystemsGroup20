@@ -2,14 +2,13 @@ package Server.LockManager;
 
 import Server.Common.*;
 
-import java.io.Serializable;
 import java.util.BitSet;
 import java.util.Vector;
 
-public class LockManager implements Serializable
+public class LockManager
 {
 	private static int TABLE_SIZE = 2039;
-	private static int DEADLOCK_TIMEOUT = 10000;
+	private static int DEADLOCK_TIMEOUT = 50000;
 
 	private static TPHashTable lockTable = new TPHashTable(LockManager.TABLE_SIZE);
 	private static TPHashTable stampTable = new TPHashTable(LockManager.TABLE_SIZE);

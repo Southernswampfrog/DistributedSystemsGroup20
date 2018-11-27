@@ -10,6 +10,8 @@ import java.util.*;
 
 import Server.LockManager.*;
 
+import javax.sound.midi.Soundbank;
+
 public class TransactionManager {
 
     protected HashMap<Integer, Set<IResourceManager>> activeTransactions;
@@ -35,7 +37,7 @@ public class TransactionManager {
                 live_log = (HashMap<Integer, ArrayList<String>>) ois.readObject();
             }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e + "while reading live log.");
         }
         if (live_log == null) {
             live_log = new HashMap<>();
@@ -93,14 +95,14 @@ public class TransactionManager {
             }
         }
         catch(Exception e) {
-            System.out.println(e + " Error while attempting TM abort.");
+            System.out.println(e + " while attempting TM abort.");
         }
         activeTransactions.remove(xid);
         System.out.println("Transaction " + xid + " aborted.");
     }
 
     public synchronized boolean commit(int xid) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
-
+        System.out.println("Starting commit on transaction " + xid + ".");
         //Start 2PC
         ArrayList<String> list   = new ArrayList<>();
         list.add("START");
@@ -119,7 +121,8 @@ public class TransactionManager {
 
 
         //send VOTE-REQ to participants
-            Iterator<IResourceManager> irm = activeTransactions.get(xid).iterator();
+        System.out.println("Sending out vote-req for transaction " + xid + ".");
+        Iterator<IResourceManager> irm = activeTransactions.get(xid).iterator();
             while (irm.hasNext()) {
                 IResourceManager ir = irm.next();
                 try {
@@ -128,6 +131,7 @@ public class TransactionManager {
                 catch(Exception e) {
                     int position = 0;
                     activeTransactions.remove(ir);
+                    try {
                     if (ir.getName().equals("Flights")) {
                         position = 0;
                     }
@@ -137,14 +141,18 @@ public class TransactionManager {
                     else if(ir.getName().equals("Rooms")){
                         position = 2;
                     }
-                    try {
                         Registry registry = LocateRegistry.getRegistry(servers[position], serverport);
                         IResourceManager irnew = (IResourceManager) registry.lookup("group20" + ir.getName());
-                        irnew.prepare(xid);
-                        activeTransactions.get(xid).add(irnew);
+                        try {
+                            irnew.prepare(xid);
+                            activeTransactions.get(xid).add(irnew);
+                        }
+                        catch(Exception f){
+                            System.out.println("Could not reconnect to RM.");
+                        }
                     }
                     catch(Exception f) {
-                        System.out.println("could not find new RM");
+                        System.out.println("could not locate RM.");
                     }
                 }
             }
@@ -154,9 +162,9 @@ public class TransactionManager {
         }
 
         //wait for answers on vote-req
+        System.out.println("Waiting on vote-req");
         int j = 0;
         try {
-            System.out.println(votes.get(xid).size() + " " + activeTransactions.get(xid).size());
             while (votes.get(xid).size() < activeTransactions.get(xid).size() && j++ < 350) {
                 Thread.sleep(100);
                 // crash after receiving some replies but not all

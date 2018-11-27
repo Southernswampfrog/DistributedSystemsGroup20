@@ -20,7 +20,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
     protected IResourceManager[] m_RMs = new IResourceManager[3];
     private LockManager lm = new LockManager();
     protected TransactionManager tm;
-    protected static int TTL_TIMEOUT = 50000;
+    protected static int TTL_TIMEOUT = 70000;
     protected List<String> dataToLock;
     protected int serverport;
     protected String[] servers;
@@ -335,7 +335,6 @@ public class Middleware extends ResourceManager implements IResourceManager {
             tm.activeTransactions.get(xid).add(m_RMs[1]);
             return m_RMs[1].reserveCar(xid, customerID, location);
         }catch (Exception e) {
-            System.out.println();
             return false;
         }
     }
@@ -565,20 +564,9 @@ public class Middleware extends ResourceManager implements IResourceManager {
         }
         try {
             return tm.commit(xid);
-        } catch (Exception e) {
-            for (int i = 0; i < 3; i++) {
-                String[] servers1 = {"Flights", "Cars", "Rooms"};
-                tm.activeTransactions.get(xid).remove(m_RMs[i]);
-                connectServer(servers[i], serverport, servers1[i], i);
-                tm.activeTransactions.get(xid).add(m_RMs[i]);
-            }
-            try {
-                return tm.commit(xid);
-            } catch (Exception f) {
-            }
-
-            return false;
+        } catch (Exception f) {
         }
+        return false;
     }
 
     public void abort(int xid) throws RemoteException,
@@ -617,13 +605,18 @@ public class Middleware extends ResourceManager implements IResourceManager {
 
     public void crashResourceManager(String name /* RM Name */, int mode)
             throws RemoteException {
-        for (int i = 0; i < m_RMs.length; i++) {
-            if (name.equals(m_RMs[i].getName())) {
-                m_RMs[i].crashResourceManager(name, mode);
-                System.out.println("crashing " + m_RMs[i].getName());
-                return;
+            for (int i = 0; i < m_RMs.length; i++) {
+                try {
+                    if (name.equals(m_RMs[i].getName())) {
+                        m_RMs[i].crashResourceManager(name, mode);
+                        System.out.println("crashing " + m_RMs[i].getName());
+                        return;
+                    }
+                }
+                catch(Exception e) {
+                    System.out.println(e + " at crashResourceManager.");
+                }
             }
-        }
         System.out.println("No such RM exists");
     }
 
@@ -738,7 +731,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
         try {
             for (Integer i : tm.live_log.keySet()) {
                 //if no start 2pc but know it started the transaction
-                if (!tm.live_log.get(i).contains("START") && !tm.live_log.get(i).contains("ABORT") && tm.live_log.get(i) != null) {
+                if (!tm.live_log.get(i).contains("START") && !tm.live_log.get(i).contains("ABORT") && !tm.live_log.get(i).isEmpty()) {
                     System.out.println("Found no start on transaction " + i + ", Aborting.");
                     for(int j = 0; i < m_RMs.length; i++) {
                         tm.live_log.get(i).add("ABORT");
