@@ -489,6 +489,13 @@ public class ResourceManager implements IResourceManager
 		live_log.get(xid).add("COMMIT");
 		// crash after receiving decision but before committing/aborting
 		if(crash_mode == 4) {
+			crash_mode = 0;
+			try {
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_crash_mode_log.ser"));
+				oos.writeObject(crash_mode);
+			}
+			catch(Exception e) {
+			}
 			System.exit(1);
 		}
 		try {
@@ -512,6 +519,13 @@ public class ResourceManager implements IResourceManager
 		//write to log, and then reread master record
 		// crash after receiving decision but before committing/aborting
 		if(crash_mode == 4) {
+			crash_mode = 0;
+			try {
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_crash_mode_log.ser"));
+				oos.writeObject(crash_mode);
+			}
+			catch(Exception e) {
+			}
 			System.exit(1);
 		}
 		if(live_log.get(xid) == null) {
@@ -574,6 +588,13 @@ public class ResourceManager implements IResourceManager
 
 		// crash after receiving vote request, but before sending answer
 		if (crash_mode == 1) {
+			crash_mode = 0;
+			try {
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_crash_mode_log.ser"));
+				oos.writeObject(crash_mode);
+			}
+			catch(Exception e) {
+			}
 			System.exit(1);
 		}
 		ArrayList<String> list = new ArrayList<>();
@@ -598,11 +619,25 @@ public class ResourceManager implements IResourceManager
 		}
 		// crash after decision which answer to send
 		if (crash_mode == 2) {
+			crash_mode = 0;
+			try {
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_crash_mode_log.ser"));
+				oos.writeObject(crash_mode);
+			}
+			catch(Exception e) {
+			}
 			System.exit(1);
 		}
         vote(xid,1);
 		// crash after sending answer
         if (crash_mode == 3) {
+			crash_mode = 0;
+			try {
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_crash_mode_log.ser"));
+				oos.writeObject(crash_mode);
+			}
+			catch(Exception e) {
+			}
             System.exit(1);
         }
     }
@@ -691,6 +726,13 @@ public class ResourceManager implements IResourceManager
 
 				}
 				if(crash_mode == 5) {
+					crash_mode = 0;
+					try {
+						ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_crash_mode_log.ser"));
+						oos.writeObject(crash_mode);
+					}
+					catch(Exception e) {
+					}
 					System.exit(1);
 				}
 			}

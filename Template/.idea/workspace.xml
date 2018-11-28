@@ -4,24 +4,31 @@
     <list default="true" id="94c3b4da-68fc-4401-9524-e0f0df3e36fe" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../Template.tar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Cars_log.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Cars_log.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Cars_master_record.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Cars_master_record.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Cars_shadow_file_A.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Cars_shadow_file_A.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Cars_shadow_file_B.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Cars_shadow_file_B.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Flights_log.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Flights_log.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Flights_master_record.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Flights_master_record.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Flights_shadow_file_A.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Flights_shadow_file_A.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Flights_shadow_file_B.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Flights_shadow_file_B.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Rooms_log.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Rooms_log.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Rooms_master_record.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Rooms_master_record.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Rooms_shadow_file_A.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Rooms_shadow_file_A.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/Rooms_shadow_file_B.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/Rooms_shadow_file_B.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Persistence/TM_log.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Persistence/TM_log.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client/RMITEST.class" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client/RMITEST.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client/RMITEST.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client/RMITEST.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Cars_log.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Cars_master_record.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Cars_shadow_file_A.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Cars_shadow_file_B.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Flights_crash_mode_log.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Flights_log.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Flights_master_record.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Flights_shadow_file_A.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Flights_shadow_file_B.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Middleware_log.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Middleware_master_record.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Middleware_shadow_file_A.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Middleware_shadow_file_B.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Rooms_log.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Rooms_master_record.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Rooms_shadow_file_A.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/Rooms_shadow_file_B.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Persistence/TM_log.ser" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/RMIInterface.jar" beforeDir="false" afterPath="$PROJECT_DIR$/Server/RMIInterface.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware$SubTransaction.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware$SubTransaction.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Common/Middleware.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/Middleware.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Common/ResourceManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/ResourceManager$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Common/ResourceManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/ResourceManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Common/ResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/ResourceManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Common/TransactionManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/TransactionManager$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Common/TransactionManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Common/TransactionManager.class" afterDir="false" />
@@ -76,13 +83,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Makefile" value="867" />
-          <entry key="java" value="64950" />
+          <entry key="java" value="65139" />
           <entry key="sh" value="594" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="64950" />
+          <entry key="JAVA" value="65139" />
           <entry key="PLAIN_TEXT" value="1461" />
         </counts>
       </usages-collector>
@@ -93,8 +100,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Client/RMITEST.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1185">
-              <caret line="94" column="10" selection-start-line="94" selection-start-column="10" selection-end-line="94" selection-end-column="10" />
+            <state relative-caret-position="285">
+              <caret line="78" column="27" lean-forward="true" selection-start-line="78" selection-start-column="27" selection-end-line="78" selection-end-column="27" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -102,11 +109,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Server/Server/Common/ResourceManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="531" column="23" selection-start-line="531" selection-start-column="23" selection-end-line="531" selection-end-column="23" />
+            <state relative-caret-position="166">
+              <caret line="765" column="28" selection-start-line="765" selection-start-column="15" selection-end-line="765" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#22844#22845#0" expanded="true" />
@@ -119,8 +126,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1230">
-              <caret line="95" column="42" selection-start-line="95" selection-start-column="42" selection-end-line="95" selection-end-column="42" />
+            <state relative-caret-position="3">
+              <caret line="80" column="70" lean-forward="true" selection-start-line="80" selection-start-column="70" selection-end-line="80" selection-end-column="70" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -128,11 +135,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server/Server/Common/TransactionManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="93" column="54" selection-start-line="93" selection-start-column="54" selection-end-line="93" selection-end-column="54" />
+            <state relative-caret-position="176">
+              <caret line="18" column="23" selection-start-line="18" selection-start-column="15" selection-end-line="18" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -143,8 +150,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Server/Server/Common/Middleware.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="582" column="52" selection-start-line="582" selection-start-column="52" selection-end-line="582" selection-end-column="52" />
+            <state relative-caret-position="185">
+              <caret line="783" column="35" lean-forward="true" selection-start-line="783" selection-start-column="35" selection-end-line="783" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -163,7 +170,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>could</find>
       <find>undo</find>
       <find>undo map</find>
       <find>3</find>
@@ -190,7 +196,10 @@
       <find>system</find>
       <find>middleware</find>
       <find>TM abort</find>
+      <find>crash_mode ==</find>
+      <find>crash_mode ==</find>
       <find>tm abort</find>
+      <find>crash_mo</find>
     </findStrings>
     <replaceStrings>
       <replace>next_xid</replace>
@@ -242,10 +251,10 @@
         <option value="$PROJECT_DIR$/Server/run_server.sh" />
         <option value="$PROJECT_DIR$/Server/Server/RMI/RMIResourceManager.java" />
         <option value="$PROJECT_DIR$/Server/Server/LockManager/LockManager.java" />
-        <option value="$PROJECT_DIR$/Client/Client/RMITEST.java" />
         <option value="$PROJECT_DIR$/Server/Server/Common/Middleware.java" />
-        <option value="$PROJECT_DIR$/Server/Server/Common/TransactionManager.java" />
+        <option value="$PROJECT_DIR$/Client/Client/RMITEST.java" />
         <option value="$PROJECT_DIR$/Server/Server/Common/ResourceManager.java" />
+        <option value="$PROJECT_DIR$/Server/Server/Common/TransactionManager.java" />
       </list>
     </option>
   </component>
@@ -486,7 +495,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Server/Server/Common/TransactionManager.java</url>
-          <line>107</line>
+          <line>109</line>
           <properties />
           <option name="timeStamp" value="3" />
         </line-breakpoint>
@@ -747,38 +756,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/Client/RMITEST.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1185">
-          <caret line="94" column="10" selection-start-line="94" selection-start-column="10" selection-end-line="94" selection-end-column="10" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1230">
-          <caret line="95" column="42" selection-start-line="95" selection-start-column="42" selection-end-line="95" selection-end-column="42" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/Common/Middleware.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="582" column="52" selection-start-line="582" selection-start-column="52" selection-end-line="582" selection-end-column="52" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server/Common/TransactionManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="93" column="54" selection-start-line="93" selection-start-column="54" selection-end-line="93" selection-end-column="54" />
+        <state relative-caret-position="285">
+          <caret line="78" column="27" lean-forward="true" selection-start-line="78" selection-start-column="27" selection-end-line="78" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -787,12 +766,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server/Server/Common/ResourceManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="531" column="23" selection-start-line="531" selection-start-column="23" selection-end-line="531" selection-end-column="23" />
+        <state relative-caret-position="166">
+          <caret line="765" column="28" selection-start-line="765" selection-start-column="15" selection-end-line="765" selection-end-column="28" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#22844#22845#0" expanded="true" />
             <element signature="e#22863#22864#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/RMI/RMIMiddleware.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3">
+          <caret line="80" column="70" lean-forward="true" selection-start-line="80" selection-start-column="70" selection-end-line="80" selection-end-column="70" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/Middleware.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="783" column="35" lean-forward="true" selection-start-line="783" selection-start-column="35" selection-end-line="783" selection-end-column="35" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/Server/Common/TransactionManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="18" column="23" selection-start-line="18" selection-start-column="15" selection-end-line="18" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

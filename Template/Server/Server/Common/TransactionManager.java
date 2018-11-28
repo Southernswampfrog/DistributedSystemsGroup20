@@ -19,6 +19,7 @@ public class TransactionManager {
     public int crash_mode = 0;
     public HashMap<Integer, ArrayList<String>> live_log;
     public File log;
+    public File crash_mode_log;
     public Map<Integer, ArrayList<Integer>> votes;
     public int serverport;
     public String[] servers;
@@ -28,6 +29,7 @@ public class TransactionManager {
         this.servers = servers;
         votes = new HashMap<>();
         log = new File("Persistence/TM_log.ser");
+        crash_mode_log = new File("Persistence/TM_crash_mode_log.ser");
         try {
             if (!log.createNewFile()) {
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(log));
@@ -117,6 +119,13 @@ public class TransactionManager {
         }
         // crash before sending vote requests
         if (crash_mode == 1) {
+            crash_mode = 0;
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
+                oos.writeObject(crash_mode);
+            }
+            catch(Exception e) {
+            }
             System.exit(1);
         }
 
@@ -162,6 +171,13 @@ public class TransactionManager {
             }
         // crash after sending vote-reqs but before receiving any replies
         if (crash_mode == 2) {
+            crash_mode = 0;
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
+                oos.writeObject(crash_mode);
+            }
+            catch(Exception e) {
+            }
             System.exit(1);
         }
 
@@ -186,6 +202,13 @@ public class TransactionManager {
         }
         // crash after receiving all replies but before deciding
         if (crash_mode == 4) {
+            crash_mode = 0;
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
+                oos.writeObject(crash_mode);
+            }
+            catch(Exception e) {
+            }
             System.exit(1);
         }
 
@@ -210,6 +233,13 @@ public class TransactionManager {
         }
         // crash after deciding but before sending decision
         if (crash_mode == 5) {
+            crash_mode = 0;
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
+                oos.writeObject(crash_mode);
+            }
+            catch(Exception e) {
+            }
             System.exit(1);
         }
         try {
@@ -232,6 +262,13 @@ public class TransactionManager {
 
         // crash after having sent all decisions
         if (crash_mode == 7) {
+            crash_mode = 0;
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
+                oos.writeObject(crash_mode);
+            }
+            catch(Exception e) {
+            }
             System.exit(1);
         }
         activeTransactions.remove(xid);

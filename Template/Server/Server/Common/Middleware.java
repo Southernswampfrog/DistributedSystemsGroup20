@@ -4,7 +4,9 @@ package Server.Common;
 import Server.Interface.IResourceManager;
 import Server.LockManager.*;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
@@ -601,6 +603,12 @@ public class Middleware extends ResourceManager implements IResourceManager {
 
     public void crashMiddleware(int mode) throws RemoteException {
         tm.crash_mode = mode;
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
+            oos.writeObject(crash_mode);
+        }
+        catch(Exception e){
+        }
     }
 
     public void crashResourceManager(String name /* RM Name */, int mode)
@@ -729,6 +737,12 @@ public class Middleware extends ResourceManager implements IResourceManager {
 
     public void recovery() throws RemoteException,InvalidTransactionException,TransactionAbortedException{
         try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Persistence/TM_crash_mode_log.ser"));
+            crash_mode = (int) ois.readObject();
+        }
+        catch(Exception e) {
+        }
+        try {
             for (Integer i : tm.live_log.keySet()) {
                 //if no start 2pc but know it started the transaction
                 if (!tm.live_log.get(i).contains("START") && !tm.live_log.get(i).contains("ABORT") && !tm.live_log.get(i).isEmpty()) {
@@ -765,6 +779,16 @@ public class Middleware extends ResourceManager implements IResourceManager {
                             m_RMs[j].abort(i);
                         }
                     }
+                }
+                if(crash_mode == 8) {
+                    crash_mode = 0;
+                    try {
+                        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
+                        oos.writeObject(crash_mode);
+                    }
+                    catch(Exception e) {
+                    }
+                    System.exit(1);
                 }
             }
         }
