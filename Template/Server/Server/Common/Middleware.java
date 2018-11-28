@@ -747,7 +747,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
                 //if no start 2pc but know it started the transaction
                 if (!tm.live_log.get(i).contains("START") && !tm.live_log.get(i).contains("ABORT") && !tm.live_log.get(i).isEmpty()) {
                     System.out.println("Found no start on transaction " + i + ", Aborting.");
-                    for(int j = 0; i < m_RMs.length; i++) {
+                    for(int j = 0; j < m_RMs.length; j++) {
                         tm.live_log.get(i).add("ABORT");
                         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
                         oos.writeObject(live_log);
@@ -761,7 +761,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
                         tm.live_log.get(i).add("ABORT");
                         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
                         oos.writeObject(live_log);
-                    for(int j = 0; i < m_RMs.length; i++) {
+                    for(int j = 0; j < m_RMs.length; j++) {
                         m_RMs[j].abort(i);
                     }
                 }
@@ -770,7 +770,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
                         && (tm.live_log.get(i).contains("COMMIT") || tm.live_log.get(i).contains("ABORT"))) {
                     if (tm.live_log.get(i).contains("COMMIT")) {
                         System.out.println("Found  commit on transaction " + i + ". Resending Commit.");
-                        for(int j = 0; i < m_RMs.length; i++) {
+                        for(int j = 0; j < m_RMs.length; j++) {
                             m_RMs[j].commit(i);
                         }
                     } else {
