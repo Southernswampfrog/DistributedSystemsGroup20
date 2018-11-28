@@ -483,8 +483,6 @@ public class ResourceManager implements IResourceManager
 	public boolean commit(int xid) throws RemoteException,
 			TransactionAbortedException, InvalidTransactionException {
 		if(live_log.get(xid) == null || live_log.get(xid).contains("COMMIT") || live_log.get(xid).contains("ABORT")) {
-			System.out.println(m_name + " is voting no at transaction " + xid);
-			vote(xid,0);
 			return false;
 		}
 		String s = "Committing transaction # " + xid + " to file " + m_name + "_" + master_record_pointer[0] + ".";
@@ -527,29 +525,33 @@ public class ResourceManager implements IResourceManager
 		try {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
 			master_record_pointer = (String[]) ois.readObject();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println(e + " while reading master record");
 		}
 		try {
-			if (master_record_pointer[0].equals("shadow_file_A")) {
-				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(shadow_file_A));
-				m_data = (RMHashMap) ois.readObject();
-				System.out.println("Undoing by reading from file " + master_record_pointer[0]);
-			} else if (master_record_pointer[0].equals("shadow_file_B")) {
-				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(shadow_file_B));
-				m_data = (RMHashMap) ois.readObject();
-				System.out.println("Undoing by reading from file " + master_record_pointer[0]);
-			} else {
+			if(xid == 1) {
 				m_data = new RMHashMap();
 			}
-		}
-			catch(Exception e) {
-				System.out.println(e + " while aborting " + xid );
+			else {
+				if (master_record_pointer[0].equals("shadow_file_A")) {
+					ObjectInputStream ois = new ObjectInputStream(new FileInputStream(shadow_file_A));
+					m_data = (RMHashMap) ois.readObject();
+					System.out.println("Undoing by reading from file " + master_record_pointer[0]);
+				} else if (master_record_pointer[0].equals("shadow_file_B")) {
+					ObjectInputStream ois = new ObjectInputStream(new FileInputStream(shadow_file_B));
+					m_data = (RMHashMap) ois.readObject();
+					System.out.println("Undoing by reading from file " + master_record_pointer[0]);
+				} else {
+					System.out.println("here");
+					m_data = new RMHashMap();
+				}
 			}
+		} catch (Exception e) {
+			System.out.println(e + " while aborting " + xid);
+		}
 		try {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(master_record));
-			master_record_pointer = (String[])ois.readObject();
+			master_record_pointer = (String[]) ois.readObject();
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
 			oos.writeObject(live_log);
 
@@ -635,7 +637,8 @@ public class ResourceManager implements IResourceManager
 				middleware.vote(xid, decision);
 			}
 			catch(Exception f) {
-				System.out.println("Could not reconnect to middleware");
+				e.printStackTrace();
+				System.out.println("Could not connect to middleware");
 			}
 		}
 	}

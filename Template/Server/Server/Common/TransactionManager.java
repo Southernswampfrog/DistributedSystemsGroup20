@@ -1,16 +1,13 @@
 package Server.Common;
 
 import Server.Interface.IResourceManager;
-
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
-
 import Server.LockManager.*;
 
-import javax.sound.midi.Soundbank;
 
 public class TransactionManager {
 
@@ -90,8 +87,12 @@ public class TransactionManager {
         TTLMap.remove(xid);
         try {
             while (irm.hasNext()) {
-                IResourceManager ir = irm.next();
-                ir.abort(xid);
+                try {
+                    IResourceManager ir = irm.next();
+                    ir.abort(xid);
+                } catch(Exception e) {
+                    System.out.println(e + " at abort.");
+                }
             }
         }
         catch(Exception e) {
@@ -104,7 +105,7 @@ public class TransactionManager {
     public synchronized boolean commit(int xid) throws RemoteException, InvalidTransactionException, TransactionAbortedException {
         System.out.println("Starting commit on transaction " + xid + ".");
         //Start 2PC
-        ArrayList<String> list   = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
         list.add("START");
         live_log.put(xid, list);
         votes.put(xid,new ArrayList<>());
@@ -122,6 +123,9 @@ public class TransactionManager {
 
         //send VOTE-REQ to participants
         System.out.println("Sending out vote-req for transaction " + xid + ".");
+        if(activeTransactions.get(xid) == null) {
+            return true;
+        }
         Iterator<IResourceManager> irm = activeTransactions.get(xid).iterator();
             while (irm.hasNext()) {
                 IResourceManager ir = irm.next();

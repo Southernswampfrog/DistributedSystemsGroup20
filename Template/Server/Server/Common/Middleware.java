@@ -744,10 +744,10 @@ public class Middleware extends ResourceManager implements IResourceManager {
                 else if (tm.live_log.get(i).contains("START")
                         && !(tm.live_log.get(i).contains("COMMIT") || tm.live_log.get(i).contains("ABORT"))) {
                     System.out.println("Found  start on transaction " + i + "but no commit/abort. Aborting.");
-                    for(int j = 0; i < m_RMs.length; i++) {
                         tm.live_log.get(i).add("ABORT");
                         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
                         oos.writeObject(live_log);
+                    for(int j = 0; i < m_RMs.length; i++) {
                         m_RMs[j].abort(i);
                     }
                 }
@@ -756,12 +756,12 @@ public class Middleware extends ResourceManager implements IResourceManager {
                         && (tm.live_log.get(i).contains("COMMIT") || tm.live_log.get(i).contains("ABORT"))) {
                     if (tm.live_log.get(i).contains("COMMIT")) {
                         System.out.println("Found  commit on transaction " + i + ". Resending Commit.");
-                        for (int j = 0; j < 3; j++) {
+                        for(int j = 0; i < m_RMs.length; i++) {
                             m_RMs[j].commit(i);
                         }
                     } else {
                         System.out.println("Found abort on transaction " + i + ". Resending Abort.");
-                        for (int j = 0; j < 3; j++) {
+                        for(int j = 0; i < m_RMs.length; i++) {
                             m_RMs[j].abort(i);
                         }
                     }
