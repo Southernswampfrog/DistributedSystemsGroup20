@@ -1,3 +1,0 @@
-grant codebase "file:/home/yates/comp512/DistributedSystemsGroup20/Template/Server/" {
-permission java.security.AllPermission;
-};

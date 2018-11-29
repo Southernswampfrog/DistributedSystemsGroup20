@@ -110,7 +110,7 @@ public class TransactionManager {
         ArrayList<String> list = new ArrayList<>();
         list.add("START");
         live_log.put(xid, list);
-        votes.put(xid,new ArrayList<>());
+        votes.put(xid, new ArrayList<>());
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(log));
             oos.writeObject(live_log);
@@ -123,8 +123,7 @@ public class TransactionManager {
             try {
                 ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
                 oos.writeObject(crash_mode);
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
             }
             System.exit(1);
         }
@@ -132,43 +131,47 @@ public class TransactionManager {
 
         //send VOTE-REQ to participants
         System.out.println("Sending out vote-req for transaction " + xid + ".");
-        if(activeTransactions.get(xid) == null) {
+        if (activeTransactions.get(xid) == null) {
             return true;
         }
         Iterator<IResourceManager> irm = activeTransactions.get(xid).iterator();
-            while (irm.hasNext()) {
-                IResourceManager ir = irm.next();
+        while (irm.hasNext()) {
+            IResourceManager ir = irm.next();
+            try {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // code goes here.
+                        try {
+                            ir.prepare(xid);
+                        } catch (Exception e) {
+                        }
+                    }
+                }).start();
+            } catch (Exception e) {
+                int position = 0;
+                activeTransactions.remove(ir);
                 try {
-                    ir.prepare(xid);
-                }
-                catch(Exception e) {
-                    int position = 0;
-                    activeTransactions.remove(ir);
-                    try {
                     if (ir.getName().equals("Flights")) {
                         position = 0;
-                    }
-                    else if (ir.getName().equals("Cars")) {
+                    } else if (ir.getName().equals("Cars")) {
                         position = 1;
-                    }
-                    else if(ir.getName().equals("Rooms")){
+                    } else if (ir.getName().equals("Rooms")) {
                         position = 2;
                     }
-                        Registry registry = LocateRegistry.getRegistry(servers[position], serverport);
-                        IResourceManager irnew = (IResourceManager) registry.lookup("group20" + ir.getName());
-                        try {
-                            irnew.prepare(xid);
-                            activeTransactions.get(xid).add(irnew);
-                        }
-                        catch(Exception f){
-                            System.out.println("Could not reconnect to RM.");
-                        }
+                    Registry registry = LocateRegistry.getRegistry(servers[position], serverport);
+                    IResourceManager irnew = (IResourceManager) registry.lookup("group20" + ir.getName());
+                    try {
+                        irnew.prepare(xid);
+                        activeTransactions.get(xid).add(irnew);
+                    } catch (Exception f) {
+                        System.out.println("Could not reconnect to RM.");
                     }
-                    catch(Exception f) {
-                        System.out.println("could not locate RM.");
-                    }
+                } catch (Exception f) {
+                    System.out.println("could not locate RM.");
                 }
             }
+        }
         // crash after sending vote-reqs but before receiving any replies
         if (crash_mode == 2) {
             crash_mode = 0;
@@ -180,22 +183,28 @@ public class TransactionManager {
             }
             System.exit(1);
         }
-
         //wait for answers on vote-req
         System.out.println("Waiting on vote-req");
         int j = 0;
         try {
-            while (votes.get(xid).size() < activeTransactions.get(xid).size() && j++ < 350) {
-                Thread.sleep(100);
+            while (votes.get(xid).size() < activeTransactions.get(xid).size() && j++ < 3500) {
                 // crash after receiving some replies but not all
-                if (votes.get(xid).size() > Math.round(activeTransactions.get(xid).size()/2.0) && crash_mode == 3) {
+                if (votes.get(xid).size() > (Math.round(activeTransactions.get(xid).size() / 2)) && crash_mode == 3) {
+                    crash_mode = 0;
+                    try {
+                        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
+                        oos.writeObject(crash_mode);
+                    }
+                    catch(Exception e) {
+                    }
                     System.exit(1);
                 }
+                Thread.sleep(10);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (j >= 349) {
+        if (j >= 3490) {
             System.out.println("Coordinator timed out on vote-req.");
             abort(xid);
             return false;

@@ -42,7 +42,7 @@ public class RMIResourceManager extends ResourceManager
 			} catch (RemoteException e) {
 				l_registry = LocateRegistry.getRegistry(1099);
 			}
-			RMIResourceManager server = new RMIResourceManager(s_serverName);
+			RMIResourceManager server = new RMIResourceManager(s_serverName, s_MiddleWareServer);
 			// Dynamically generate the stub (client proxy)
 			IResourceManager resourceManager = (IResourceManager)UnicastRemoteObject.exportObject(server, 0);
 
@@ -108,8 +108,8 @@ public class RMIResourceManager extends ResourceManager
 			System.exit(1);
 		}
 	}
-	public RMIResourceManager(String name)
+	public RMIResourceManager(String name, String middleware)
 	{
-		super(name);
+		super(name, middleware);
 	}
 }

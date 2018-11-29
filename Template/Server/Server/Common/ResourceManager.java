@@ -29,13 +29,13 @@ public class ResourceManager implements IResourceManager
 	Timer crash_timer;
 	public IResourceManager middleware;
 	public HashMap<Integer, Timer> vote_req_timers;
+	String middleware_server;
 
 
-
-	public ResourceManager(String p_name) {
+	public ResourceManager(String p_name, String middleware_server) {
 		vote_req_timers = new HashMap<>();
 		crash_mode = 0;
-
+		this.middleware_server = middleware_server;
 		m_name = p_name;
 		m_data = new RMHashMap();
 		//check if persistence exists, if so, get it!!
@@ -628,7 +628,15 @@ public class ResourceManager implements IResourceManager
 			}
 			System.exit(1);
 		}
-        vote(xid,1);
+		try {
+			//settle down computer!! youre going too fast!
+			Thread.sleep(500);
+			vote(xid,1);
+
+		}
+		catch(Exception e) {
+
+		}
 		// crash after sending answer
         if (crash_mode == 3) {
 			crash_mode = 0;
@@ -667,7 +675,7 @@ public class ResourceManager implements IResourceManager
 		}
 		catch(Exception e) {
 			try {
-				Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+				Registry registry = LocateRegistry.getRegistry(middleware_server, 1099);
 				middleware = (IResourceManager) registry.lookup("group20Middleware");
 				middleware.vote(xid, decision);
 			}

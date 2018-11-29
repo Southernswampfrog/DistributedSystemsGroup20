@@ -28,7 +28,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
     protected String[] servers;
 
     public Middleware(String p_name, int port, String[] RM_servers) {
-        super(p_name);
+        super(p_name, RM_servers[0]);
         m_name = p_name;
         serverport = port;
         servers = RM_servers;
@@ -371,7 +371,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
             updateTM(dataToLock, xid);
             String x = "Bill for Customer " + customerID + ":";
             for (int i = 0; i < 3; i++) {
-                x = x + m_RMs[i].queryCustomerInfo(xid, customerID);
+                x = x + m_RMs[i].queryCustomerInfo(xid, customerID) + ", ";
             }
             x = x.replace("Bill for customer " + customerID, "");
             x = x.replace("\n", " ");
@@ -605,7 +605,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
         tm.crash_mode = mode;
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
-            oos.writeObject(crash_mode);
+            oos.writeObject(tm.crash_mode);
         }
         catch(Exception e){
         }
@@ -738,7 +738,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
     public void recovery() throws RemoteException,InvalidTransactionException,TransactionAbortedException{
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Persistence/TM_crash_mode_log.ser"));
-            crash_mode = (int) ois.readObject();
+            tm.crash_mode = (int) ois.readObject();
         }
         catch(Exception e) {
         }
@@ -757,7 +757,7 @@ public class Middleware extends ResourceManager implements IResourceManager {
                 //start with no commit
                 else if (tm.live_log.get(i).contains("START")
                         && !(tm.live_log.get(i).contains("COMMIT") || tm.live_log.get(i).contains("ABORT"))) {
-                    System.out.println("Found  start on transaction " + i + "but no commit/abort. Aborting.");
+                    System.out.println("Found  start on transaction " + i + " but no commit/abort. Aborting.");
                         tm.live_log.get(i).add("ABORT");
                         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/" + m_name + "_log.ser"));
                         oos.writeObject(live_log);
@@ -780,11 +780,12 @@ public class Middleware extends ResourceManager implements IResourceManager {
                         }
                     }
                 }
-                if(crash_mode == 8) {
-                    crash_mode = 0;
+                if(tm.crash_mode == 8) {
+                    System.out.println("Crashing Middleware at recovery.");
+                    tm.crash_mode = 0;
                     try {
                         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Persistence/TM_crash_mode_log.ser"));
-                        oos.writeObject(crash_mode);
+                        oos.writeObject(tm.crash_mode);
                     }
                     catch(Exception e) {
                     }
